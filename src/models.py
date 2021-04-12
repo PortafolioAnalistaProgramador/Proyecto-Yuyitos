@@ -23,10 +23,13 @@ class DETALLE_FIADO(models.Model):
 class TIPO_USUARIO(models.Model):
     rol = models.CharField(max_length=50, default=None)
 
+    def  __str__(self):
+        return self.rol
+
 class USUARIO(models.Model):
     usuario = models.CharField(max_length=128, default=None)
     contrasena = models.CharField(max_length=128, default=None)
-    tipo_usuario = models.ForeignKey(TIPO_USUARIO, on_delete=models.CASCADE, default=None, blank=True)
+    tipo_usuario = models.ForeignKey(TIPO_USUARIO, on_delete=models.CASCADE, default=None)
 
 class VENTA(models.Model):
     fecha_venta = models.DateTimeField(auto_now_add=False, auto_now=True)

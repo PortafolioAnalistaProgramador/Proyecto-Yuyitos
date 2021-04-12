@@ -1,0 +1,17 @@
+.contenedor-principal{
+    background-color: #5ba6f6;
+    
+}
+
+.contenedor-principal i{
+    float: left;
+}
+
+.navegador{
+    background-color: #cac5c4;
+}
+
+.dropdown-menu{
+    background-color: #cac5c4;
+}
+/* crear colores al boton del navbar */

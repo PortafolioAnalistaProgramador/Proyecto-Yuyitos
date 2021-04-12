@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+     <div class="container p-5">
+    <h1 class="text-center" >Detalles del Usuario</h1>
+        <div class="row p-5">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <p><span class="txt_negrita">Usuario:</span> <br> {{object.username}}</p>
+                <p><span class="txt_negrita">Nombre:</span> <br> {{object.first_name}}</p>
+                <p><span class="txt_negrita">Apellido:</span> <br> {{object.last_name}}</p>
+                <p><span class="txt_negrita">Email:</span> <br> {{object.email}}</p>
+                <p><span class="txt_negrita">Admin:</span> <br> {{object.is_superuser}}</p>
+                <p><span class="txt_negrita">Empleado:</span> <br> {{object.is_staff}}</p>
+                <p><span class="txt_negrita">activo:</span> <br> {{object.is_active}}</p>
+                </div>
+            <div class="col-md-3">
+                
+                <!-- Botón para volver a la vista principal (Home) -->
+                <a href="../" type="submit" class="btn btn-primary">Volver</a>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        
+    </div>
+    
+{% endblock %}

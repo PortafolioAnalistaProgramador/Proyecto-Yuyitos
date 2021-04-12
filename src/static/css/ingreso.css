@@ -1,0 +1,7 @@
+body{
+    background-image: url("../images/textura.jpg");
+}
+
+.imagen-principal{
+    border-radius: 10px;
+}
