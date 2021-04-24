@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
-from .models import USUARIO
+from .models import USUARIO, CLIENTE
 from django.contrib import messages
 from django import forms
-from src.forms import FormRegistro
+from src.forms import FormRegistro, FormCliente
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin 
+from django.urls import reverse
 
 # def Ingreso(request):
 #     usuario = request.POST.get('usuario')
@@ -63,7 +65,7 @@ def Index(request):
 #     return render(request, 'usuarios/registroUsuarios.html',{'form':form})
 
 
-
+##*****************************Usuarios**************************************
 class UsuarioListado(ListView): 
     model = User 
  
@@ -109,3 +111,30 @@ def UsuarioActualizar(request, id):
 
 class UsuarioDetalle(DetailView): 
     model = User 
+##*************************************************************************
+
+##**************************Clientes***************************************
+class ClienteListado(ListView):
+    model = CLIENTE
+
+class ClienteCrear(SuccessMessageMixin, CreateView, ListView):
+    model = CLIENTE
+    form = FormCliente()
+    fields = "__all__"
+    success_message = 'Cliente creado correctamente'
+
+    def get_success_url(self):
+        return reverse('listarClientes')
+
+class ClienteDetalle(DetailView):
+    model = CLIENTE
+
+class ClienteActualizar(SuccessMessageMixin, UpdateView):
+    model = CLIENTE
+    form = FormCliente()
+    fields = "__all__"
+    success_message = 'Cliente actualizado correctamente'
+    def get_success_url(self):
+        return reverse('listarClientes')
+
+##******************************************************************

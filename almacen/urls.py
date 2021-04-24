@@ -4,6 +4,7 @@ from django.urls import path
 from src import views, static
 from src.views import Index
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar
+from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,7 +13,7 @@ urlpatterns = [
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
-        # **************************************Usuario
+    # **************************************Usuario
     # La ruta 'leer' en donde listamos todos los registros o postres de la Base de Datos
     path('usuarios/', UsuarioListado.as_view(template_name = "usuarios/listar.html"), name='listarUsuarios'),
  
@@ -28,4 +29,17 @@ urlpatterns = [
     # # La ruta 'eliminar' que usaremos para eliminar un postre o registro de la Base de Datos 
     #  path('usuarioAdmin/eliminar/<int:pk>', UsuarioEliminar.as_view(), name='eliminar'),    
     # # **************************************
+
+
+    # **************************************Cliente
+    path('clientes/', ClienteListado.as_view(template_name = "clientes/listar.html"), name='listarClientes'),
+ 
+    path('clientes/crear', ClienteCrear.as_view(template_name = "clientes/crear.html"), name='crearCliente'),
+ 
+    path('clientes/detalle/<int:pk>', ClienteDetalle.as_view(template_name = "clientes/detalles.html"), name='detalles'),
+
+    path('clientes/editar/<int:pk>', ClienteActualizar.as_view(template_name = "clientes/actualizar.html"), name='actualizar'), 
+    # # **************************************
 ]
+
+

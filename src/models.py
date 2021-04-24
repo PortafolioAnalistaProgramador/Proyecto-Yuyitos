@@ -77,7 +77,9 @@ class ORDEN_PEDIDO(models.Model):
     estado_recepcion = models.IntegerField(default=None)
     proveedor = models.ForeignKey(PROVEEDOR, on_delete=models.CASCADE, default=None)
     fecha_pedido = models.DateTimeField(auto_now_add=False, auto_now=True)
+    fecha_llegada = models.DateTimeField()
     fecha_recepcion = models.DateTimeField(blank=True)
+    hora_recepcion = models.DateTimeField(blank=True)
     
 
 class DETALLE_ORDEN(models.Model):

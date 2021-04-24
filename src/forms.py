@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import CLIENTE
 
 class FormRegistro(UserCreationForm):
     
@@ -18,3 +19,8 @@ class FormRegistro(UserCreationForm):
                 }
             )
         }
+
+class FormCliente(forms.ModelForm):
+    class Meta:
+        model = CLIENTE
+        fields = ("run","nombre","telefono","correo","direccion","estado")
