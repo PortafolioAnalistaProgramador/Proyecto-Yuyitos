@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+     <div class="container p-5">
+    <h1 class="text-center" >Detalles del Proveedor</h1>
+        <div class="row p-5">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <p><span class="txt_negrita">Razon social:</span> <br> {{object.razon_social}}</p>
+                <p><span class="txt_negrita">Correo:</span> <br> {{object.correo}}</p>
+                <p><span class="txt_negrita">Telefono:</span> <br> {{object.telefono}}</p>
+                <p><span class="txt_negrita">Direccion:</span> <br> {{object.direccion}}</p>
+                <p><span class="txt_negrita">Categoria:</span> <br> {{object.categoria_proveedor}}</p>
+                <p><span class="txt_negrita">Estado:</span> <br> {{object.estado}}</p>
+                </div>
+            <div class="col-md-3">
+                
+                <!-- Botón para volver a la vista principal (Home) -->
+                <a href="../" type="submit" class="btn btn-primary">Volver</a>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        
+    </div>
+    
+{% endblock %}

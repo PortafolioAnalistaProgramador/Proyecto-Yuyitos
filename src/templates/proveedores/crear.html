@@ -16,34 +16,33 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                
                 <div class="form-group">
-                    <label for="username" class="txt_negrita">Run:</label>
-                    {{ form.run|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    <label for="last_name" class="txt_negrita">Razon social:</label>
+                    {{ form.razon_social|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                 </div>
                 <div class="form-group">
-                    <label for="first_name" class="txt_negrita">Nombre:</label>
-                    {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    <label for="username" class="txt_negrita">Correo:</label>
+                    {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                 </div>
                 <div class="form-group">
-                    <label for="last_name" class="txt_negrita">Telefono:</label>
+                    <label for="first_name" class="txt_negrita">Telefono:</label>
                     {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                 </div>
                 <div class="form-group">
-                    <label for="email" class="txt_negrita">Correo:</label>
-                    {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password1" class="txt_negrita">Direccion:</label>
+                    <label for="email" class="txt_negrita">Direccion:</label>
                     {{ form.direccion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                 </div>
                 <div class="form-group">
-                    <label for="password2" class="txt_negrita">Se le puede dar fiado?:</label>
+                    <label for="password1" class="txt_negrita">Categoria:</label>
+                    {{ form.categoria_proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                </div>
+                <div class="form-group">
+                    <label for="password2" class="txt_negrita">estado:</label>
                     {{ form.estado|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                 </div>
                 
                 <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarClientes' %}" type="submit" class="btn btn-primary">Cancelar</a> 
+                <a href="{% url 'listarProveedores' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>

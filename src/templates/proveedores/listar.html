@@ -2,9 +2,9 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+  <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
     <div class="container p-3">
-      <h1 class="text-center">Administracion de Clientes</h1>
+      <h1 class="text-center">Administracion de proveedores</h1>
       <div class="container mb-4">
         {% if messages %}
           <ul class="messages list-group mb-3">
@@ -15,34 +15,33 @@
         {% endif %}
       </div>
       <table class="table table-striped table-hover">
-        <h3 class="titulo-cliente text-center p-2 mb-0">Clientes</h3>
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Proveedores</h3>
         <thead>
           <tr>
-            <th>Run</th>
-            <th>Nombre</th>
-            <th>Telefono</th>
+            <th>Razon social</th>
             <th>Correo</th>
+            <th>Telefono</th>
             <th>Direccion</th>
-            <th>Se le puede fiar?</th>
+            <th>Categoria</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
         
         <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
-        {% for cliente in object_list %}
+        {% for proveedor in object_list %}
           <tr>
-            <td>{{ cliente.run }}</td>
-            <td>{{ cliente.nombre }}</td>
-            <td>{{ cliente.telefono }}</td>
-            <td>{{ cliente.correo }}</td>
-            <td>{{ cliente.direccion }}</td>
-            {% if cliente.estado == 1 %}
-              <td class="text-center">Si</td>
+            <td>{{ proveedor.razon_social }}</td>
+            <td>{{ proveedor.correo }}</td>
+            <td>{{ proveedor.telefono }}</td>
+            <td>{{ proveedor.direccion }}</td>
+            <td>{{ proveedor.categoria_proveedor }}</td>
+            {% if proveedor.estado == 1 %}
+              <td class="">Activo</td>
             {% else %}
-              <td class="text-center">No</td>
+              <td class="">No Activo</td>
             {% endif %}
-            
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
@@ -51,8 +50,8 @@
                 <div class="btn-group">
       
                   <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
-                  <a href="detalle/{{cliente.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
-                  <a href="editar/{{cliente.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                  <a href="detalle/{{proveedor.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                  <a href="editar/{{proveedor.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
                 </div>
               </form>
       
@@ -64,7 +63,7 @@
       </table>
 
       <div align="left" class="btn_crear mb-3">
-        <a href="{% url 'crearCliente' %}" type="button" class="btn btn-primary">Crear</a>
+        <a href="{% url 'crearProveedor' %}" type="button" class="btn btn-primary">Crear</a>
       </div>
 
     </div>

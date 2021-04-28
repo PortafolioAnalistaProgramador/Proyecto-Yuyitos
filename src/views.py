@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import USUARIO, CLIENTE
+from .models import CLIENTE, PROVEEDOR, PRODUCTO
 from django.contrib import messages
 from django import forms
-from src.forms import FormRegistro, FormCliente
+from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -95,7 +95,7 @@ def UsuarioCrear(request):
 def UsuarioActualizar(request, id):
 
     user = User.objects.get(id=id)
-    form = FormRegistro(request.POST or None, instance=user)
+    form = FormRegistro(request.POST, instance=user)
     
     if form.is_valid():
         
@@ -103,9 +103,9 @@ def UsuarioActualizar(request, id):
         messages.warning(request, 'Usuario editado correctamente')
         return redirect('listarUsuarios')
     
-    form.fields['username'].help_text = None
-    form.fields['password1'].help_text = None
-    form.fields['password2'].help_text = None
+    # form.fields['username'].help_text = None
+    # form.fields['password1'].help_text = None
+    # form.fields['password2'].help_text = None
 
     return render(request, 'usuarios/actualizar.html',{'form':form})
 
@@ -136,5 +136,57 @@ class ClienteActualizar(SuccessMessageMixin, UpdateView):
     success_message = 'Cliente actualizado correctamente'
     def get_success_url(self):
         return reverse('listarClientes')
+
+##******************************************************************
+
+##**************************Proveedor***************************************
+class ProveedorListado(ListView):
+    model = PROVEEDOR
+
+class ProveedorCrear(SuccessMessageMixin, CreateView, ListView):
+    model = PROVEEDOR
+    form = FormProveedor()
+    fields = "__all__"
+    success_message = 'Proveedor creado correctamente'
+
+    def get_success_url(self):
+        return reverse('listarProveedores')
+
+class ProveedorDetalle(DetailView):
+    model = PROVEEDOR
+
+class ProveedorActualizar(SuccessMessageMixin, UpdateView):
+    model = PROVEEDOR
+    form = FormProveedor()
+    fields = "__all__"
+    success_message = 'Proveedor actualizado correctamente'
+    def get_success_url(self):
+        return reverse('listarProveedores')
+
+##******************************************************************
+
+##**************************Proveedor***************************************
+class ProductoListado(ListView):
+    model = PRODUCTO
+
+class ProductoCrear(SuccessMessageMixin, CreateView, ListView):
+    model = PRODUCTO
+    form = FormProducto()
+    fields = "__all__"
+    success_message = 'Producto creado correctamente'
+
+    def get_success_url(self):
+        return reverse('listarProductos')
+
+class ProductoDetalle(DetailView):
+    model = PRODUCTO
+
+class ProductoActualizar(SuccessMessageMixin, UpdateView):
+    model = PRODUCTO
+    form = FormProducto()
+    fields = "__all__"
+    success_message = 'Producto actualizado correctamente'
+    def get_success_url(self):
+        return reverse('listarProductos')
 
 ##******************************************************************

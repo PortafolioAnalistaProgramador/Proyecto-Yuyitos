@@ -5,6 +5,8 @@ from src import views, static
 from src.views import Index
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
+from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
+from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,11 +36,32 @@ urlpatterns = [
     # **************************************Cliente
     path('clientes/', ClienteListado.as_view(template_name = "clientes/listar.html"), name='listarClientes'),
  
-    path('clientes/crear', ClienteCrear.as_view(template_name = "clientes/crear.html"), name='crearCliente'),
+    path('clientes/crear/', ClienteCrear.as_view(template_name = "clientes/crear.html"), name='crearCliente'),
  
     path('clientes/detalle/<int:pk>', ClienteDetalle.as_view(template_name = "clientes/detalles.html"), name='detalles'),
 
     path('clientes/editar/<int:pk>', ClienteActualizar.as_view(template_name = "clientes/actualizar.html"), name='actualizar'), 
+    # # **************************************
+
+
+    # **************************************Proveedor
+    path('proveedores/', ProveedorListado.as_view(template_name = "proveedores/listar.html"), name='listarProveedores'),
+ 
+    path('proveedores/crear/', ProveedorCrear.as_view(template_name = "proveedores/crear.html"), name='crearProveedor'),
+ 
+    path('proveedores/detalle/<int:pk>', ProveedorDetalle.as_view(template_name = "proveedores/detalles.html"), name='detalles'),
+
+    path('proveedores/editar/<int:pk>', ProveedorActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizar'), 
+    # # **************************************
+
+    # **************************************Proveedor
+    path('productos/', ProductoListado.as_view(template_name = "productos/listar.html"), name='listarProductos'),
+ 
+    path('productos/crear/', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearProducto'),
+ 
+    path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detalles'),
+
+    path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
     # # **************************************
 ]
 

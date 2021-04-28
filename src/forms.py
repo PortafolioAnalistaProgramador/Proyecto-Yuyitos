@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import CLIENTE
+from .models import CLIENTE, PROVEEDOR, PRODUCTO
 
 class FormRegistro(UserCreationForm):
     
@@ -21,6 +21,52 @@ class FormRegistro(UserCreationForm):
         }
 
 class FormCliente(forms.ModelForm):
+    
     class Meta:
         model = CLIENTE
         fields = ("run","nombre","telefono","correo","direccion","estado")
+
+class FormProducto(forms.ModelForm):
+    
+    class Meta:
+        model = PRODUCTO
+        fields = ("nombre","precio","descripcion","precio_compra","stock","stock_critico","estado","fecha_vencimiento","codigo_barra","familia_producto")
+
+class FormProveedor(forms.ModelForm):
+    
+    class Meta:
+        model = PROVEEDOR
+        fields = ("correo","telefono","razon_social","direccion","categoria_proveedor","estado")
+
+# class FormCliente(forms.Form):
+#     run = forms.CharField(
+#         label = "Run"
+#     )
+
+#     Nombre = forms.CharField(
+#         label = "Nombre"
+#     )
+
+#     telefono = forms.IntegerField(
+#         label = "Telefono"
+#     )
+
+#     correo = forms.CharField(
+#         label = "Correo"
+#     )
+    
+#     direccion = forms.CharField(
+#         label = "Direccion"
+#     )
+
+#     options = [
+#         (1,'Si'),
+#         (0,'No')
+#     ]
+    
+#     estado = forms.TypedChoiceField(
+#         label = "Se le puede dar fiado?",
+#         choices = options
+#     )
+
+    
