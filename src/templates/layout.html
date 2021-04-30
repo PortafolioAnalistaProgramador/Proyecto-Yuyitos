@@ -27,6 +27,7 @@
                 <div class="nombre-usuario">
                     {% if user.is_authenticated %}
                         <span id="username">Bienvenido: {{ request.user }}</span>
+                        <a href="{% url 'logout'%}?next={{request.path}}" class="btn btn-success">Cerrar Sesion</a>
                     {% endif %}
                 </div>
             </div>

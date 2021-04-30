@@ -7,17 +7,20 @@ from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActua
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
+from django.urls import path, include
+
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
-    path('', views.Ingreso, name="ingreso"),
-    path('index/', views.Index, name="index"),
+    # path('', views.Ingreso, name="ingreso"),
+    path('', views.Index, name="index"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
     # **************************************Usuario
     # La ruta 'leer' en donde listamos todos los registros o postres de la Base de Datos
-    path('usuarios/', UsuarioListado.as_view(template_name = "usuarios/listar.html"), name='listarUsuarios'),
+    path('usuarios/', UsuarioListado.as_view(), name='listarUsuarios'),
  
     # # La ruta 'detalles' en donde mostraremos una página con los detalles de un postre o registro 
     path('usuarios/detalle/<int:pk>', UsuarioDetalle.as_view(template_name = "usuarios/detalles.html"), name='detalles'),
