@@ -8,7 +8,8 @@ from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActua
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 from django.urls import path, include
-
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
+from django.conf import settings
 
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
@@ -17,6 +18,17 @@ urlpatterns = [
     path('', views.Index, name="index"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
+
+    #******************************Restaurar contrasena
+    path('reset_password/', 
+        PasswordResetView.as_view(template_name="accounts/password_reset.html",email_template_name="accounts/password_reset_email.html"), name="reset_password"),
+    path('reset_password_sent/', 
+        PasswordResetDoneView.as_view(template_name="accounts/password_reset_done.html"), name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', 
+        PasswordResetConfirmView.as_view(template_name="accounts/password_reset_form.html"), name="password_reset_confirm"),
+    path('reset_password_complete/', 
+        PasswordResetCompleteView.as_view(template_name="accounts/password_reset_complete.html"), name="password_reset_complete"),
+    #**************************************************
 
     # **************************************Usuario
     # La ruta 'leer' en donde listamos todos los registros o postres de la Base de Datos
