@@ -15,33 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-# def Ingreso(request):
-#     usuario = request.POST.get('usuario')
-#     contrasena = request.POST.get('contrasena')
 
-#     if request.method == 'POST':
-
-#         if USUARIO.objects.filter(usuario=usuario) and USUARIO.objects.filter(contrasena=contrasena):
-#             return redirect('/index/')
-#         else:
-#             messages.warning(request, 'Usuario o contraseña incorrectos')    
-#     return render(request, 'usuarios/ingreso.html')
-
-# def Ingreso(request):
-    
-#     username = request.POST.get('username')
-#     password = request.POST.get('password')
-
-#     if request.method == 'POST':
-#         user = authenticate(request, username = username, password = password)
-
-#         if user is not None:
-#             login(request, user)
-#             return redirect('index/')
-#         else:
-#             messages.warning(request, 'Usuario o contraseña incorrectos')
-        
-#     return render(request, 'usuarios/ingreso.html')
 
 def Login(request):
     
@@ -53,7 +27,7 @@ def Login(request):
 
         if user is not None:
             login(request, user)
-            return redirect('index/')
+            return render(request, 'index.html')
         else:
             messages.warning(request, 'Usuario o contraseña incorrectos')
         
