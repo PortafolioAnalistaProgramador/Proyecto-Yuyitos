@@ -80,9 +80,11 @@ WSGI_APPLICATION = 'almacen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': '127.0.0.1:1521/xe',
+        'USER': 'C##JUANITA ',
+        'PASSWORD': '123456',
+    },
 }
 
 
