@@ -37,28 +37,6 @@ def Login(request):
 def Index(request):
     return render(request, 'index.html')
 
-# def RegistroUsuarios(request):
-#     form = FormRegistro()
-#     email = request.POST.get('email')
-#     validarEmail = User.objects.filter(email = email)
-
-    
-#     if request.method == 'POST':
-#         if validarEmail:
-#             messages.warning(request, 'el email ya existe')
-#         else:
-#             form = FormRegistro(request.POST)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('index/')
-    
-#     form.fields['username'].help_text = None
-#     form.fields['password1'].help_text = None
-#     form.fields['password2'].help_text = None
-#     return render(request, 'usuarios/registroUsuarios.html',{'form':form})
-
-
-##*****************************Usuarios**************************************
 
 @method_decorator(login_required, name='dispatch')
 class UsuarioListado(ListView): 

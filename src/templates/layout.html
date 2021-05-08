@@ -10,6 +10,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/11aea48714.js"></script>
         <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+        <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>   
     </head>
     <body>
         <nav class="navbar contenedor-principal navbar-expand-lg">
@@ -83,10 +84,40 @@
         </nav>
     {% endif %}
 
-    <div id="content">
-        {% block content %}
-            <!--codigo que viene de templates-->
-        {% endblock %}
-    </div>
+        <div id="content">
+            {% block content %}
+                <!--codigo que viene de templates-->
+            {% endblock %}
+        </div>
+
+        <!--boton de ayuda-->
+        <button disabled type="button" class="btn-flotante-ayuda" data-bs-toggle="tooltip" data-bs-placement="top" title="holaaaa">
+            Te ayudo?
+        </button>
+
+        <div class="barra">
+            <span class="esquina-izquierda"></span>
+        </div>
+
+        <button type="button" class="btn-flotante" onclick="manual()">
+            <i class="fas fa-question fa-1x"></i>
+        </button>
+
+        <script>
+            function manual(){
+                Swal.fire({
+                    title: 'Manual',
+                    text: `ajkshwkludjgbslkjqdhbkl.qajhfkjlñhlñkhfwasñiklhjlkfvhlñhfjñdvhñjkdsfvhjkñ
+                        sdfvhjksdfvhjdhjñkdfhñjfhjñhjfhjlñsfdvhjlñsdfhjsdhjdfhjsdfvhjñkfdshjñkdfshjñsdfhjñsdfhjhjdfsjñk
+                        ñakjsl{ñkfhjnñlahfñlkhasñdlkfhlñekisrhdfgvklñhsñolrihfgdñlihs{lñiihjlkgsjigsjigjsklgjkljklg
+                        kdjsgfghjklñdfahjk.dfashjkdfashjkadfhjkadfhjñklafdhjñadfhjñkadfhjkadfhjkadfhjlfadlñafhdjkahjkllñkfjadklad`,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Continuar',
+                })
+            }
+        </script>
+        <!--aca termina el boton de ayuda-->
+        
+        
     </body>
 </html>
