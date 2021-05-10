@@ -22,6 +22,8 @@ estado_producto = [
     (0,'No disponible')
 ]
 
+
+
 class CLIENTE(models.Model):
     run = models.CharField(max_length=10, default=None)
     nombre = models.CharField(max_length=100, default=None)
@@ -100,13 +102,16 @@ class PROVEEDOR(models.Model):
     categoria_proveedor = models.ForeignKey(CATEGORIA_PROVEEDOR, on_delete=models.CASCADE, default=None, blank=True)
     estado = models.IntegerField(default=None, choices=estado_proveedor)
 
+    def __str__(self):
+            return self.razon_social
+
 class ORDEN_PEDIDO(models.Model):
     estado_recepcion = models.IntegerField(default=None)
     proveedor = models.ForeignKey(PROVEEDOR, on_delete=models.CASCADE, default=None)
-    fecha_pedido = models.DateTimeField(auto_now_add=False, auto_now=True)
-    fecha_llegada = models.DateTimeField(blank=True)
-    fecha_recepcion = models.DateTimeField(blank=True)
-    hora_recepcion = models.DateTimeField(blank=True)
+    fecha_pedido = models.DateField(auto_now_add=False, auto_now=True)
+    fecha_llegada = models.DateField(blank=True)
+    fecha_recepcion = models.DateField(blank=True)
+    hora_recepcion = models.TimeField(blank=True)
     
 
 class DETALLE_ORDEN(models.Model):
