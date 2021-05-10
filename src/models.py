@@ -22,6 +22,8 @@ estado_producto = [
     (0,'No disponible')
 ]
 
+
+
 class CLIENTE(models.Model):
     run = models.CharField(max_length=10, default=None)
     nombre = models.CharField(max_length=100, default=None)

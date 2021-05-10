@@ -7,6 +7,7 @@ from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActua
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
+from src.views import RecepcionListado, RecepcionCrear, RecepcionDetalle, RecepcionActualizar
 from django.urls import path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
 from django.conf import settings
@@ -77,6 +78,16 @@ urlpatterns = [
     path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detalles'),
 
     path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
+    # # **************************************
+
+     # **************************************Recepcionar
+    path('recepcion de pedidos/', RecepcionListado.as_view(template_name = "recepcion de pedidos/listar.html"), name='listarRecepcion'),
+ 
+    path('recepcion de pedidos/crear/', RecepcionCrear.as_view(template_name = "recepcion de pedidos/crear.html"), name='crearRecepcion'),
+ 
+    path('recepcion de pedidos/detalle/<int:pk>', RecepcionDetalle.as_view(template_name = "recepcion de pedidos/detalles.html"), name='detalles'),
+
+    path('recepcion de pedidos/editar/<int:pk>', RecepcionActualizar.as_view(template_name = "recepcion de pedidos/actualizar.html"), name='actualizar'), 
     # # **************************************
 ]
 
