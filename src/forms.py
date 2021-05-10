@@ -20,6 +20,14 @@ class FormRegistro(UserCreationForm):
             )
         }
 
+class FormRegistroEdit(UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ("is_superuser", "is_staff", "is_active")
+        
+        
+
 class FormCliente(forms.ModelForm):
     
     class Meta:

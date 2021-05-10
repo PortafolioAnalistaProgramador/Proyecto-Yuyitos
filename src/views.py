@@ -3,10 +3,14 @@ from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
 from django.contrib import messages
 from django import forms
 <<<<<<< HEAD
+<<<<<<< HEAD
 from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormPedidos
 =======
 from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormRecepcion
 >>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
+=======
+from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormRegistroEdit
+>>>>>>> main
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -19,33 +23,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-# def Ingreso(request):
-#     usuario = request.POST.get('usuario')
-#     contrasena = request.POST.get('contrasena')
 
-#     if request.method == 'POST':
-
-#         if USUARIO.objects.filter(usuario=usuario) and USUARIO.objects.filter(contrasena=contrasena):
-#             return redirect('/index/')
-#         else:
-#             messages.warning(request, 'Usuario o contraseña incorrectos')    
-#     return render(request, 'usuarios/ingreso.html')
-
-# def Ingreso(request):
-    
-#     username = request.POST.get('username')
-#     password = request.POST.get('password')
-
-#     if request.method == 'POST':
-#         user = authenticate(request, username = username, password = password)
-
-#         if user is not None:
-#             login(request, user)
-#             return redirect('index/')
-#         else:
-#             messages.warning(request, 'Usuario o contraseña incorrectos')
-        
-#     return render(request, 'usuarios/ingreso.html')
 
 def Login(request):
     
@@ -57,39 +35,23 @@ def Login(request):
 
         if user is not None:
             login(request, user)
-            return redirect('index/')
+            return render(request, 'index.html')
         else:
             messages.warning(request, 'Usuario o contraseña incorrectos')
         
     return render(request, 'registration/login.html')
 
+
+def Calendar(request):
+    return render(request, 'calendario.html')
+
+
 @login_required(login_url="login")
 def Index(request):
     return render(request, 'index.html')
 
-# def RegistroUsuarios(request):
-#     form = FormRegistro()
-#     email = request.POST.get('email')
-#     validarEmail = User.objects.filter(email = email)
 
-    
-#     if request.method == 'POST':
-#         if validarEmail:
-#             messages.warning(request, 'el email ya existe')
-#         else:
-#             form = FormRegistro(request.POST)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('index/')
-    
-#     form.fields['username'].help_text = None
-#     form.fields['password1'].help_text = None
-#     form.fields['password2'].help_text = None
-#     return render(request, 'usuarios/registroUsuarios.html',{'form':form})
-
-
-##*****************************Usuarios**************************************
-
+##**************************Usuarios***************************************
 @method_decorator(login_required, name='dispatch')
 class UsuarioListado(ListView): 
     model = User 
@@ -123,8 +85,8 @@ def UsuarioCrear(request):
 def UsuarioActualizar(request, id):
 
     user = User.objects.get(id=id)
-    form = FormRegistro(request.POST, instance=user)
-    
+    form = FormRegistroEdit(request.POST, instance=user)
+
     if form.is_valid():
         
         form.save()
