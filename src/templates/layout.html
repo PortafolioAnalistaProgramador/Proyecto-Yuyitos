@@ -10,6 +10,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/11aea48714.js"></script>
         <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+        <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        
     </head>
     <body>
         <nav class="navbar contenedor-principal navbar-expand-lg">
@@ -32,61 +34,91 @@
                 </div>
             </div>
         </nav>
-    
-    <nav class="navbar navegador navbar-expand-lg">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown btn btn-outline-secondary m-1">
-                        
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Informes
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>  <img alt=""> <a class="dropdown-item" href="#">Action</a></li>
+    {% if user.is_authenticated %}
+        <nav class="navbar navegador navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Informes
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Gestion de modulos
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/usuarios">Modulo de Usuario</a></li>
+                                <li><a class="dropdown-item" href="/clientes">Modulo de Cliente</a></li>
+                                <li><a class="dropdown-item" href="/proveedores">Modulo de Proveedor</a></li>
+                                <li><a class="dropdown-item" href="/productos">Modulo de Productos</a></li>
+                            </ul>
+                        </li>
+                    
+                        <li class="nav-item dropdown btn btn-outline-secondary  m-1">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Recepcion
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown btn btn-outline-secondary m-1">
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Gestion de modulos
-                        </a> 
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/usuarios">Modulo de Usuario</a></li>
-                            <li><a class="dropdown-item" href="/clientes">Modulo de Cliente</a></li>
-                            <li><a class="dropdown-item" href="/proveedores">Modulo de Proveedor</a></li>
-                            <li><a class="dropdown-item" href="/productos">Modulo de Productos</a></li>
-                            <li><a class="dropdown-item" href="/pedidos">Modulo de Pedidos</a></li>
-                        </ul>
-                    </li>
-                
-                    <li class="nav-item dropdown btn btn-outline-secondary  m-1">
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Recepcion
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="/recepcion">Recepcion de Pedidos</a></li>
-                        <li><a class="dropdown-item" href="#">Registro de Ordenes de Pedidos</a></li>
-                        <li><a class="dropdown-item" href="#">Pedidos Rechazados</a></li>
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
                     
-                </ul>
+                </div>
                 
             </div>
-            
-        </div>
-    </nav>
+        </nav>
+    {% endif %}
 
-    <div id="content">
-        {% block content %}
-            <!--codigo que viene de templates-->
-        {% endblock %}
-    </div>
+        <div id="content">
+            {% block content %}
+                <!--codigo que viene de templates-->
+            {% endblock %}
+        </div>
+
+        <!--boton de ayuda-->
+        <button disabled type="button" class="btn-flotante-ayuda" data-bs-toggle="tooltip" data-bs-placement="top" title="holaaaa">
+            Te ayudo?
+        </button>
+
+        <div class="barra">
+            <span class="esquina-izquierda"></span>
+        </div>
+
+        <button type="button" class="btn-flotante" onclick="manual()">
+            <i class="fas fa-question fa-1x"></i>
+        </button>
+
+        <script>
+            function manual(){
+                Swal.fire({
+                    title: 'Manual',
+                    text: `ajkshwkludjgbslkjqdhbkl.qajhfkjlñhlñkhfwasñiklhjlkfvhlñhfjñdvhñjkdsfvhjkñ
+                        sdfvhjksdfvhjdhjñkdfhñjfhjñhjfhjlñsfdvhjlñsdfhjsdhjdfhjsdfvhjñkfdshjñkdfshjñsdfhjñsdfhjhjdfsjñk
+                        ñakjsl{ñkfhjnñlahfñlkhasñdlkfhlñekisrhdfgvklñhsñolrihfgdñlihs{lñiihjlkgsjigsjigjsklgjkljklg
+                        kdjsgfghjklñdfahjk.dfashjkdfashjkadfhjkadfhjñklafdhjñadfhjñkadfhjkadfhjkadfhjlfadlñafhdjkahjkllñkfjadklad`,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Continuar',
+                })
+            }
+        </script>
+        <!--aca termina el boton de ayuda-->
+        
+        
     </body>
 </html>
