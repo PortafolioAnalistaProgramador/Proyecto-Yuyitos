@@ -33,6 +33,11 @@ def Login(request):
         
     return render(request, 'registration/login.html')
 
+
+def Calendar(request):
+    return render(request, 'calendario.html')
+
+
 @login_required(login_url="login")
 def Index(request):
     return render(request, 'index.html')
