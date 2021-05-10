@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import CLIENTE, PROVEEDOR, PRODUCTO
+from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
 
 class FormRegistro(UserCreationForm):
     
@@ -45,6 +45,16 @@ class FormProveedor(forms.ModelForm):
     class Meta:
         model = PROVEEDOR
         fields = ("correo","telefono","razon_social","direccion","categoria_proveedor","estado")
+
+<<<<<<< HEAD
+class FormPedidos(forms.ModelForm):
+=======
+class FormRecepcion(forms.ModelForm):
+>>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
+    
+    class Meta:
+        model = ORDEN_PEDIDO
+        fields = ("id","estado_recepcion","proveedor","fecha_llegada","fecha_recepcion","hora_recepcion") 
 
 # class FormCliente(forms.Form):
 #     run = forms.CharField(

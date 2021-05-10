@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+     <div class="container p-5">
+    <h1 class="text-center" >Detalles del Pedido</h1>
+        <div class="row p-5">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
+                <p><span class="txt_negrita">Nro de Orden:</span> <br> {{object.id}}</p>
+                <p><span class="txt_negrita">Proveedor:</span> <br> {{object.proveedor}}</p>
+                <p><span class="txt_negrita">Fecha de Pedido:</span> <br> {{object.fecha_pedido}}</p>
+                <p><span class="txt_negrita">Fecha de Llegada:</span> <br> {{object.fecha_llegada}}</p>
+                <p><span class="txt_negrita">Fecha de Recepcion:</span> <br> {{object.fecha_recepcion}}</p>
+                <p><span class="txt_negrita">Hora de Recepcion:</span> <br> {{object.hora_recepcion}}</p>      
+                <p><span class="txt_negrita">Estado de Recepcion:</span> <br> {{object.estado_recepcion}}</p>            
+            </div>
+            <div class="col-md-3">
+                
+                <!-- Botón para volver a la vista principal (Home) -->
+                <a href="../" type="submit" class="btn btn-primary">Volver</a>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        
+    </div>
+    
+{% endblock %}

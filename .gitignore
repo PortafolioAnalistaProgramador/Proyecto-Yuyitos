@@ -1,6 +1,16 @@
+<<<<<<< HEAD
+_pycache_
+*_pycache_
+settings.py
+.env
+venv
+.venv
+db.sqlite3
+=======
 __pycache__
 *__pycache__
 settings.py
 .env
 venv
 .venv
+>>>>>>> main

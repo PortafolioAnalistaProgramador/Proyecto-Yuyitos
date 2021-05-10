@@ -81,7 +81,11 @@ WSGI_APPLICATION = 'almacen.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
+<<<<<<< HEAD
+        'NAME': '127.0.0.1:1521/xe',
+=======
         'NAME': '127.0.0.1:51521/xe',
+>>>>>>> main
         'USER': 'C##JUANITA ',
         'PASSWORD': '123456',
     },

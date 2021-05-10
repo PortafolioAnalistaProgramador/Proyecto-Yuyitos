@@ -1,8 +1,16 @@
 from django.shortcuts import render, redirect
-from .models import CLIENTE, PROVEEDOR, PRODUCTO
+from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
 from django.contrib import messages
 from django import forms
+<<<<<<< HEAD
+<<<<<<< HEAD
+from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormPedidos
+=======
+from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormRecepcion
+>>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
+=======
 from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormRegistroEdit
+>>>>>>> main
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -156,7 +164,7 @@ class ProveedorActualizar(SuccessMessageMixin, UpdateView):
 
 ##******************************************************************
 
-##**************************Proveedor***************************************
+##**************************Producto***************************************
 @method_decorator(login_required, name='dispatch')
 class ProductoListado(ListView):
     model = PRODUCTO
@@ -183,5 +191,101 @@ class ProductoActualizar(SuccessMessageMixin, UpdateView):
     success_message = 'Producto actualizado correctamente'
     def get_success_url(self):
         return reverse('listarProductos')
+
+##********************************************************************
+##********************************************************************
+##********************************************************************
+<<<<<<< HEAD
+##**************************Pedidos********************
+
+@method_decorator(login_required, name='dispatch')
+class PedidosListado(ListView):
+    model = ORDEN_PEDIDO
+
+@method_decorator(login_required, name='dispatch')
+class PedidosCrear(SuccessMessageMixin, CreateView, ListView):
+    model = ORDEN_PEDIDO
+    form = FormPedidos()
+=======
+##**************************Recepcion de Productos********************
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionListado(ListView):
+    model = ORDEN_PEDIDO
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionCrear(SuccessMessageMixin, CreateView, ListView):
+    model = ORDEN_PEDIDO
+    form = FormRecepcion()
+>>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
+    fields = "__all__"
+    success_message = 'Pedido creado correctamente'
+
+    def get_success_url(self):
+<<<<<<< HEAD
+        return reverse('listarPedido')
+
+@method_decorator(login_required, name='dispatch')
+class PedidosDetalle(DetailView):
+    model = ORDEN_PEDIDO
+
+@method_decorator(login_required, name='dispatch')
+class PedidosActualizar(SuccessMessageMixin, UpdateView):
+    model = ORDEN_PEDIDO
+    form = FormPedidos()
+    fields = "__all__"
+    success_message = 'Pedido actualizado correctamente'
+    def get_success_url(self):
+        return reverse('listarPedidos')
+
+##******************************************************************
+
+##******************************************************************
+##***************Pendiente el metodo actualizar  y crear************
+##**************************Recepcion de pedidos********************
+
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionListado(ListView):
+    model = ORDEN_PEDIDO
+
+# @method_decorator(login_required, name='dispatch')
+# class PedidosCrear(SuccessMessageMixin, CreateView, ListView):
+#     model = ORDEN_PEDIDO
+#     form = FormPedidos()
+#     fields = "__all__"
+#     success_message = 'Pedido creado correctamente'
+
+#     def get_success_url(self):
+#         return reverse('listarPedido')
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionDetalle(DetailView):
+    model = ORDEN_PEDIDO
+
+# @method_decorator(login_required, name='dispatch')
+# class PedidosActualizar(SuccessMessageMixin, UpdateView):
+#     model = ORDEN_PEDIDO
+#     form = FormPedidos()
+#     fields = "__all__"
+#     success_message = 'Pedido actualizado correctamente'
+#     def get_success_url(self):
+#         return reverse('listarPedidos')
+=======
+        return reverse('listarRecepcion')
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionDetalle(DetailView):
+    model = ORDEN_PEDIDO
+
+@method_decorator(login_required, name='dispatch')
+class RecepcionActualizar(SuccessMessageMixin, UpdateView):
+    model = ORDEN_PEDIDO
+    form = FormRecepcion()
+    fields = "__all__"
+    success_message = 'Pedido actualizado correctamente'
+    def get_success_url(self):
+        return reverse('listarRecepcion')
+>>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
 
 ##******************************************************************
