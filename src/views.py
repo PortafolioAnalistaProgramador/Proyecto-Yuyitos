@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import CLIENTE, PROVEEDOR, PRODUCTO
 from django.contrib import messages
 from django import forms
-from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto
+from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormRegistroEdit
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -43,6 +43,7 @@ def Index(request):
     return render(request, 'index.html')
 
 
+##**************************Usuarios***************************************
 @method_decorator(login_required, name='dispatch')
 class UsuarioListado(ListView): 
     model = User 
@@ -76,8 +77,8 @@ def UsuarioCrear(request):
 def UsuarioActualizar(request, id):
 
     user = User.objects.get(id=id)
-    form = FormRegistro(request.POST, instance=user)
-    
+    form = FormRegistroEdit(request.POST, instance=user)
+
     if form.is_valid():
         
         form.save()
