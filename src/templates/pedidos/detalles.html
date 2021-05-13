@@ -3,18 +3,22 @@
 {% load widget_tweaks %}
 {% block content %}
      <div class="container p-5">
-    <h1 class="text-center" >Detalles del Pedido</h1>
+    <h1 class="text-center" >Detalles del Proveedor</h1>
         <div class="row p-5">
             <div class="col-md-3">
             </div>
             <div class="col-md-3">
-                <p><span class="txt_negrita">Nro de Orden:</span> <br> {{object.id}}</p>
-                <p><span class="txt_negrita">Proveedor:</span> <br> {{object.proveedor}}</p>
-                <p><span class="txt_negrita">Fecha de Pedido:</span> <br> {{object.fecha_pedido}}</p>
-                <p><span class="txt_negrita">Fecha de Llegada:</span> <br> {{object.fecha_llegada}}</p>
-                <p><span class="txt_negrita">Fecha de Recepcion:</span> <br> {{object.fecha_recepcion}}</p>
-                <p><span class="txt_negrita">Hora de Recepcion:</span> <br> {{object.hora_recepcion}}</p>      
-                <p><span class="txt_negrita">Estado de Recepcion:</span> <br> {{object.estado_recepcion}}</p>            
+                <p><span class="txt_negrita">Nombre:</span> <br> {{object.nombre}}</p>
+                <p><span class="txt_negrita">Stock:</span> <br> {{object.stock}}</p>
+                <p><span class="txt_negrita">Precio:</span> <br> {{object.precio}}</p>
+                <p><span class="txt_negrita">Descripcion:</span> <br> {{object.descripcion}}</p>
+                <p><span class="txt_negrita">Precio compra:</span> <br> {{object.precio_compra}}</p>
+                <p><span class="txt_negrita">Stock:</span> <br> {{object.stock}}</p>
+                <p><span class="txt_negrita">stock critico:</span> <br> {{object.stock_critico}}</p>
+                <p><span class="txt_negrita">Estado:</span> <br> {{object.estado}}</p>
+                <p><span class="txt_negrita">fecha de vencimiento:</span> <br> {{object.fecha_vencimiento}}</p>
+                <p><span class="txt_negrita">Codigo de barra:</span> <br> {{object.codigo_barra}}</p>     
+                <p><span class="txt_negrita">familia de producto:</span> <br> {{object.familia_producto}}</p>
             </div>
             <div class="col-md-3">
                 
