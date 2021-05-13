@@ -7,10 +7,8 @@ from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActua
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
-
 from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
 
-from src.views import RecepcionListado,RecepcionDetalle
 
 from src.views import RecepcionListado, RecepcionCrear, RecepcionDetalle, RecepcionActualizar
 from django.urls import path, include
@@ -20,8 +18,8 @@ from django.conf import settings
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
-    # path('', views.Ingreso, name="ingreso"),
-    path('', views.Index, name="index"),
+    path('', views.Login, name="login"),
+    path('index/', views.Index, name="index"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
@@ -93,5 +91,4 @@ urlpatterns = [
     path('recepcion de pedidos/editar/<int:pk>', RecepcionActualizar.as_view(template_name = "recepcion de pedidos/actualizar.html"), name='actualizar'), 
     # # **************************************
 ]
-
 

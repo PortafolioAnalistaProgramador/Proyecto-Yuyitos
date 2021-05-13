@@ -20,6 +20,14 @@ class FormRegistro(UserCreationForm):
             )
         }
 
+class FormRegistroEdit(UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ("is_superuser", "is_staff", "is_active")
+        
+        
+
 class FormCliente(forms.ModelForm):
     
     class Meta:
@@ -44,6 +52,7 @@ class FormPedidos(forms.ModelForm):
     class Meta:
         model = ORDEN_PEDIDO
         fields = ("id","estado_recepcion","proveedor","fecha_llegada","fecha_recepcion","hora_recepcion") 
+
 
 # class FormCliente(forms.Form):
 #     run = forms.CharField(

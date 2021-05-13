@@ -14,38 +14,32 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                
-               
                 <div class="form-group">
-                    <label for="first_name" class="txt_negrita">Proveedor:</label>
+                    <label for="estado_recepcion" class="txt_negrita">Estado de Recepcion:</label>
+                    {{ form.estado_recepcion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                </div>
+                <div class="form-group">
+                    <label for="proveedor" class="txt_negrita">Proveedor:</label>
                     {{ form.proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                 </div>
-
                 <div class="form-group">
-                    <label for="email" class="txt_negrita">Fecha del Pedido:</label>
-                    {{ form.fecha_llegada|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    <label for="fecha_pedido" class="txt_negrita">Fecha del Pedido:</label>
                 </div>
-
                 <div class="form-group">
-                    <label for="password1" class="txt_negrita">Fecha de llegada:</label>
+                    <label for="fecha_llegada" class="txt_negrita">Fecha de llegada:</label>
                     {{ form.fecha_llegada|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                 </div>
                 <div class="form-group">
-                    <label for="password2" class="txt_negrita">fechade recepcion:</label>
+                    <label for="fecha_recepcion" class="txt_negrita">fecha de recepcion:</label>
                     {{ form.fecha_recepcion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                 </div>
                 <div class="form-group">
-                    <label for="password2" class="txt_negrita">hora de recepcion:</label>
+                    <label for="hora_recepcion" class="txt_negrita">hora de recepcion:</label>
                     {{ form.hora_recepcion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                 </div>
                 
-                <div class="form-group">
-                    <label for="last_name" class="txt_negrita">Estado de Recepcion:</label>
-                    {{ form.estado_recepcion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                
                 <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarPedidos' %}" type="submit" class="btn btn-primary">Cancelar</a> 
+                <a href="{% url 'listarProductos' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>

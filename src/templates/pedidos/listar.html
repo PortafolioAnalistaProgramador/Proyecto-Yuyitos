@@ -4,7 +4,7 @@
 {% block content %}
   <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
     <div class="container p-3">
-      <h1 class="text-center">Administracion de Pedidos</h1>
+      <h1 class="text-center">Recepcion de Pedidos</h1>
       <div class="container mb-4">
         {% if messages %}
           <ul class="messages list-group mb-3">
@@ -24,8 +24,6 @@
             <th>Fecha de llegada</th>
             <th>Fecha de Recepcion</th>
             <th>Hora de Recepcion</th>
-            <th>Estado de Recepcion</th>
-
            <th>Acciones</th>
           </tr>
         </thead>
@@ -36,11 +34,11 @@
           <tr>
             <TD>{{ORDEN_PEDIDO.id}}</TD>
             <td>{{ORDEN_PEDIDO.proveedor }}</td>
+            <td>{{ORDEN_PEDIDO.estado_recepcion }}</td>
             <td>{{ORDEN_PEDIDO.fecha_pedido }}</td>
             <td>{{ORDEN_PEDIDO.fecha_llegada }}</td>
             <td>{{ORDEN_PEDIDO.fecha_recepcion }}</td>
             <td>{{ORDEN_PEDIDO.hora_recepcion }}</td>
-            <td>{{ORDEN_PEDIDO.estado_recepcion}}</td>
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
@@ -62,7 +60,7 @@
       </table>
 
       <div align="left" class="btn_crear mb-3">
-        <a href="{% url 'crearPedidos' %}" type="button" class="btn btn-primary">Crear</a>
+        <a href="{% url 'crearPedido' %}" type="button" class="btn btn-primary">Crear</a>
       </div>
 
     </div>
