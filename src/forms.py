@@ -40,9 +40,6 @@ class FormProveedor(forms.ModelForm):
 
 <<<<<<< HEAD
 class FormPedidos(forms.ModelForm):
-=======
-class FormRecepcion(forms.ModelForm):
->>>>>>> 1057b246b1ed090bdddc4dc8b21c50ac18cd0fa1
     
     class Meta:
         model = ORDEN_PEDIDO
