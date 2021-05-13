@@ -38,7 +38,7 @@ class FormProveedor(forms.ModelForm):
         model = PROVEEDOR
         fields = ("correo","telefono","razon_social","direccion","categoria_proveedor","estado")
 
-<<<<<<< HEAD
+
 class FormPedidos(forms.ModelForm):
     
     class Meta:
@@ -50,7 +50,7 @@ class FormPedidos(forms.ModelForm):
 #         label = "Run"
 #     )
 
-#     Nombre = forms.CharField(
+#     Nombre = forms.CharFie    ld(
 #         label = "Nombre"
 #     )
 
