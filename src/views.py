@@ -5,8 +5,6 @@ from django import forms
 
 from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormPedidos
 
-from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto
-
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -83,7 +81,7 @@ def UsuarioActualizar(request, id):
     user = User.objects.get(id=id)
 
     if request.method == 'POST':
-        form = FormRegistroEdit(request.POST, instance=user)
+        form = FormRegistro(request.POST, instance=user)
 
         if form.is_valid():
             
@@ -209,7 +207,7 @@ class PedidosCrear(SuccessMessageMixin, CreateView, ListView):
     success_message = 'Pedido creado correctamente'
 
     def get_success_url(self):
-        return reverse('listarPedido')
+        return reverse('listarPedidos')
 
 @method_decorator(login_required, name='dispatch')
 class PedidosDetalle(DetailView):
@@ -218,7 +216,7 @@ class PedidosDetalle(DetailView):
 @method_decorator(login_required, name='dispatch')
 class PedidosActualizar(SuccessMessageMixin, UpdateView):
     model = ORDEN_PEDIDO
-    form = FormPedido()
+    form = FormPedidos()
     fields = "__all__"
     success_message = 'Pedido actualizado correctamente'
     def get_success_url(self):
