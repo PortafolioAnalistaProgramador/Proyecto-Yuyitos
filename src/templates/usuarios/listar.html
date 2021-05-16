@@ -22,6 +22,7 @@
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Es administrador?</th>
+            <th>Esta activo?</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -38,16 +39,29 @@
             {% else %}
               <td class="">No</td>
             {% endif %}
+            
+            {% if user.is_active %}
+              <td class="">Si</td>
+            {% else %}
+              <td class="">No</td>
+            {% endif %}
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
-              <form method="POST" action="eliminar/{{user.id}}">
+              <form method="POST" action="">
                 {% csrf_token %}
                 <div class="btn-group">
       
                   <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
                   <a href="detalle/{{user.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
                   <a href="editar/{{user.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                  
+                  {% if user.is_active %}
+                    <a href="desactivarUsuario/{{user.id}}" title="DesactivarUsuario" type="button" class="btn btn-danger">DesactivarUsuario </a>
+                  {% else %}
+                    <a href="activarUsuario/{{user.id}}" title="ActivarUsuario" type="button" class="btn btn-danger">ActivarUsuario </a>
+                  {% endif %}
+                
                 </div>
               </form>
       

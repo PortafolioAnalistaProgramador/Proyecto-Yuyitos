@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path
 from src import views, static
 from src.views import Index
-from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar
+from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
@@ -45,9 +45,11 @@ urlpatterns = [
     path('usuarios/crear/', views.UsuarioCrear, name="crearUsuario"),
     # # La ruta 'actualizar' en donde mostraremos un formulario para actualizar un postre o registro de la Base de Datos 
     path('usuarios/editar/<int:id>', views.UsuarioActualizar, name="actualizarUsuario"),
- 
+    
     # # La ruta 'eliminar' que usaremos para eliminar un postre o registro de la Base de Datos 
-    #  path('usuarioAdmin/eliminar/<int:pk>', UsuarioEliminar.as_view(), name='eliminar'),    
+    #  path('usuarioAdmin/eliminar/<int:pk>', UsuarioEliminar.as_view(), name='eliminar'), 
+    path('usuarios/desactivarUsuario/<int:id>', views.DesactivarUsuario, name="desactivarUsuario"),
+    path('usuarios/activarUsuario/<int:id>', views.ActivarUsuario, name="activarUsuario"), 
     # # **************************************
 
 

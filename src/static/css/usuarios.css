@@ -9,3 +9,25 @@ table thead {
 table tbody {
     background-color: #d4e7fc;
 }
+
+.checkboxCrear{
+    width: 20px;
+    height: 20px;
+}
+
+.contenedorCrearUsuario{
+    max-width: 800px;
+    background-color: #c0ddfb;
+    padding-left: 150px;
+    padding-right: 150px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.txt_negrita{
+    font-size: 25px;
+}
+
+.cajaDetalles{
+    flex: auto;
+}
