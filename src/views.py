@@ -73,6 +73,13 @@ def UsuarioCrear(request):
             if (ValidacionCamposUsuario(request,
                 username, first_name, last_name, email, password1, password2)
             ):
+                username.strip()
+                first_name.strip()
+                last_name.strip()
+                email.strip()
+                password1.strip()
+                password2.strip()
+
                 user = User.objects.create_user(
                     username = username, 
                     first_name = first_name, 
@@ -93,6 +100,53 @@ def UsuarioCrear(request):
         
     return render(request, 'usuarios/crear.html')
 
+@login_required(login_url="login")
+def UsuarioActualizar(request, id):
+
+    user = User.objects.get(id=id)
+    form = FormRegistroEdit(request.POST or None, instance=user)
+
+    username = request.POST.get('username')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    password1 = request.POST.get('password1')
+    password2 = request.POST.get('password2')
+    is_superuser = request.POST.get('is_superuser')
+
+    if is_superuser == 'on':
+        is_superuser = True
+    else:
+        is_superuser = False
+
+    if request.method == 'POST':
+        if (ValidacionCamposUsuario(request,
+            username, first_name, last_name, email, password1, password2)
+        ):
+            if user is not None:
+
+                user.username = username.strip()
+                user.save()
+                user.first_name = first_name.strip()
+                user.save()
+                user.last_name = last_name.strip()
+                user.save()
+                user.email = email.strip()
+                user.save()
+                user.password1 = password1.strip()
+                user.save()
+                user.password2 = password2.strip()
+                user.save()
+                user.is_superuser = is_superuser
+                user.save()
+                messages.warning(request, 'Usuario actualizado correctamente')
+                return redirect('listarUsuarios')
+            else:
+                messages.warning(request, 'No se pudo actualizar el usuario')
+        else:
+            messages.warning(request, 'No se pudo actualizar el usuario')
+    
+    return render(request, 'usuarios/actualizar.html', {'form':form})
 
 import re
 def ValidacionCamposUsuario(request, username, first_name, last_name, email, password1, password2):
@@ -134,26 +188,6 @@ def ValidacionCamposUsuario(request, username, first_name, last_name, email, pas
 
     return estado
 
-
-def UsuarioActualizar(request, id):
-
-    user = User.objects.get(id=id)
-    form = FormRegistroEdit(request.POST or None, instance=user)
-    # email = request.POST.get('email')
-    # validarEmail = User.objects.filter(email = email)
-    
-    if form.is_valid():
-        
-        form.save()
-        messages.warning(request, 'Usuario editado correctamente')
-        return redirect('listarUsuarios')
-    
-    form.fields['username'].help_text = None
-    form.fields['password1'].help_text = None
-    form.fields['password2'].help_text = None
-
-    return render(request, 'usuarios/actualizar.html',{'form':form})
-
 @method_decorator(login_required, name='dispatch')
 class UsuarioDetalle(DetailView): 
     model = User 
@@ -180,28 +214,135 @@ def ActivarUsuario(request, id):
 class ClienteListado(ListView):
     model = CLIENTE
 
-@method_decorator(login_required, name='dispatch')
-class ClienteCrear(SuccessMessageMixin, CreateView, ListView):
-    model = CLIENTE
-    form = FormCliente()
-    fields = "__all__"
-    success_message = 'Cliente creado correctamente'
+@login_required(login_url="login")
+def ClienteCrear(request):
 
-    def get_success_url(self):
-        return reverse('listarClientes')
+    run = request.POST.get('run')
+    nombre = request.POST.get('nombre')
+    telefono = request.POST.get('telefono')
+    correo = request.POST.get('correo')
+    direccion = request.POST.get('direccion')
+    validarRun = CLIENTE.objects.filter(run=run)
+
+    if request.method == 'POST':
+        if validarRun:
+            messages.warning(request, 'el run ya existe')
+        else:
+            if (ValidacionCamposCliente(request,
+                run, nombre, telefono, correo, direccion)
+            ):
+                cliente = CLIENTE.objects.create(
+                    run = run.strip(),
+                    nombre = nombre.strip(),
+                    telefono = telefono.strip(),
+                    correo = correo.strip(),
+                    direccion = direccion.strip(),
+                    estado = 1
+                )
+
+                if cliente is not None:
+                    cliente.save()
+                    messages.warning(request, 'Cliente creado correctamente')
+                    return redirect('listarClientes')
+                else:
+                    messages.warning(request, 'No se pudo crear el cliente')
+            else:
+                messages.warning(request, 'No se pudo crear el cliente')
+    
+    return render(request, 'clientes/crear.html')
+
+@login_required(login_url="login")
+def ClienteActualizar(request, id):
+
+    cliente = CLIENTE.objects.get(id=id)
+    form = FormCliente(request.POST or None, instance=cliente)
+
+    run = request.POST.get('run')
+    nombre = request.POST.get('nombre')
+    telefono = request.POST.get('telefono')
+    correo = request.POST.get('correo')
+    direccion = request.POST.get('direccion')
+    validarRun = CLIENTE.objects.filter(run=run)
+
+    if request.method == 'POST':
+        if (ValidacionCamposCliente(request,
+            run, nombre, telefono, correo, direccion)
+        ):
+            if cliente is not None:
+
+                cliente.run = run.strip()
+                cliente.save()
+                cliente.nombre = nombre.strip()
+                cliente.save()
+                cliente.telefono = telefono.strip()
+                cliente.save()
+                cliente.correo = correo.strip()
+                cliente.save()
+                cliente.direccion = direccion.strip()
+                cliente.save()
+                messages.warning(request, 'Cliente actualizado correctamente')
+                return redirect('listarClientes')
+            else:
+                messages.warning(request, 'No se pudo actualizar el cliente')
+        else:
+            messages.warning(request, 'No se pudo actualizar el cliente')
+    
+    return render(request, 'clientes/actualizar.html', {'form':form})
+
+def ValidacionCamposCliente(request, run, nombre, telefono, correo, direccion):
+
+    estado = False
+    run.strip()
+    nombre.strip()
+    telefono.strip()
+    correo.strip()
+    direccion.strip()
+
+    if len(run) < 7:
+        messages.warning(request, 'La cantidad de caracteres del run debe ser mayor a 6')
+    elif len(run) > 10:
+        messages.warning(request, 'La cantidad de caracteres del run debe ser menor a 11')
+    elif len(nombre) < 3:
+        messages.warning(request, 'La cantidad de caracteres del nombre debe ser mayor a 2')
+    elif len(nombre) > 100:
+        messages.warning(request, 'La cantidad de caracteres del nombre debe ser menor a 101')
+    elif len(telefono) < 5:
+        messages.warning(request, 'La cantidad de caracteres del telefono debe ser mayor a 4')
+    elif len(telefono) > 12:
+        messages.warning(request, 'La cantidad de caracteres del telefono debe ser menor a 13')
+    elif len(correo) < 5:
+        messages.warning(request, 'La cantidad de caracteres del correo debe ser mayor a 4')
+    elif len(correo) > 128:
+        messages.warning(request, 'La cantidad de caracteres del correo debe ser menor a 129')
+    elif len(direccion) < 3:
+        messages.warning(request, 'La cantidad de caracteres de la direccion debe ser mayor a 2')
+    elif len(direccion) > 150:
+        messages.warning(request, 'La cantidad de caracteres de la direccion debe ser menor a 151')
+    else:
+        if re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',correo.lower()):
+            estado = True
+        else:
+            messages.warning(request, 'El correo no cumple con la estructura basica')
+
+    return estado
 
 @method_decorator(login_required, name='dispatch')
 class ClienteDetalle(DetailView):
     model = CLIENTE
 
-@method_decorator(login_required, name='dispatch')
-class ClienteActualizar(SuccessMessageMixin, UpdateView):
-    model = CLIENTE
-    form = FormCliente()
-    fields = "__all__"
-    success_message = 'Cliente actualizado correctamente'
-    def get_success_url(self):
-        return reverse('listarClientes')
+def DesactivarCliente(request, id):
+    cliente = CLIENTE.objects.get(id = id)
+    cliente.estado = 0
+    cliente.save()
+    messages.warning(request, f'Cliente {cliente.nombre} desactivado')
+    return redirect('listarClientes')
+
+def ActivarCliente(request, id):
+    cliente = CLIENTE.objects.get(id = id)
+    cliente.estado = 1
+    cliente.save()
+    messages.warning(request, f'Cliente {cliente.nombre} activado')
+    return redirect('listarClientes')
 
 ##******************************************************************
 

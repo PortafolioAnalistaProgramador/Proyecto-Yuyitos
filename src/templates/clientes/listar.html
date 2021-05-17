@@ -21,8 +21,6 @@
             <th>Run</th>
             <th>Nombre</th>
             <th>Telefono</th>
-            <th>Correo</th>
-            <th>Direccion</th>
             <th>Se le puede fiar?</th>
             <th>Acciones</th>
           </tr>
@@ -35,8 +33,6 @@
             <td>{{ cliente.run }}</td>
             <td>{{ cliente.nombre }}</td>
             <td>{{ cliente.telefono }}</td>
-            <td>{{ cliente.correo }}</td>
-            <td>{{ cliente.direccion }}</td>
             {% if cliente.estado == 1 %}
               <td class="text-center">Si</td>
             {% else %}
@@ -46,13 +42,19 @@
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
-              <form method="POST" action="eliminar/{{user.id}}">
+              <form method="POST" action="">
                 {% csrf_token %}
                 <div class="btn-group">
       
                   <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
                   <a href="detalle/{{cliente.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
                   <a href="editar/{{cliente.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                  {% if cliente.estado == 1 %}
+                    <a href="desactivarCliente/{{cliente.id}}" title="DesactivarCliente" type="button" class="btn btn-danger">Desactivar Cliente</a>
+                  {% else %}
+                    <a href="activarCliente/{{cliente.id}}" title="ActivarCliente" type="button" class="btn btn-danger">Activar Cliente </a>
+                  {% endif %}
+                
                 </div>
               </form>
       

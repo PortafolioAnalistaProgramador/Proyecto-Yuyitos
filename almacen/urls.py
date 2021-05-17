@@ -4,7 +4,7 @@ from django.urls import path
 from src import views, static
 from src.views import Index
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario
-from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
+from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar,DesactivarCliente, ActivarCliente
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
@@ -56,11 +56,15 @@ urlpatterns = [
     # **************************************Cliente
     path('clientes/', ClienteListado.as_view(template_name = "clientes/listar.html"), name='listarClientes'),
  
-    path('clientes/crear/', ClienteCrear.as_view(template_name = "clientes/crear.html"), name='crearCliente'),
+    path('clientes/crear/', views.ClienteCrear, name="crearCliente"),
  
     path('clientes/detalle/<int:pk>', ClienteDetalle.as_view(template_name = "clientes/detalles.html"), name='detalles'),
 
-    path('clientes/editar/<int:pk>', ClienteActualizar.as_view(template_name = "clientes/actualizar.html"), name='actualizar'), 
+    path('clientes/editar/<int:id>', views.ClienteActualizar, name="editarCliente"),
+    
+    path('clientes/desactivarCliente/<int:id>', views.DesactivarCliente, name="desactivarCliente"),
+    path('clientes/activarCliente/<int:id>', views.ActivarCliente, name="activarCliente"), 
+    
     # # **************************************
 
 

@@ -23,7 +23,7 @@ class FormCliente(forms.ModelForm):
     
     class Meta:
         model = CLIENTE
-        fields = ("run","nombre","telefono","correo","direccion","estado")
+        fields = ("run","nombre","telefono","correo","direccion")
 
 class FormProducto(forms.ModelForm):
     
