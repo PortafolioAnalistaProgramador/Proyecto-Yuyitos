@@ -24,6 +24,7 @@
             <th>Fecha de llegada</th>
             <th>Fecha de Recepcion</th>
             <th>Hora de Recepcion</th>
+            <th>Estado de Pedido</th>
            <th>Acciones</th>
           </tr>
         </thead>
@@ -34,11 +35,11 @@
           <tr>
             <TD>{{ORDEN_PEDIDO.id}}</TD>
             <td>{{ORDEN_PEDIDO.proveedor }}</td>
-            <td>{{ORDEN_PEDIDO.estado_recepcion }}</td>
             <td>{{ORDEN_PEDIDO.fecha_pedido }}</td>
             <td>{{ORDEN_PEDIDO.fecha_llegada }}</td>
             <td>{{ORDEN_PEDIDO.fecha_recepcion }}</td>
             <td>{{ORDEN_PEDIDO.hora_recepcion }}</td>
+            <td>{{ORDEN_PEDIDO.estado_recepcion }}</td>
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        

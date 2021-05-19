@@ -1,10 +1,21 @@
+from django.forms.widgets import DateInput
+from django.http.response import ResponseHeaders
 from django.shortcuts import render, redirect
 from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
 from django.contrib import messages
 from django import forms
+import csv
+import datetime
+import xlwt
+
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
 
 from src.forms import FormRegistro, FormCliente, FormProveedor, FormProducto, FormPedidos
 
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -227,33 +238,91 @@ class PedidosActualizar(SuccessMessageMixin, UpdateView):
 ##******************************************************************
 ##***************Pendiente el metodo actualizar  y crear************
 ##**************************Recepcion de pedidos********************
-
-
 @method_decorator(login_required, name='dispatch')
-class RecepcionListado(ListView):
+class RegistroPedidosListado(ListView):
     model = ORDEN_PEDIDO
 
-# @method_decorator(login_required, name='dispatch')
-# class PedidosCrear(SuccessMessageMixin, CreateView, ListView):
-#     model = ORDEN_PEDIDO
-#     form = FormPedidos()
-#     fields = "__all__"
-#     success_message = 'Pedido creado correctamente'
-
-#     def get_success_url(self):
-#         return reverse('listarPedido')
-
 @method_decorator(login_required, name='dispatch')
-class RecepcionDetalle(DetailView):
+class RegistroPedidosDetalle(DetailView):
     model = ORDEN_PEDIDO
 
-# @method_decorator(login_required, name='dispatch')
-# class PedidosActualizar(SuccessMessageMixin, UpdateView):
-#     model = ORDEN_PEDIDO
-#     form = FormPedidos()
-#     fields = "__all__"
-#     success_message = 'Pedido actualizado correctamente'
-#     def get_success_url(self):
-#         return reverse('listarPedidos')
+def export_csv(request):
 
-##******************************************************************
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; filename=registro pedidos'+ \
+        str(datetime.datetime.now())+'.csv'
+
+    writer=csv.writer(response)
+    writer.writerow(['estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion'])
+
+    PEDIDOS = ORDEN_PEDIDO.objects.filter()
+
+    for PEDIDOS in ORDEN_PEDIDO:
+        writer.writerow([ORDEN_PEDIDO.estado_recepcion,ORDEN_PEDIDO.proveedor,
+                        ORDEN_PEDIDO.fecha_pedido,ORDEN_PEDIDO.fecha_llegada, 
+                        ORDEN_PEDIDO.fecha_recepcion, ORDEN_PEDIDO.hora_recepcion])
+
+    return response
+    
+##******************************************************************************************
+def export_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] ='attachment; filename=registro pedidos' + \
+        str(datetime.datetime.now())+'.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('templates')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style  = xlwt.XFStyle()
+
+    rows = ORDEN_PEDIDO.objects.filter().values_list('estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion')
+
+    for row in rows:
+        row_num +=1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]),font_style)
+    wb.save(response)
+
+    return response
+
+
+##******************************************************************************************
+def export_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] ='inline; attachment; filename=registro pedidos' + \
+        str(datetime.datetime.now())+'.pdf'
+
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    html_string=render_to_string(
+        'registro pedidos/pdf_output.html',{'registro pedidos':[] ,'total':0})
+    html=HTML(string=html_string)
+
+    result=html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output=open(output.name, 'rb')
+        response.write(output.read())
+
+    return response
+
+
+
+
+    # ucci sector 2 31
+    # estable lo dieron vuelta, sentado
+    # esta estable
+    # 
+
+
+

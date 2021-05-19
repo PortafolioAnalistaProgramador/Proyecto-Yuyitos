@@ -2,14 +2,17 @@
 from django.contrib import admin
 from django.urls import path
 from src import views, static
-from src.views import Index
+from src.views import Index, export_csv
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
+from src.views import RegistroPedidosDetalle, RegistroPedidosListado
 
-from src.views import RecepcionListado, RecepcionDetalle
+import csv
+
+
 from django.urls import path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
 from django.conf import settings
@@ -91,10 +94,22 @@ urlpatterns = [
 
     path('pedidos/editar/<int:pk>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
     
-     # **************************************Recepcionar
-    path('recepcion de pedidos/', RecepcionListado.as_view(template_name = "recepcion de pedidos/listar.html"), name='listarRecepcion'),
- 
-    path('recepcion de pedidos/detalle/<int:pk>', RecepcionDetalle.as_view(template_name = "recepcion de pedidos/detalles.html"), name='detalles'),
+     # **************************************Registro de pedidos
+
+    path('registro pedidos/', RegistroPedidosListado.as_view(template_name = "registro pedidos/listar.html"), name='listarRegistroPedidos'),
+    
+    path('registro pedidos/detalle/<int:pk>', RegistroPedidosDetalle.as_view(template_name = "registro pedidos/detalles.html"), name='detalles'),
+
+
+    path('export_csv', views.export_csv,
+        name="export-csv"),
+
+    path('export_excel', views.export_excel,
+        name="export-excel"),
+
+    path('export_pdf', views.export_pdf,
+        name="export-pdf"),
+
 
     # # **************************************
 ]
