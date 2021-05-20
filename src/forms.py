@@ -14,7 +14,6 @@ from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
         
 class FormRegistroEdit(UserCreationForm):
     
-    
     class Meta:
         model = User
         fields = ("username","first_name","last_name","email","password1","password2","is_superuser")
@@ -32,11 +31,16 @@ class FormProducto(forms.ModelForm):
         fields = ("nombre","precio","descripcion","precio_compra","stock","stock_critico","estado","fecha_vencimiento","codigo_barra","familia_producto")
 
 class FormProveedor(forms.ModelForm):
+
+    class Meta:
+        model = PROVEEDOR
+        fields = ("categoria_proveedor",)
+
+class FormProveedorAct(forms.ModelForm):
     
     class Meta:
         model = PROVEEDOR
-        fields = ("correo","telefono","razon_social","direccion","categoria_proveedor","estado")
-
+        fields = ("razon_social","correo","telefono","direccion","categoria_proveedor")
 
 class FormPedido(forms.ModelForm):
 

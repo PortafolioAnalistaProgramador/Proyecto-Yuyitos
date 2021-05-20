@@ -3,9 +3,9 @@ from django.contrib import admin
 from django.urls import path
 from src import views, static
 from src.views import Index
-from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario
-from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar,DesactivarCliente, ActivarCliente
-from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar
+from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario, ActivarUsuario
+from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar, DesactivarCliente, ActivarCliente
+from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
 
@@ -70,12 +70,15 @@ urlpatterns = [
 
     # **************************************Proveedor
     path('proveedores/', ProveedorListado.as_view(template_name = "proveedores/listar.html"), name='listarProveedores'),
- 
-    path('proveedores/crear/', ProveedorCrear.as_view(template_name = "proveedores/crear.html"), name='crearProveedor'),
+    
+    path('proveedores/crear/', views.ProveedorCrear, name="crearProveedor"),
  
     path('proveedores/detalle/<int:pk>', ProveedorDetalle.as_view(template_name = "proveedores/detalles.html"), name='detalles'),
-
-    path('proveedores/editar/<int:pk>', ProveedorActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizar'), 
+    path('proveedores/editar/<int:id>', views.ProveedorActualizar, name="actualizarProveedor"),
+    # path('proveedores/editar/<int:pk>', ProveedorActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizar'), 
+    
+    path('proveedores/desactivarProveedor/<int:id>', views.DesactivarProveedor, name="desactivarProveedor"),
+    path('proveedores/activarProveedor/<int:id>', views.ActivarProveedor, name="activarProveedor"),
     # # **************************************
 
     # **************************************Proveedor

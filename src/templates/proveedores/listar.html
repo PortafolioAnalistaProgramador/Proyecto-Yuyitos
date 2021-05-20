@@ -19,9 +19,6 @@
         <thead>
           <tr>
             <th>Razon social</th>
-            <th>Correo</th>
-            <th>Telefono</th>
-            <th>Direccion</th>
             <th>Categoria</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -33,29 +30,33 @@
         {% for proveedor in object_list %}
           <tr>
             <td>{{ proveedor.razon_social }}</td>
-            <td>{{ proveedor.correo }}</td>
-            <td>{{ proveedor.telefono }}</td>
-            <td>{{ proveedor.direccion }}</td>
             <td>{{ proveedor.categoria_proveedor }}</td>
             {% if proveedor.estado == 1 %}
               <td class="">Activo</td>
             {% else %}
               <td class="">No Activo</td>
             {% endif %}
+
             <td>
-      
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
-              <form method="POST" action="eliminar/{{user.id}}">
+              <form method="POST" action="">
                 {% csrf_token %}
                 <div class="btn-group">
       
                   <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
                   <a href="detalle/{{proveedor.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
                   <a href="editar/{{proveedor.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                  
+                  {% if proveedor.estado %}
+                    <a href="desactivarProveedor/{{proveedor.id}}" title="DesactivarProveedor" type="button" class="btn btn-danger">Desactivar Proveedor</a>
+                  {% else %}
+                    <a href="activarProveedor/{{proveedor.id}}" title="ActivarProveedor" type="button" class="btn btn-danger">Activar Proveedor</a>
+                  {% endif %}
+                
                 </div>
               </form>
-      
             </td>
+
           </tr>
         {% endfor %}
       

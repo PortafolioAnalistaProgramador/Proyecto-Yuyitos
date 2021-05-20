@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
+from .models import CATEGORIA_PROVEEDOR, CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -351,29 +351,133 @@ def ActivarCliente(request, id):
 class ProveedorListado(ListView):
     model = PROVEEDOR
 
-@method_decorator(login_required, name='dispatch')
-class ProveedorCrear(SuccessMessageMixin, CreateView, ListView):
-    model = PROVEEDOR
-    form = FormProveedor()
-    fields = "__all__"
-    success_message = 'Proveedor creado correctamente'
 
-    def get_success_url(self):
-        return reverse('listarProveedores')
+@login_required(login_url="login")
+def ProveedorCrear(request):
+
+    form = FormProveedor(request.POST)
+    razon_social = request.POST.get('razon_social')
+    correo = request.POST.get('correo')
+    telefono = request.POST.get('telefono')
+    direccion = request.POST.get('direccion')
+    categoria = request.POST.get('categoria_proveedor')
+    categoria = CATEGORIA_PROVEEDOR.objects.filter(id = categoria)
+    for cat in categoria:
+        categoria = cat
+    
+    if request.method == 'POST':
+        
+        if (ValidacionCamposProveedor(request,
+            razon_social, correo, telefono, direccion)
+        ):
+            proveedor = PROVEEDOR.objects.create(
+                razon_social = razon_social.strip(),
+                correo = correo.strip(),
+                telefono = telefono.strip(),
+                direccion = direccion.strip(),
+                categoria_proveedor = categoria,
+                estado = 1
+            )
+
+            if proveedor is not None:
+                proveedor.save()
+                messages.warning(request, 'Proveedor creado correctamente')
+                return redirect('listarProveedores')
+            else:
+                messages.warning(request, 'No se pudo crear el Proveedor')
+
+    return render(request, 'proveedores/crear.html',{'form':form})
+
+@login_required(login_url="login")
+def ProveedorActualizar(request, id):
+
+    proveedor = PROVEEDOR.objects.get(id=id)
+    form = FormProveedorAct(request.POST or None, instance=proveedor)
+    razon_social = request.POST.get('razon_social')
+    correo = request.POST.get('correo')
+    telefono = request.POST.get('telefono')
+    direccion = request.POST.get('direccion')
+
+    categoria = request.POST.get('categoria_proveedor')
+    categoria = CATEGORIA_PROVEEDOR.objects.filter(id = categoria)
+    for cat in categoria:
+        categoria = cat
+
+    if request.method == 'POST':
+        if (ValidacionCamposProveedor(request,
+            razon_social, correo, telefono, direccion)
+        ):
+            if proveedor is not None:
+
+                proveedor.razon_social = razon_social.strip()
+                proveedor.save()
+                proveedor.correo = correo.strip()
+                proveedor.save()
+                proveedor.telefono = telefono.strip()
+                proveedor.save()
+                proveedor.direccion = direccion.strip()
+                proveedor.save()
+                proveedor.categoria_proveedor = categoria
+                proveedor.save()
+
+                messages.warning(request, 'Proveedor actualizado correctamente')
+                return redirect('listarProveedores')
+            else:
+                messages.warning(request, 'No se pudo actualizar el proveedor')
+        else:
+            messages.warning(request, 'No se pudo actualizar el proveedor')
+    
+    return render(request, 'proveedores/actualizar.html', {'form':form})
+
+def ValidacionCamposProveedor(request, razon_social, correo, telefono, direccion):
+    estado = False
+    razon_social.strip()
+    correo.strip()
+    telefono.strip()
+    direccion.strip()
+
+    if len(razon_social) < 3:
+        messages.warning(request, 'La cantidad de caracteres de la razon social debe ser mayor a 2')
+    elif len(razon_social) > 100:
+        messages.warning(request, 'La cantidad de caracteres de la razon social debe ser menor a 11')
+    elif len(correo) < 3:
+        messages.warning(request, 'La cantidad de caracteres del correo debe ser mayor a 2')
+    elif len(correo) > 100:
+        messages.warning(request, 'La cantidad de caracteres del correo debe ser menor a 101')
+    elif len(telefono) < 5:
+        messages.warning(request, 'La cantidad de caracteres del telefono debe ser mayor a 4')
+    elif len(telefono) > 12:
+        messages.warning(request, 'La cantidad de caracteres del telefono debe ser menor a 13')
+    elif len(direccion) < 3:
+        messages.warning(request, 'La cantidad de caracteres de la direccion debe ser mayor a 2')
+    elif len(direccion) > 150:
+        messages.warning(request, 'La cantidad de caracteres de la direccion debe ser menor a 151')
+    else:
+        if re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,15}$',correo.lower()):
+            estado = True
+        else:
+            messages.warning(request, 'El correo no cumple con la estructura basica')
+
+    return estado
 
 @method_decorator(login_required, name='dispatch')
 class ProveedorDetalle(DetailView):
     model = PROVEEDOR
 
-@method_decorator(login_required, name='dispatch')
-class ProveedorActualizar(SuccessMessageMixin, UpdateView):
-    model = PROVEEDOR
-    form = FormProveedor()
-    fields = "__all__"
-    success_message = 'Proveedor actualizado correctamente'
-    def get_success_url(self):
-        return reverse('listarProveedores')
+def DesactivarProveedor(request, id):
+    proveedor = PROVEEDOR.objects.get(id = id)
+    proveedor.estado = 0
+    proveedor.save()
+    messages.warning(request, f'Proveedor {proveedor.razon_social} desactivado')
+    return redirect('listarProveedores')
 
+def ActivarProveedor(request, id):
+    proveedor = PROVEEDOR.objects.get(id = id)
+    proveedor.estado = 1
+    proveedor.save()
+    messages.warning(request, f'Cliente {proveedor.razon_social} activado')
+    return redirect('listarProveedores')
+    
 ##******************************************************************
 
 ##**************************Producto***************************************
@@ -382,7 +486,7 @@ class ProductoListado(ListView):
     model = PRODUCTO
 
 @method_decorator(login_required, name='dispatch')
-class ProductoCrear(SuccessMessageMixin, CreateView, ListView):
+class ProductoCrear(SuccessMessageMixin, CreateView):
     model = PRODUCTO
     form = FormProducto()
     fields = "__all__"
@@ -413,7 +517,7 @@ class PedidosListado(ListView):
     model = ORDEN_PEDIDO
 
 @method_decorator(login_required, name='dispatch')
-class PedidosCrear(SuccessMessageMixin, CreateView, ListView):
+class PedidosCrear(SuccessMessageMixin, CreateView):
     model = ORDEN_PEDIDO
     form = FormPedido()
     fields = "__all__"
