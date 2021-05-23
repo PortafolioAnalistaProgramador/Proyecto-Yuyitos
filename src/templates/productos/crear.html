@@ -3,8 +3,9 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <div class="container p-3">
-        <div class="container registro pt-3" style="width:60%">
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
+    <div class="p-3">
+        <div class="pt-3">
             
             {% if messages %}
                 <ul class="messages list-group mb-3">
@@ -16,51 +17,60 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="last_name" class="txt_negrita">Nombre:</label>
-                    {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                <div class="container contenedorCrearProducto">
+                    <h1 class="text-center p-3">Crear Producto</h1>
+                    <div class="form-group pb-3">
+                        <label for="nombre" class="txt_negrita">Nombre:</label>
+                        <input class="form-control" type="text" name="nombre"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="precio" class="txt_negrita">Precio:</label>
+                        <input class="form-control" type="text" name="precio"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="precio_compra" class="txt_negrita">Precio compra:</label>
+                        <input class="form-control" type="text" name="precio_compra"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="descripcion" class="txt_negrita">Descripcion:</label>
+                        <input class="form-control" type="text" name="descripcion"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="stock" class="txt_negrita">Stock:</label>
+                        <input class="form-control" type="text" name="stock"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="stock_critico" class="txt_negrita">Stock critico:</label>
+                        <input class="form-control" type="text" name="stock_critico"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="fecha_vencimiento" class="txt_negrita">Seleccione Fecha de vencimiento:(opcional)</label>
+                        <input class="form-control dateinput" type="text" name="fecha_vencimiento" readonly placeholder="Click aqui" style="width:110px"/>
+                    </div>
+
+                    <div class="form-group pb-3">
+                        <label for="hora_vencimiento" class="txt_negrita">Seleccione Hora de vencimiento:(opcional)</label>
+                        <input class="form-control timepicker" type="text" name="hora_vencimiento" readonly placeholder="Click aqui" style="width:110px"/>
+                    </div>
+                    
+                    <div class="form-group pb-3">
+                        <label for="familia_producto" class="txt_negrita">Familia producto:</label>
+                        {{ formProd.familia_producto|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="tipo_producto" class="txt_negrita">Tipo producto:</label>
+                        {{ formFam.tipo_producto|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="proveedor" class="txt_negrita">Proveedor:</label>
+                        {{ formProv.proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    
+                    <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
+                    <a href="{% url 'listarProductos' %}" type="submit" class="btn btn-primary">Cancelar</a> 
                 </div>
-                <div class="form-group">
-                    <label for="first_name" class="txt_negrita">Precio:</label>
-                    {{ form.precio|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                <div class="form-group">
-                    <label for="email" class="txt_negrita">Descripcion:</label>
-                    {{ form.descripcion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password1" class="txt_negrita">Precio de compra:</label>
-                    {{ form.precio_compra|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Stock:</label>
-                    {{ form.stock|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Stock critico:</label>
-                    {{ form.stock_critico|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Estado:</label>
-                    {{ form.estado|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Fecha de vencimiento:</label>
-                    {{ form.fecha_vencimiento|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Codigo de barra:</label>
-                    {{ form.codigo_barra|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group">
-                    <label for="password2" class="txt_negrita">Familia de producto:</label>
-                    {{ form.familia_producto|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                
-                <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarProductos' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>
-  
+    
 {% endblock %}

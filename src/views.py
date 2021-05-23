@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import CATEGORIA_PROVEEDOR, CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
+from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -485,28 +485,251 @@ def ActivarProveedor(request, id):
 class ProductoListado(ListView):
     model = PRODUCTO
 
-@method_decorator(login_required, name='dispatch')
-class ProductoCrear(SuccessMessageMixin, CreateView):
-    model = PRODUCTO
-    form = FormProducto()
-    fields = "__all__"
-    success_message = 'Producto creado correctamente'
+# @method_decorator(login_required, name='dispatch')
+# class ProductoCrear(SuccessMessageMixin, CreateView):
+#     model = PRODUCTO
+#     form = FormProducto()
+#     fields = "__all__"
+#     success_message = 'Producto creado correctamente'
 
-    def get_success_url(self):
-        return reverse('listarProductos')
+#     def get_success_url(self):
+#         return reverse('listarProductos')
+
+@login_required(login_url="login")
+def ProductoCrear(request):
+
+    formProd = FormProducto(request.POST)
+    formFam = FormFamiliaProd(request.POST)
+    formProv = FormProductoProv(request.POST)
+    nombre = request.POST.get('nombre')
+    precio = request.POST.get('precio')
+    precio_compra = request.POST.get('precio_compra')
+    descripcion = request.POST.get('descripcion')
+    stock = request.POST.get('stock')
+    stock_critico = request.POST.get('stock_critico')
+    proveedor = request.POST.get('proveedor')
+    familia_producto = request.POST.get('familia_producto')
+    fecha_vencimiento = request.POST.get('fecha_vencimiento')
+    hora_vencimiento = request.POST.get('hora_vencimiento')
+    tipo_producto = request.POST.get('tipo_producto')
+    
+    if request.method == 'POST':
+
+        if (ValidacionCamposProducto(request,
+            nombre, precio, descripcion, precio_compra, stock, stock_critico, proveedor, familia_producto, tipo_producto)
+        ):
+            if fecha_vencimiento:
+                fecha_v = fecha_vencimiento[6:10] + '-' + fecha_vencimiento[3:5] + '-' + fecha_vencimiento[0:2] + ' ' + hora_vencimiento + ':00'
+                fecha_vencimiento = fecha_vencimiento[0:2]+fecha_vencimiento[3:5]+fecha_vencimiento[6:10]
+            else:
+                fecha_v = "1000-10-10 00:00:00"
+                fecha_vencimiento = "00000000"
+                
+            familia_producto = str(familia_producto).zfill(3)
+            tipo_producto = str(tipo_producto).zfill(3)
+            proveedor = str(proveedor).zfill(3)
+            
+            codigo_barra = proveedor + familia_producto + fecha_vencimiento + tipo_producto
+            
+            if familia_producto:
+                familia_producto = FAMILIA_PRODUCTO.objects.filter(id = familia_producto)
+            for famP in familia_producto:
+                familia_producto = famP
+
+            producto = PRODUCTO.objects.create(
+                nombre = nombre.strip(),
+                precio = precio.strip(),
+                descripcion = descripcion.strip(),
+                precio_compra = precio_compra.strip(),
+                stock = stock.strip(),
+                stock_critico = stock_critico.strip(),
+                estado = 1,
+                fecha_vencimiento = fecha_v,
+                codigo_barra = codigo_barra,
+                familia_producto = familia_producto
+            )
+
+            if producto is not None:
+                producto.save()
+                messages.warning(request, 'Producto creado correctamente')
+                return redirect('listarProductos')
+            else:
+                messages.warning(request, 'No se pudo crear el Producto')
+
+    return render(request, 'productos/crear.html',{'formProd':formProd, 'formFam':formFam, 'formProv':formProv})
+
+@login_required(login_url="login")
+def ProductoActualizar(request, id):
+
+    producto = PRODUCTO.objects.get(id=id)
+   
+    form = FormProductoEdit(request.POST or None, instance=producto)
+    formProd = FormProducto(request.POST or None, instance=producto)
+
+    tipo_producto = len(producto.codigo_barra)
+    tipo_producto = int(producto.codigo_barra[-3:tipo_producto])
+    tipo_producto = TIPO_PRODUCTO.objects.get(id=tipo_producto)
+    
+    proveedor = int(producto.codigo_barra[0:3])
+    proveedor = PROVEEDOR.objects.get(id=proveedor)
+    
+    fecha = str(producto.fecha_vencimiento)
+    hora = str(producto.fecha_vencimiento)
+    fecha = fecha[0:10]
+    hora = hora[11:16]
+
+    formFam = FormFamiliaProd(request.POST or None)
+    formProv = FormProductoProv(request.POST or None)
+
+    context = {
+        'formProd':formProd, 
+        'formFam':formFam, 
+        'formProv':formProv, 
+        'form':form,
+        'tipo_producto':tipo_producto,
+        'proveedor':proveedor,
+        'fecha':fecha,
+        'hora':hora
+    }
+
+    nombre = request.POST.get('nombre')
+    precio = request.POST.get('precio')
+    precio_compra = request.POST.get('precio_compra')
+    descripcion = request.POST.get('descripcion')
+    stock = request.POST.get('stock')
+    stock_critico = request.POST.get('stock_critico')
+    proveedor = request.POST.get('proveedor')
+    familia_producto = request.POST.get('familia_producto')
+    fecha_vencimiento = request.POST.get('fecha_vencimiento')
+    hora_vencimiento = request.POST.get('hora_vencimiento')
+    tipo_producto = request.POST.get('tipo_producto')
+
+    if request.method == 'POST':
+        if (ValidacionCamposProducto(request,
+                nombre, precio, descripcion, precio_compra, stock, stock_critico, proveedor, familia_producto, tipo_producto)
+            ):
+                if fecha_vencimiento:
+                    fecha_v = fecha_vencimiento[6:10] + '-' + fecha_vencimiento[3:5] + '-' + fecha_vencimiento[0:2] + ' ' + hora_vencimiento + ':00'
+                    fecha_vencimiento = fecha_vencimiento[0:2]+fecha_vencimiento[3:5]+fecha_vencimiento[6:10]
+                else:
+                    fecha_v = "1000-10-10 00:00:00"
+                    fecha_vencimiento = "00000000"
+                    
+                familia_producto = str(familia_producto).zfill(3)
+                tipo_producto = str(tipo_producto).zfill(3)
+                proveedor = str(proveedor).zfill(3)
+                
+                codigo_barra = proveedor + familia_producto + fecha_vencimiento + tipo_producto
+                
+                if familia_producto:
+                    familia_producto = FAMILIA_PRODUCTO.objects.filter(id = familia_producto)
+                for famP in familia_producto:
+                    familia_producto = famP
+
+                producto = PRODUCTO.objects.create(
+                    nombre = nombre.strip(),
+                    precio = precio.strip(),
+                    descripcion = descripcion.strip(),
+                    precio_compra = precio_compra.strip(),
+                    stock = stock.strip(),
+                    stock_critico = stock_critico.strip(),
+                    estado = 1,
+                    fecha_vencimiento = fecha_v,
+                    codigo_barra = codigo_barra,
+                    familia_producto = familia_producto
+                )
+
+                if producto is not None:
+                    producto.save()
+                    messages.warning(request, 'Producto creado correctamente')
+                    return redirect('listarProductos')
+                else:
+                    messages.warning(request, 'No se pudo crear el Producto')
+
+
+    return render(request, 'productos/actualizar.html',context)
+
+def ValidacionCamposProducto(
+    request,
+    nombre, 
+    precio, 
+    descripcion, 
+    precio_compra, 
+    stock, 
+    stock_critico,
+    proveedor, 
+    familia_producto, 
+    tipo_producto
+):
+    estado = False
+    nombre.strip()
+    precio.strip()
+    descripcion.strip()
+    precio_compra.strip()
+    stock.strip()
+    stock_critico.strip()
+
+    if len(nombre) < 3:
+        messages.warning(request, 'La cantidad de caracteres del nombre debe ser mayor a 2')
+    elif len(nombre) > 100:
+        messages.warning(request, 'La cantidad de caracteres del nombre debe ser menor a 101')
+    elif len(precio) < 1:
+        messages.warning(request, 'La cantidad de caracteres del precio debe ser mayor a 0')
+    elif len(precio) > 10:
+        messages.warning(request, 'La cantidad de caracteres del precio debe ser menor a 11')
+    elif len(descripcion) < 4:
+        messages.warning(request, 'La cantidad de caracteres de la descripcion debe ser mayor a 3')
+    elif len(descripcion) > 200:
+        messages.warning(request, 'La cantidad de caracteres de la descripcion debe ser menor a 201')
+    elif len(precio_compra) < 1:
+        messages.warning(request, 'La cantidad de caracteres del precio de compra debe ser mayor a 0')
+    elif len(precio_compra) > 10:
+        messages.warning(request, 'La cantidad de caracteres del precio de compra debe ser menor a 11')
+    elif len(stock) < 1:
+        messages.warning(request, 'La cantidad de caracteres del stock debe ser mayor a 0')
+    elif len(stock) > 10:
+        messages.warning(request, 'La cantidad de caracteres del stock debe ser menor a 11')
+    elif len(stock_critico) < 1:
+        messages.warning(request, 'La cantidad de caracteres del stock critico debe ser mayor a 0')
+    elif len(stock_critico) > 10:
+        messages.warning(request, 'La cantidad de caracteres del stock critico debe ser menor a 11')
+    elif len(proveedor) == 0:
+        messages.warning(request, 'Se debe seleccionar al menos una opcion en proveedor')
+    elif len(familia_producto) == 0:
+        messages.warning(request, 'Se debe seleccionar al menos una opcion en familia de producto')
+    elif len(tipo_producto) == 0:
+         messages.warning(request, 'Se debe seleccionar al menos una opcion en tipo de producto')
+    else:
+        estado = True
+
+    return estado
 
 @method_decorator(login_required, name='dispatch')
 class ProductoDetalle(DetailView):
     model = PRODUCTO
 
-@method_decorator(login_required, name='dispatch')
-class ProductoActualizar(SuccessMessageMixin, UpdateView):
-    model = PRODUCTO
-    form = FormProducto()
-    fields = "__all__"
-    success_message = 'Producto actualizado correctamente'
-    def get_success_url(self):
-        return reverse('listarProductos')
+# @method_decorator(login_required, name='dispatch')
+# class ProductoActualizar(SuccessMessageMixin, UpdateView):
+#     model = PRODUCTO
+#     form = FormProducto()
+#     fields = "__all__"
+#     success_message = 'Producto actualizado correctamente'
+#     def get_success_url(self):
+#         return reverse('listarProductos')
+
+def DesactivarProducto(request, id):
+    producto = PRODUCTO.objects.get(id = id)
+    producto.estado = 0
+    producto.save()
+    messages.warning(request, f'Producto {producto.nombre} desactivado')
+    return redirect('listarProductos')
+
+def ActivarProducto(request, id):
+    producto = PRODUCTO.objects.get(id = id)
+    producto.estado = 1
+    producto.save()
+    messages.warning(request, f'Producto {producto.nombre} activado')
+    return redirect('listarProductos')
 
 ##********************************************************************
 

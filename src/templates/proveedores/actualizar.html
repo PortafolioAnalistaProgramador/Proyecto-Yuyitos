@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
+{% load static %}
 {% block content %}
-    <div class="container p-3">
-        <div class="container registro pt-3" style="width:60%">
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+    <div class="p-3">
+        <div class="pt-3">
             
             {% if messages %}
                 <ul class="messages list-group mb-3">
@@ -14,29 +16,32 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                <div class="form-group pb-3">
-                    <label for="username" class="txt_negrita">Razon social:</label>
-                    {{ form.razon_social|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                <div class="container contenedorCrearProveedor">
+                    <h1 class="text-center pb-2">Editar Proveedor </h1>
+                    <div class="form-group pb-3">
+                        <label for="username" class="txt_negrita">Razon social:</label>
+                        {{ form.razon_social|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="email" class="txt_negrita">Correo:</label>
+                        {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="last_name" class="txt_negrita">Telefono:</label>
+                        {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="password1" class="txt_negrita">Direccion:</label>
+                        {{ form.direccion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="first_name" class="txt_negrita">categoria:</label>
+                        {{ form.categoria_proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    
+                    <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
+                    <a href="{% url 'listarProveedores' %}" type="submit" class="btn btn-primary">Cancelar</a> 
                 </div>
-                <div class="form-group pb-3">
-                    <label for="email" class="txt_negrita">Correo:</label>
-                    {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group pb-3">
-                    <label for="last_name" class="txt_negrita">Telefono:</label>
-                    {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                <div class="form-group pb-3">
-                    <label for="password1" class="txt_negrita">Direccion:</label>
-                    {{ form.direccion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group pb-3">
-                    <label for="first_name" class="txt_negrita">categoria:</label>
-                    {{ form.categoria_proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                
-                <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarProveedores' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>

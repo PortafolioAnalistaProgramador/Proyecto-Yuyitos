@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import CLIENTE, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO
-
+from .models import CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO
+# from django.utils import timezone
 
         
 
@@ -24,11 +24,55 @@ class FormCliente(forms.ModelForm):
         model = CLIENTE
         fields = ("run","nombre","telefono","correo","direccion")
 
+class FormProductoEdit(forms.ModelForm):
+    
+    class Meta:
+        model = PRODUCTO
+        fields = ("nombre","precio","descripcion","precio_compra","stock","stock_critico","codigo_barra","familia_producto")
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'class': 'form-control'  
+            })  
+        self.fields['codigo_barra'].widget.attrs['readonly'] = True 
+        self.fields['precio'].widget.attrs['readonly'] = True
+
+
 class FormProducto(forms.ModelForm):
     
     class Meta:
         model = PRODUCTO
-        fields = ("nombre","precio","descripcion","precio_compra","stock","stock_critico","estado","fecha_vencimiento","codigo_barra","familia_producto")
+        fields = ("familia_producto",)
+
+class FormFamiliaProd(forms.ModelForm):
+    
+    class Meta:
+        model = FAMILIA_PRODUCTO
+        fields = ("tipo_producto",)
+
+class FormProductoProv(forms.ModelForm):
+    
+    class Meta:
+        model = ORDEN_PEDIDO
+        fields = ("proveedor",)
+
+# class FormFechaProd(forms.ModelForm):
+
+#     fecha_vencimiento = forms.TimeField(input_formats=['%I:%M %p'])
+    
+#     class Meta:
+#         model = PRODUCTO
+#         fields = ("fecha_vencimiento",)
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs) 
+#         for field in iter(self.fields):  
+#             self.fields[field].widget.attrs.update({  
+#                 'class': 'form-control'  
+#             })  
+#         # self.fields['fecha_vencimiento'].widget.attrs['readonly'] = True  
 
 class FormProveedor(forms.ModelForm):
 

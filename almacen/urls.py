@@ -74,6 +74,7 @@ urlpatterns = [
     path('proveedores/crear/', views.ProveedorCrear, name="crearProveedor"),
  
     path('proveedores/detalle/<int:pk>', ProveedorDetalle.as_view(template_name = "proveedores/detalles.html"), name='detalles'),
+    
     path('proveedores/editar/<int:id>', views.ProveedorActualizar, name="actualizarProveedor"),
     # path('proveedores/editar/<int:pk>', ProveedorActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizar'), 
     
@@ -83,15 +84,19 @@ urlpatterns = [
 
     # **************************************Proveedor
     path('productos/', ProductoListado.as_view(template_name = "productos/listar.html"), name='listarProductos'),
- 
-    path('productos/crear/', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearProducto'),
+    
+    path('productos/crear/', views.ProductoCrear, name="crearProducto"),
+    # path('productos/crear/', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearProducto'),
  
     path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detalles'),
 
-    path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
+    # path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
+    path('productos/editar/<int:id>', views.ProductoActualizar, name="actualizarProducto"),
+    path('productos/desactivarProducto/<int:id>', views.DesactivarProducto, name="desactivarProducto"),
+    path('productos/activarProducto/<int:id>', views.ActivarProducto, name="activarProducto"),
     # # **************************************
 
-     # **********************************************Pedidos*********************************************************************
+    # **********************************************Pedidos*********************************************************************
     path('pedidos/', PedidosListado.as_view(template_name = "pedidos/listar.html"), name='listarPedidos'),
  
     path('pedidos/crear/', PedidosCrear.as_view(template_name = "pedidos/crear.html"), name='crearPedido'),

@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
+{% load static %}
 {% block content %}
-    <div class="container p-3">
-        <div class="container registro pt-3" style="width:60%">
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+    <div class="p-3">
+        <div class="pt-3">
             
             {% if messages %}
                 <ul class="messages list-group mb-3">
@@ -14,31 +16,32 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                
-                <div class="form-group pb-3">
-                    <label for="run" class="txt_negrita">Run:</label>
-                    {{ form.run|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                <div class="container contenedorCrearCliente">
+                    <h1 class="text-center pb-2"> Editar Cliente</h1>
+                    <div class="form-group pb-3">
+                        <label for="run" class="txt_negrita">Run:</label>
+                        {{ form.run|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="nombre" class="txt_negrita">Nombre:</label>
+                        {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="telefono" class="txt_negrita">Telefono:</label>
+                        {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="correo" class="txt_negrita">Correo:</label>
+                        {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="direccion" class="txt_negrita">Direccion:</label>
+                        {{ form.direccion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    
+                    <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
+                    <a href="{% url 'listarClientes' %}" type="submit" class="btn btn-primary">Cancelar</a> 
                 </div>
-                <div class="form-group pb-3">
-                    <label for="nombre" class="txt_negrita">Nombre:</label>
-                    {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                <div class="form-group pb-3">
-                    <label for="telefono" class="txt_negrita">Telefono:</label>
-                    {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
-                </div>
-                <div class="form-group pb-3">
-                    <label for="correo" class="txt_negrita">Correo:</label>
-                    {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                <div class="form-group pb-3">
-                    <label for="direccion" class="txt_negrita">Direccion:</label>
-                    {{ form.direccion|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                
-                
-                <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarClientes' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>

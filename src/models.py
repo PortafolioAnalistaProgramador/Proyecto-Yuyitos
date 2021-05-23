@@ -79,7 +79,7 @@ class PRODUCTO(models.Model):
     stock_critico = models.IntegerField(default=None)
     estado = models.IntegerField(default=None, choices=estado_producto)
     fecha_vencimiento = models.DateTimeField(blank=True)
-    codigo_barra = models.IntegerField(default=None)
+    codigo_barra = models.CharField(max_length=18,default=None)
     familia_producto = models.ForeignKey(FAMILIA_PRODUCTO, on_delete=models.CASCADE, default=None, blank=True)
 
 class DETALLE_BOLETA(models.Model):

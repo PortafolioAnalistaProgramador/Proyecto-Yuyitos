@@ -17,6 +17,7 @@ table tbody {
     padding-right: 150px;
     padding-top: 50px;
     padding-bottom: 50px;
+    border-radius: 5px;
 }
 
 .txt_negrita{

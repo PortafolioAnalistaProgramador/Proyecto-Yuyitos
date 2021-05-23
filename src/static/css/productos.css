@@ -1,4 +1,4 @@
-.titulo-usuario{
+.titulo-producto{
     background-color: #5ba6f6;
 }
 
@@ -10,12 +10,7 @@ table tbody {
     background-color: #d4e7fc;
 }
 
-.checkboxCrear{
-    width: 20px;
-    height: 20px;
-}
-
-.contenedorCrearUsuario{
+.contenedorCrearProducto{
     max-width: 800px;
     background-color: #c0ddfb;
     padding-left: 150px;

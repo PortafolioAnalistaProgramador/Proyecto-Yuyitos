@@ -3,8 +3,9 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
     <div class="container p-3">
-        <div class="container registro pt-3" style="width:60%">
+        <div class="container registro pt-3">
             
             {% if messages %}
                 <ul class="messages list-group mb-3">
@@ -16,30 +17,33 @@
             
             <form method="post" action="" class="p-3">
                 {% csrf_token %}
-                <div class="form-group pb-3">
-                    <label for="razon_social" class="txt_negrita">Razon social:</label>
-                    <input class="form-control" type="text" name="razon_social" style="border: revert;"/>
+                <div class="container contenedorCrearProveedor ">
+                    <h1 class="text-center p-3">Crear Proveedor</h1>
+                    <div class="form-group pb-3">
+                        <label for="razon_social" class="txt_negrita">Razon social:</label>
+                        <input class="form-control" type="text" name="razon_social"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="Correo" class="txt_negrita">Correo:</label>
+                        <input class="form-control" type="text" name="correo"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="Telefono" class="txt_negrita">Telefono:</label>
+                        <input class="form-control" type="text" name="telefono"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="Direccion" class="txt_negrita">Direccion:</label>
+                        <input class="form-control" type="text" name="direccion"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="Categoria" class="txt_negrita">Categoria:</label>
+                        {{ form.categoria_proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                    </div>
+                    
+                    
+                    <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
+                    <a href="{% url 'listarProveedores' %}" type="submit" class="btn btn-primary">Cancelar</a> 
                 </div>
-                <div class="form-group pb-3">
-                    <label for="Correo" class="txt_negrita">Correo:</label>
-                    <input class="form-control" type="text" name="correo" style="border: revert;"/>
-                </div>
-                <div class="form-group pb-3">
-                    <label for="Telefono" class="txt_negrita">Telefono:</label>
-                    <input class="form-control" type="text" name="telefono" style="border: revert;"/>
-                </div>
-                <div class="form-group pb-3">
-                    <label for="Direccion" class="txt_negrita">Direccion:</label>
-                    <input class="form-control" type="text" name="direccion" style="border: revert;"/>
-                </div>
-                <div class="form-group pb-3">
-                    <label for="Categoria" class="txt_negrita">Categoria:</label>
-                    {{ form.categoria_proveedor|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
-                </div>
-                
-                
-                <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
-                <a href="{% url 'listarProveedores' %}" type="submit" class="btn btn-primary">Cancelar</a> 
             </form>
         </div>
     </div>
