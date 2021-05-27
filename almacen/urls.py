@@ -96,9 +96,9 @@ urlpatterns = [
     
      # **************************************Registro de pedidos
 
-    path('registro pedidos/', RegistroPedidosListado.as_view(template_name = "registro pedidos/listar.html"), name='listarRegistroPedidos'),
+    path('registro_pedidos/', RegistroPedidosListado.as_view(template_name = "registro_pedidos/listar.html"), name='listarRegistroPedidos'),
     
-    path('registro pedidos/detalle/<int:pk>', RegistroPedidosDetalle.as_view(template_name = "registro pedidos/detalles.html"), name='detalles'),
+    path('registro_pedidos/detalle/<int:pk>', RegistroPedidosDetalle.as_view(template_name = "registro_pedidos/detalles.html"), name='detalles'),
 
 
     path('export_csv', views.export_csv,

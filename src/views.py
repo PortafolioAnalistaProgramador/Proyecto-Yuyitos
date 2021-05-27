@@ -246,24 +246,33 @@ class RegistroPedidosListado(ListView):
 class RegistroPedidosDetalle(DetailView):
     model = ORDEN_PEDIDO
 
+
+##******************************************************************************************
+##*****************************METODO EXPORTAR MEDIANTE CSV*********************************
+##******************************************************************************************
 def export_csv(request):
 
+
     response=HttpResponse(content_type='text/csv')
-    response['Content-Disposition']='attachment; filename=registro pedidos'+ \
+    response['Content-Disposition']='attachment; filename= ExportadoCSV'+ \
         str(datetime.datetime.now())+'.csv'
 
     writer=csv.writer(response)
-    writer.writerow(['estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion'])
+    writer.writerow(['estado_recepcion','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion','proveedor'])
 
-    PEDIDOS = ORDEN_PEDIDO.objects.filter()
+    pedidoscsv = ORDEN_PEDIDO.objects.filter()
 
-    for PEDIDOS in ORDEN_PEDIDO:
-        writer.writerow([ORDEN_PEDIDO.estado_recepcion,ORDEN_PEDIDO.proveedor,
-                        ORDEN_PEDIDO.fecha_pedido,ORDEN_PEDIDO.fecha_llegada, 
-                        ORDEN_PEDIDO.fecha_recepcion, ORDEN_PEDIDO.hora_recepcion])
-
-    return response
+    for orden_pedido in pedidoscsv:
+        writer.writerow([orden_pedido.estado_recepcion, orden_pedido.fecha_pedido,
+                        orden_pedido.fecha_llegada,orden_pedido.fecha_recepcion,
+                        orden_pedido.hora_recepcion,orden_pedido.proveedor])
     
+    return response
+
+   
+    
+##******************************************************************************************
+##*****************************METODO EXPORTAR MEDIANTE EXCEL*******************************
 ##******************************************************************************************
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
@@ -275,15 +284,15 @@ def export_excel(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion']
+    columns = ['proveedor','estado_recepcion','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     font_style  = xlwt.XFStyle()
 
-    rows = ORDEN_PEDIDO.objects.filter().values_list('estado_recepcion','proveedor','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion')
-
+    rows = ORDEN_PEDIDO.objects.filter().values_list('estado_recepcion','fecha_pedido','fecha_llegada','fecha_recepcion','hora_recepcion')
+    rows = PROVEEDOR.objects.filter().values_list('razon_social')
     for row in rows:
         row_num +=1
 
@@ -293,17 +302,18 @@ def export_excel(request):
 
     return response
 
-
+##******************************************************************************************
+##*****************************METODO EXPORTAR MEDIANTE PDF*********************************
 ##******************************************************************************************
 def export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] ='inline; attachment; filename=registro pedidos' + \
+    response['Content-Disposition'] ='inline; attachment; filename=Exportado PDF' + \
         str(datetime.datetime.now())+'.pdf'
 
     response['Content-Transfer-Encoding'] = 'binary'
 
     html_string=render_to_string(
-        'registro pedidos/pdf_output.html',{'registro pedidos':[] ,'total':0})
+        'registro_pedidos/pdf_output.html',{'registro_pedidos': registro_pedidos ,'total':0})
     html=HTML(string=html_string)
 
     result=html.write_pdf()
