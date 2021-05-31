@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO
+from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -37,6 +37,166 @@ def Login(request):
 @login_required(login_url="login")
 def Index(request):
     return render(request, 'index.html')
+
+@login_required(login_url="login")
+def Venta(request):
+    productos = PRODUCTO.objects.all()
+    form = FormClientesParaVenta()
+    admin = User.objects.filter(username='Sra.Juanita')
+    
+    for juanita in admin:
+        admin = juanita
+   
+    total = 0
+    cliente = 0
+    listaProductos = []
+    cont = 0
+    
+    if request.method == 'POST':
+
+        usuario = request.POST.get('usuario')
+        contrasena = request.POST.get('contrasena')
+        queryCliente = request.POST.get('cliente')
+        
+        usuarioBoleta = request.user
+        usuarioBoleta = User.objects.get(username=usuarioBoleta)
+        if cliente > 0:
+        
+            if usuario == str(admin):
+                
+                user = authenticate(request, username = usuario, password = contrasena)
+                #se agrego el total asi que se corrio todo
+                if user is not None:
+                    contador = 0
+                    for key,value in request.POST.items():
+                        contador = contador + 1
+                    
+                    contador2 = 0
+                    producto = []
+                    for key,value in request.POST.items():
+                        print(key)
+                        print(value)
+                        print("-------")
+                        contador2 = contador2 +1
+                        if contador2 == contador:
+                            total = value
+                            print(total)
+                            print("total final")
+
+                        if contador2 > 1 and contador2 < contador -2:
+
+                            if key == 'cliente':
+                                cliente = value
+                            
+                            if contador2 > 2:
+                                cont += 1
+                                
+                                producto.append(value)
+
+                                if cont == 3:
+                                    listaProductos.append(producto)
+                                    producto = []
+                                    cont = 0
+                    
+                    cliente = CLIENTE.objects.filter(id=cliente)
+                    for client in cliente:
+                        cliente = client
+
+                    boleta = BOLETA.objects.create(
+                        total_a_pagar = total,
+                        usuario = usuarioBoleta,
+                        cliente = cliente,
+                        estado = 1
+                    )
+                    boleta.save()
+
+                    bol = BOLETA.objects.all().last()
+                    bol = BOLETA.objects.get(id = bol.id)
+
+                    for listaP in listaProductos:
+                        prod = PRODUCTO.objects.get(codigo_barra = listaP[0])
+                    
+                        detalleBoleta = DETALLE_BOLETA.objects.create(
+                            boleta = bol,
+                            cantidad = listaP[1],
+                            monto_a_pagar = listaP[2],
+                            producto = prod
+                        )
+                        detalleBoleta.save()
+
+                    messages.warning(request, 'Venta realizada con exito')
+                    return redirect('venta')
+                    
+                else:
+                    messages.warning(request, 'Usuario o contraseña incorrectos')
+            else:
+                messages.warning(request, 'Usuario ingresado no es administrador')
+
+        else:
+            if request.method == 'POST':
+                usuarioBoleta = request.user
+                usuarioBoleta = User.objects.get(username=usuarioBoleta)
+                contador = 0
+
+                for key,value in request.POST.items():
+                    contador = contador + 1
+                
+                contador2 = 0
+                producto = []
+                for key,value in request.POST.items():
+                    print(key)
+                    print(value)
+                    print("-------")
+                    contador2 = contador2 +1
+                    if contador2 == contador:
+                        total = value
+                        print(total)
+                        print("total final")
+
+                    if contador2 > 1 and contador2 < contador -2:
+
+                        # if key == 'cliente':
+                        #     cliente = value
+                        
+                        if contador2 > 2:
+                            cont += 1
+                            
+                            producto.append(value)
+
+                            if cont == 3:
+                                listaProductos.append(producto)
+                                producto = []
+                                cont = 0
+                
+               
+
+                boleta = BOLETA.objects.create(
+                    total_a_pagar = total,
+                    usuario = usuarioBoleta,
+                    estado = 1
+                )
+                boleta.save()
+
+                bol = BOLETA.objects.all().last()
+                bol = BOLETA.objects.get(id = bol.id)
+
+                for listaP in listaProductos:
+                    prod = PRODUCTO.objects.get(codigo_barra = listaP[0])
+                
+                    detalleBoleta = DETALLE_BOLETA.objects.create(
+                        boleta = bol,
+                        cantidad = listaP[1],
+                        monto_a_pagar = listaP[2],
+                        producto = prod
+                    )
+                    detalleBoleta.save()
+
+                messages.warning(request, 'Venta realizada con exito')
+                return redirect('venta')
+    
+    
+   
+    return render(request, 'venta.html',{'productos':productos, 'form':form})
 
 
 ##**************************Usuarios***************************************
@@ -485,15 +645,6 @@ def ActivarProveedor(request, id):
 class ProductoListado(ListView):
     model = PRODUCTO
 
-# @method_decorator(login_required, name='dispatch')
-# class ProductoCrear(SuccessMessageMixin, CreateView):
-#     model = PRODUCTO
-#     form = FormProducto()
-#     fields = "__all__"
-#     success_message = 'Producto creado correctamente'
-
-#     def get_success_url(self):
-#         return reverse('listarProductos')
 
 @login_required(login_url="login")
 def ProductoCrear(request):
@@ -708,14 +859,6 @@ def ValidacionCamposProducto(
 class ProductoDetalle(DetailView):
     model = PRODUCTO
 
-# @method_decorator(login_required, name='dispatch')
-# class ProductoActualizar(SuccessMessageMixin, UpdateView):
-#     model = PRODUCTO
-#     form = FormProducto()
-#     fields = "__all__"
-#     success_message = 'Producto actualizado correctamente'
-#     def get_success_url(self):
-#         return reverse('listarProductos')
 
 def DesactivarProducto(request, id):
     producto = PRODUCTO.objects.get(id = id)
@@ -732,6 +875,57 @@ def ActivarProducto(request, id):
     return redirect('listarProductos')
 
 ##********************************************************************
+
+##**************************Tipo de producto********************
+@method_decorator(login_required, name='dispatch')
+class TipoProductoListado(ListView):
+    model = TIPO_PRODUCTO
+
+@method_decorator(login_required, name='dispatch')
+class TipoProductoCrear(SuccessMessageMixin, CreateView):
+    model = TIPO_PRODUCTO
+    form = TIPO_PRODUCTO
+    fields = "__all__"
+    success_message = 'Tipo producto creado correctamente'
+    def get_success_url(self):
+        return reverse('listarTiposProductos')
+
+@method_decorator(login_required, name='dispatch')
+class TipoProductoActualizar(SuccessMessageMixin, UpdateView):
+    model = TIPO_PRODUCTO
+    form = TIPO_PRODUCTO
+    fields = "__all__"
+    success_message = 'Familia producto correctamente'
+    def get_success_url(self):
+        return reverse('listarTiposProductos')
+
+##******************************************************************
+
+##**************************Familia de producto********************
+@method_decorator(login_required, name='dispatch')
+class FamiliaProductoListado(ListView):
+    model = FAMILIA_PRODUCTO
+
+@method_decorator(login_required, name='dispatch')
+class FamiliaProductoCrear(SuccessMessageMixin, CreateView):
+    model = FAMILIA_PRODUCTO
+    form = FAMILIA_PRODUCTO
+    fields = "__all__"
+    success_message = 'Familia producto creado correctamente'
+
+    def get_success_url(self):        
+        return reverse('listarFamiliasProductos') # Redireccionamos a la vista principal 'leer'
+
+@method_decorator(login_required, name='dispatch')
+class FamiliaProductoActualizar(SuccessMessageMixin, UpdateView):
+    model = FAMILIA_PRODUCTO
+    form = FAMILIA_PRODUCTO
+    fields = "__all__"
+    success_message = 'Familia producto correctamente'
+    def get_success_url(self):
+        return reverse('listarFamiliasProductos')
+
+##******************************************************************
 
 
 ##**************************Pedidos********************
@@ -760,3 +954,34 @@ class PedidosActualizar(SuccessMessageMixin, UpdateView):
         return reverse('listarPedidos')
 
 ##******************************************************************
+
+##**************************Boleta***************************************
+@method_decorator(login_required, name='dispatch')
+class BoletaListado(ListView):
+    model = BOLETA
+
+def BoletaDetalle(request, id):
+    boleta = BOLETA.objects.filter(id=id)
+    detalles = DETALLE_BOLETA.objects.filter(boleta=id)
+    context = {
+        'boleta':boleta,
+        'detalles':detalles,
+        'id':id
+    }
+    return render(request, 'boletas/detalles.html', context)
+
+def DesactivarBoleta(request, id):
+    boleta = BOLETA.objects.get(id = id)
+    boleta.estado = 0
+    boleta.save()
+    messages.warning(request, f'Boleta {boleta.id} desactivado')
+    return redirect('listarBoletas')
+
+def ActivarBoleta(request, id):
+    boleta = BOLETA.objects.get(id = id)
+    boleta.estado = 1
+    boleta.save()
+    messages.warning(request, f'Boleta {boleta.id} activado')
+    return redirect('listarBoletas')
+
+##********************************************************************

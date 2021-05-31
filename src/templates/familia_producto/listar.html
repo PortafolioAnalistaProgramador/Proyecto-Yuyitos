@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+    <div class="container p-3">
+      <h1 class="text-center">Administracion de Familias de productos</h1>
+      <div class="container mb-4">
+        {% if messages %}
+          <ul class="messages list-group mb-3">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+      <table class="table table-striped table-hover">
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Familias de productos</h3>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo producto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+        {% for familiaProd in object_list %}
+          <tr>
+            <td>{{ familiaProd.descripcion }}</td>
+            <td>{{ familiaProd.tipo_producto }}</td>
+
+            <td>
+              <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
+              <form method="POST" action="">
+                {% csrf_token %}
+                <div class="btn-group">
+      
+                  <a href="editar/{{familiaProd.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                
+                </div>
+              </form>
+            </td>
+
+          </tr>
+        {% endfor %}
+      
+        </tbody>
+      </table>
+
+      <div align="left" class="btn_crear mb-3">
+        <a href="{% url 'crearFamiliaProducto' %}" type="button" class="btn btn-primary">Crear</a>
+        <a href="{% url 'listarProductos' %}" type="submit" class="btn btn-primary">Volver a productos</a> 
+      </div>
+
+    </div>
+{% endblock %}

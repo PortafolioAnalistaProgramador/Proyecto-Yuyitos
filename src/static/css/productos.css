@@ -27,3 +27,13 @@ table tbody {
 .cajaDetalles{
     flex: auto;
 }
+
+.titulo-prod{
+    text-align: center;
+    padding-top: 30px;
+}
+
+.botones{
+    width: 220px;
+    height: 40px;
+}

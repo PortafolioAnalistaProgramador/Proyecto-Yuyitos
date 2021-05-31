@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+    <div class="p-3">
+        <div class="pt-3">
+            <h1 class="text-center">Crear Tipo de producto</h1>
+            {% if messages %}
+                <ul class="messages list-group mb-3">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="container contenedorCrearCliente">
+                    {{ form.as_p }}
+                    
+                    <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
+                    <a href="{% url 'listarTiposProductos' %}" type="submit" class="btn btn-primary">Cancelar</a>
+                </div> 
+            </form>
+        </div>
+    </div>
+  
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+    <div class="container p-3">
+      <h1 class="text-center">Administrador de Boletas</h1>
+      <div class="container mb-4">
+        {% if messages %}
+          <ul class="messages list-group mb-3">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+      <table class="table table-striped table-hover">
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Boletas</h3>
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Fecha de boleta</th>
+            <th>Total</th>
+            <th>Estado</th>
+           <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+        {% for boleta in object_list %}
+          <tr>
+            <TD>{{boleta.id}}</TD>
+            <td>{{boleta.fecha_boleta }}</td>
+            <td>{{boleta.total_a_pagar }}</td>
+            
+            {% if boleta.estado == 1 %}
+              <td class="">Activa</td>
+            {% else %}
+              <td class="">Anulada</td>
+            {% endif %}
+            
+            <td>
+      
+              <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
+              <form method="POST" action="">
+                {% csrf_token %}
+                <div class="btn-group">
+      
+                  <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
+                  <a href="detalle/{{boleta.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                  {% if boleta.estado %}
+                    <a href="desactivarBoleta/{{boleta.id}}" title="DesactivarBoleta" type="button" class="btn btn-danger">Desactivar Boleta</a>
+                  {% else %}
+                    <a href="activarBoleta/{{boleta.id}}" title="ActivarBoleta" type="button" class="btn btn-danger">Activar Boleta</a>
+                  {% endif %}
+                </div>
+              </form>
+      
+            </td>
+          </tr>
+        {% endfor %}
+      
+        </tbody>
+      </table>
+    </div>
+{% endblock %}

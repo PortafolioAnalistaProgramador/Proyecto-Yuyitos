@@ -17,8 +17,8 @@
         <link href="{% static 'js/jquery-ui-1.12.1/jquery-ui.theme.min.css' %}" rel="stylesheet">
         <link href="{% static 'js/jquery-ui-1.12.1/external/jquery/jquery.js' %}" rel="stylesheet">
         
-        <link href="{% static 'js/jquery-timepicker-1.3.5/jquery-timepicker.min.css' %}" rel="stylesheet">
-        <link href="{% static 'js/jquery-timepicker-1.3.5/jquery-timepicker.min.js' %}" rel="stylesheet">
+        <link href="{% static 'js/jquery-timepicker-1.3.5/jquery.timepicker.min.css' %}" rel="stylesheet">
+        <link href="{% static 'js/jquery-timepicker-1.3.5/jquery.timepicker.min.js' %}" rel="stylesheet">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 
     </head>
@@ -52,6 +52,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                            <a class="nav-link text-dark" aria-current="page" href="/venta">Venta</a>
+                        </li>
+                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Informes
                             </a>
@@ -67,6 +70,7 @@
                                 Gestion de modulos
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/boletas">Modulo de Boletas</a></li>
                                 <li><a class="dropdown-item" href="/usuarios">Modulo de Usuario</a></li>
                                 <li><a class="dropdown-item" href="/clientes">Modulo de Cliente</a></li>
                                 <li><a class="dropdown-item" href="/proveedores">Modulo de Proveedor</a></li>
@@ -127,7 +131,7 @@
         <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
         <script src="{% static 'js/jquery-ui-1.12.1/jquery-ui.js' %}"></script>
         <script src="{% static 'js/custom.js' %}"></script>
-        <script src="{% static 'js/jquery-timepicker-1.3.5/jquery-timepicker.min.js' %}"></script>
+        <script src="{% static 'js/jquery-timepicker-1.3.5/jquery.timepicker.min.js' %}"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     </body>
 </html>

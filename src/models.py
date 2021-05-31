@@ -32,10 +32,13 @@ class CLIENTE(models.Model):
     direccion = models.CharField(max_length=150, default=None)
     estado = models.IntegerField(default=None,choices=estado_cliente)
 
+    def __str__(self):
+        return self.nombre
+
 class PAGO_FIADO(models.Model):
     estado = models.IntegerField(default=None)
     monto = models.IntegerField(default=None)
-    fecha = models.DateTimeField()
+    fecha = models.DateTimeField(auto_now_add=False, auto_now=True)#agregar que el llenado de fecha se automatico en esta
     fecha_final = models.DateTimeField()
 
 class DETALLE_FIADO(models.Model):
@@ -54,8 +57,11 @@ class BOLETA(models.Model):
     fecha_boleta = models.DateTimeField(auto_now_add=False, auto_now=True)
     total_a_pagar = models.IntegerField(default=None)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True)
-    cliente = models.ForeignKey(CLIENTE, on_delete=models.CASCADE, default=None, blank=True)
+    cliente = models.ForeignKey(CLIENTE, on_delete=models.CASCADE, default=None, blank=True, null=True)
     estado = estado = models.IntegerField(default=None,choices=estado_boleta)
+    
+    class Meta:
+        ordering = ['id']
 
 class TIPO_PRODUCTO(models.Model):
     descripcion = models.CharField(max_length=150, default=None)
@@ -81,6 +87,9 @@ class PRODUCTO(models.Model):
     fecha_vencimiento = models.DateTimeField(blank=True)
     codigo_barra = models.CharField(max_length=18,default=None)
     familia_producto = models.ForeignKey(FAMILIA_PRODUCTO, on_delete=models.CASCADE, default=None, blank=True)
+
+    def __str__(self):
+        return self.nombre
 
 class DETALLE_BOLETA(models.Model):
     boleta = models.ForeignKey(BOLETA, on_delete=models.CASCADE, default=None)
@@ -124,25 +133,4 @@ class SEGUIMIENTO_PAGINA(models.Model):
     razon_social = models.CharField(max_length=100, default=None)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True)
 
-# para borrar la bd usar python manage.py reset_db
 
-# class COMUNA(models.Model):
-#     nombre = models.CharField(max_length=200, default=None)
-#     localidad = models.ForeignKey(LOCALIDAD,on_delete=models.CASCADE,default=None)
-    
-#     def  __str__(self):
-#         return self.nombre
-    
-# class CATEGORIA(models.Model):
-#     nombre = models.CharField(max_length=200, default=None)
-#     def  __str__(self):
-#         return self.nombre
-    
-# class TIPO_PRODUCTO(models.Model):
-#     nombre = models.CharField(max_length=200, default=None)
-#     categoria = models.ForeignKey(CATEGORIA,on_delete=models.CASCADE,default=None)
-#     def  __str__(self):
-#         return self.nombre
-
-# #importar datetime   
-# #end_date = models.DateTimeField(auto_now_add=True)

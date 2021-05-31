@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+<div class="container pt-4">
+    <table class="table table-striped table-hover">
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Detalles de Boleta {{ id }}</h3>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Fecha de boleta</th>
+                <th>Fiado</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+            {% for bol in boleta %}
+                <tr>
+                    <td>{{ bol.usuario }}</td>
+                    <td>{{ bol.fecha_boleta }}</td>
+
+                    {% if bol.cliente == None %}
+                        <td class="">Sin Cliente</td>
+                    {% else %}
+                        <td class="">{{ bol.cliente }}</td>
+                    {% endif %}
+
+                    <td>{{ bol.total_a_pagar }}</td>
+                </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-hover">
+        
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+            {% for detalleB in detalles %}
+                <tr>
+                    <td>{{ detalleB.producto }}</td>
+                    <td>{{ detalleB.cantidad }}</td>
+                    <td>{{ detalleB.monto_a_pagar }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="../" type="submit" class="btn btn-primary">Volver</a>
+</div>
+
+{% endblock %}

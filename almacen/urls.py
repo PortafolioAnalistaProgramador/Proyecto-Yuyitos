@@ -8,6 +8,9 @@ from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActua
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
 from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
+from src.views import BoletaListado, DesactivarBoleta, ActivarBoleta, BoletaDetalle
+from src.views import TipoProductoActualizar, TipoProductoListado, TipoProductoCrear
+from src.views import FamiliaProductoListado, FamiliaProductoActualizar, FamiliaProductoCrear
 
 
 from django.urls import path, include
@@ -19,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.Login, name="login"),
     path('index/', views.Index, name="index"),
+    path('venta/', views.Venta, name="venta"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
@@ -92,6 +96,7 @@ urlpatterns = [
 
     # path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
     path('productos/editar/<int:id>', views.ProductoActualizar, name="actualizarProducto"),
+    
     path('productos/desactivarProducto/<int:id>', views.DesactivarProducto, name="desactivarProducto"),
     path('productos/activarProducto/<int:id>', views.ActivarProducto, name="activarProducto"),
     # # **************************************
@@ -105,6 +110,38 @@ urlpatterns = [
 
     path('pedidos/editar/<int:pk>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
     # # **************************************************************************************************************************
+
+
+    # **********************************************Boletas*********************************************************************
+    path('boletas/', BoletaListado.as_view(template_name = "boletas/listar.html"), name='listarBoletas'),
+        # path('boletas/', BoletaListado.as_view(), name='listarBoletas'),
+
+    path('boletas/detalle/<int:id>', views.BoletaDetalle, name="detallesBoleta"),
+
+    path('boletas/desactivarBoleta/<int:id>', views.DesactivarBoleta, name="desactivarBoleta"),
+    path('boletas/activarBoleta/<int:id>', views.ActivarBoleta, name="activarBoleta"),
+    # # **************************************************************************************************************************
+
+    # **********************************************TipoProductos*********************************************************************
+    path('tipos_productos/', TipoProductoListado.as_view(template_name = "tipos_productos/listar.html"), name='listarTiposProductos'),
+ 
+    path('tipos_productos/crear/', TipoProductoCrear.as_view(template_name = "tipos_productos/crear.html"), name='crearTipoProducto'),
+ 
+    # path('tipos_productos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+
+    path('tipos_productos/editar/<int:pk>', TipoProductoActualizar.as_view(template_name = "tipos_productos/actualizar.html"), name='actualizarTipoProducto'), 
+    # # **************************************************************************************************************************
+
+    # **********************************************TipoProductos*********************************************************************
+    path('familias_productos/', FamiliaProductoListado.as_view(template_name = "familia_producto/listar.html"), name='listarFamiliasProductos'),
+ 
+    path('familias_productos/crear/', FamiliaProductoCrear.as_view(template_name = "familia_producto/crear.html"), name='crearFamiliaProducto'),
+ 
+    # path('tipos_productos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+
+    path('familias_productos/editar/<int:pk>', FamiliaProductoActualizar.as_view(template_name = "familia_producto/actualizar.html"), name='actualizarFamiliaProducto'), 
+    # # **************************************************************************************************************************
+
 
 ]
 
