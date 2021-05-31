@@ -129,8 +129,8 @@ class DETALLE_ORDEN(models.Model):
     producto = models.ForeignKey(PRODUCTO, on_delete=models.CASCADE, default=None, blank=True)
 
 class SEGUIMIENTO_PAGINA(models.Model):
-    fecha_abono = models.DateTimeField(auto_now_add=False, auto_now=True)
-    razon_social = models.CharField(max_length=100, default=None)
+    fecha_ingreso = models.DateTimeField(auto_now_add=False, auto_now=True)
+    pagina_visitada = models.CharField(max_length=50, default=None)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True)
 
 

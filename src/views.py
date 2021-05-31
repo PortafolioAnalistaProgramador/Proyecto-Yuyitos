@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA
+from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA
 from django.contrib import messages
 from django import forms
 from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta
@@ -40,6 +40,16 @@ def Index(request):
 
 @login_required(login_url="login")
 def Venta(request):
+
+    usuarioBoleta = request.user
+    usuarioBoleta = User.objects.get(username=usuarioBoleta)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "ventas",
+        usuario = usuarioBoleta
+    )
+    seguimientoPag.save()
+
     productos = PRODUCTO.objects.all()
     form = FormClientesParaVenta()
     admin = User.objects.filter(username='Sra.Juanita')
@@ -57,10 +67,8 @@ def Venta(request):
         usuario = request.POST.get('usuario')
         contrasena = request.POST.get('contrasena')
         queryCliente = request.POST.get('cliente')
-        
-        usuarioBoleta = request.user
-        usuarioBoleta = User.objects.get(username=usuarioBoleta)
-        if cliente > 0:
+
+        if queryCliente > 0:
         
             if usuario == str(admin):
                 
@@ -193,8 +201,6 @@ def Venta(request):
 
                 messages.warning(request, 'Venta realizada con exito')
                 return redirect('venta')
-    
-    
    
     return render(request, 'venta.html',{'productos':productos, 'form':form})
 
@@ -202,8 +208,22 @@ def Venta(request):
 ##**************************Usuarios***************************************
 @method_decorator(login_required, name='dispatch')
 class UsuarioListado(ListView): 
-    model = User 
+    
     template_name = "usuarios/listar.html"
+    model = User 
+    # def get(self,request):
+
+    #     usuarioSeg = request.user
+    #     usuarioSeg = User.objects.get(username=usuarioSeg)
+
+    #     seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+    #         pagina_visitada = "listar usuarios",
+    #         usuario = usuarioSeg
+    #     )
+    #     seguimientoPag.save()
+    #     return render(request, self.template_name)
+
+    
 
 @login_required(login_url="login")
 def UsuarioCrear(request):
