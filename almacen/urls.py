@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path
 from src import views, static
-from src.views import Index
+from src.views import Index, CreacionInformes
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario, ActivarUsuario
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar, DesactivarCliente, ActivarCliente
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.Login, name="login"),
     path('index/', views.Index, name="index"),
     path('venta/', views.Venta, name="venta"),
+    path('informes/', views.CreacionInformes, name="informes"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
@@ -104,8 +105,10 @@ urlpatterns = [
     # **********************************************Pedidos*********************************************************************
     path('pedidos/', PedidosListado.as_view(template_name = "pedidos/listar.html"), name='listarPedidos'),
  
-    path('pedidos/crear/', PedidosCrear.as_view(template_name = "pedidos/crear.html"), name='crearPedido'),
- 
+    # path('pedidos/crear/', PedidosCrear.as_view(template_name = "pedidos/crear.html"), name='crearPedido'),
+    path('pedidos/crear/', views.PedidosCrear, name="crearPedido"),
+    path('pedidos/crear/<int:id>', views.PedidosCrear, name="crearPedido"),
+    
     path('pedidos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
 
     path('pedidos/editar/<int:pk>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
@@ -142,6 +145,7 @@ urlpatterns = [
     path('familias_productos/editar/<int:pk>', FamiliaProductoActualizar.as_view(template_name = "familia_producto/actualizar.html"), name='actualizarFamiliaProducto'), 
     # # **************************************************************************************************************************
 
-
+    path('datos/', views.CargaDatos, name="datos"),
+    
 ]
 
