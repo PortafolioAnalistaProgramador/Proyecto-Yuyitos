@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import BOLETA, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO
+from .models import BOLETA, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, SEGUIMIENTO_PAGINA
 # from django.utils import timezone
 
         
@@ -23,6 +23,21 @@ class FormCliente(forms.ModelForm):
     class Meta:
         model = CLIENTE
         fields = ("run","nombre","telefono","correo","direccion")
+
+class FormSeguimientoPagina(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'class':'visitas_pagina',
+                'id':'id_visitas_pagina'
+            }) 
+
+    class Meta:
+        model = SEGUIMIENTO_PAGINA
+        fields = ("usuario",)
+
+
 
 class FormProductoEdit(forms.ModelForm):
     
@@ -58,12 +73,43 @@ class FormProductoProv(forms.ModelForm):
         model = ORDEN_PEDIDO
         fields = ("proveedor",)
 
+class FormInformeOrdenPedido(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'class': 'ordenP-informe',
+                'id':'id_ordenP_informe'
+            })  
+
+    class Meta:
+        model = ORDEN_PEDIDO
+        fields = ("proveedor",)
+
 class FormClientesParaVenta(forms.ModelForm):
     
     class Meta:
         model = BOLETA
         fields = ("cliente",)
 
+class FormBoleta(forms.ModelForm):
+
+    class Meta:
+        model = BOLETA
+        fields = ("usuario",)
+
+class FormClientesInforme(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'class': 'cliente-informe',
+                'id':'id_cliente_informe'
+            })  
+
+    class Meta:
+        model = BOLETA
+        fields = ("cliente",)
 # class FormFechaProd(forms.ModelForm):
 
 #     fecha_vencimiento = forms.TimeField(input_formats=['%I:%M %p'])
@@ -93,10 +139,17 @@ class FormProveedorAct(forms.ModelForm):
         fields = ("razon_social","correo","telefono","direccion","categoria_proveedor")
 
 class FormPedido(forms.ModelForm):
-
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs) 
+    #     for field in iter(self.fields):  
+    #         self.fields[field].widget.attrs.update({  
+    #             'class': 'cliente-informe',
+    #             'heigh':'150px',
+    #         }) 
+    
     class Meta:
         model = ORDEN_PEDIDO
-        fields = ("id","estado_recepcion","proveedor","fecha_llegada","fecha_recepcion","hora_recepcion") 
+        fields = ("proveedor",) 
 
 
 # class FormCliente(forms.Form):

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA
+from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA, PAGO_FIADO, DETALLE_FIADO, DETALLE_ORDEN
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina
+import openpyxl
+from tempfile import NamedTemporaryFile
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -56,6 +58,7 @@ def Venta(request):
     
     for juanita in admin:
         admin = juanita
+    
    
     total = 0
     cliente = 0
@@ -67,8 +70,8 @@ def Venta(request):
         usuario = request.POST.get('usuario')
         contrasena = request.POST.get('contrasena')
         queryCliente = request.POST.get('cliente')
-
-        if queryCliente > 0:
+        
+        if queryCliente != '':
         
             if usuario == str(admin):
                 
@@ -82,14 +85,11 @@ def Venta(request):
                     contador2 = 0
                     producto = []
                     for key,value in request.POST.items():
-                        print(key)
-                        print(value)
-                        print("-------")
+
                         contador2 = contador2 +1
+
                         if contador2 == contador:
                             total = value
-                            print(total)
-                            print("total final")
 
                         if contador2 > 1 and contador2 < contador -2:
 
@@ -152,20 +152,14 @@ def Venta(request):
                 contador2 = 0
                 producto = []
                 for key,value in request.POST.items():
-                    print(key)
-                    print(value)
-                    print("-------")
+
                     contador2 = contador2 +1
+
                     if contador2 == contador:
                         total = value
-                        print(total)
-                        print("total final")
 
                     if contador2 > 1 and contador2 < contador -2:
 
-                        # if key == 'cliente':
-                        #     cliente = value
-                        
                         if contador2 > 2:
                             cont += 1
                             
@@ -953,12 +947,107 @@ class FamiliaProductoActualizar(SuccessMessageMixin, UpdateView):
 class PedidosListado(ListView):
     model = ORDEN_PEDIDO
 
-@method_decorator(login_required, name='dispatch')
-class PedidosCrear(SuccessMessageMixin, CreateView):
-    model = ORDEN_PEDIDO
-    form = FormPedido()
-    fields = "__all__"
-    success_message = 'Pedido creado correctamente'
+
+def PedidosCrear(request, id = None):
+
+    
+
+    proveedores = PROVEEDOR.objects.all()
+
+    tiposProductos = TIPO_PRODUCTO.objects.filter(proveedor=id)
+    
+    listaF = []
+    for tiposP in tiposProductos:
+        famId = FAMILIA_PRODUCTO.objects.filter(tipo_producto=tiposP)
+        for f in famId:
+            listaF.append(f.id)
+
+    productos = PRODUCTO.objects.all()
+
+    listaProds = [] 
+    for prod in productos:
+        idFam = FAMILIA_PRODUCTO.objects.filter(descripcion=prod.familia_producto)
+        
+        for idF in idFam:
+            
+            for listF in listaF:
+                if listF == idF.id:
+                    
+                    listaProds.append(prod.nombre)
+
+    if request.method == 'POST':
+
+        listaProductos = []
+        producto = []
+
+        contador2 = 0
+        for key,value in request.POST.items():
+            contador2 += 1
+
+        contador = 0
+        fecha = ""
+        cont = 0
+        for key,value in request.POST.items():
+            
+            contador += 1
+            
+            if contador == 2:
+                proveedorOrden = int(value)
+
+            if contador > 2:
+                
+                if contador == contador2:
+                    if value == "":
+                        fecha = "1000-10-10"
+                    else:
+                        fecha = value
+                        fecha = fecha[6:10]+ '-' +fecha[3:5]+ '-' + fecha[0:2]
+                        print(fecha)
+
+                if contador < contador2:
+                    cont += 1
+                    
+                    producto.append(value)
+
+                    if cont == 2:
+                        listaProductos.append(producto)
+                        producto = []
+                        cont = 0
+
+        
+
+        proveedorOrden = PROVEEDOR.objects.get(id=proveedorOrden)
+        print(proveedorOrden)
+
+        ordenPedido = ORDEN_PEDIDO.objects.create(
+            estado_recepcion = 0,
+            proveedor = proveedorOrden,
+            fecha_llegada = fecha
+        )
+        ordenPedido.save()
+
+        ordenPedido = ORDEN_PEDIDO.objects.all().last()
+        ordenPedido = ORDEN_PEDIDO.objects.get(id = ordenPedido.id)
+
+        for listaP in listaProductos:
+            prod = PRODUCTO.objects.get(nombre=listaP[0])
+
+            detallePedido = DETALLE_ORDEN.objects.create(
+                producto = prod,
+                cantidad = listaP[1],
+                orden_pedido = ordenPedido
+            )
+            detallePedido.save()
+        
+        messages.warning(request, 'Orden de pedido realizada con exito')
+        return redirect('crearPedido')
+
+    
+    context = {
+        'proveedores':proveedores,
+        'listaProds':listaProds
+    }
+    return render(request, 'pedidos/crear.html', context)
 
 @method_decorator(login_required, name='dispatch')
 class PedidosDetalle(DetailView):
@@ -1005,3 +1094,1085 @@ def ActivarBoleta(request, id):
     return redirect('listarBoletas')
 
 ##********************************************************************
+
+##******************************Informes********************************
+@login_required(login_url="login")
+def CreacionInformes(request):
+
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    listaProducto = {}
+
+    if request.method == 'POST':
+
+        productos = request.POST.get('productos')
+        precio = request.POST.get('precio')
+        descripcion = request.POST.get('descripcion')
+        precioCompra = request.POST.get('precioCompra')
+        stockCritico = request.POST.get('stockCritico')
+        fechaVencimiento = request.POST.get('fechaVencimiento')
+        codigoBarra = request.POST.get('codigoBarra')
+
+        stock = request.POST.get('stock')
+        stockCheck = request.POST.get('stockCheck')
+
+        estado = request.POST.get('estado')
+        estadoCheck = request.POST.get('estadoCheck')
+
+        familiaProducto = request.POST.get('familiaProducto')
+        familiaProductoCheck = request.POST.get('familiaProductoCheck')
+
+        tipoProducto = request.POST.get('tipoProducto')
+        tipoProductoCheck = request.POST.get('tipoProductoCheck')
+        
+        var = ""
+        # PRODUCTO.objects.filter().values_list("account__owner__code",)
+
+        if productos == "on":
+            if precio == "on":
+                var = var + ",'precio'"
+                
+            if descripcion == "on":
+                var = var + ",'descripcion'"
+            
+            if precioCompra == "on":
+                var = var + ",'precio_compra'"
+
+            if stockCritico == "on":
+                var = var + ",'stock_critico'"
+
+            if fechaVencimiento == "on":
+                var = var + ",'fecha_vencimiento'"
+            
+            if codigoBarra == "on":
+                var = var + ",'codigo_barra'"
+
+            if stock == "on":
+                print("algo")
+                if stockCheck == "todos":
+                    print("todos")
+                elif stockCheck == "porNombre":
+                    print("conStock")
+                else:
+                    print("sinStock")
+
+            if estado == "on":
+                print("algo")
+                if estadoCheck == "todos":
+                    print("todos")
+                elif estadoCheck == "disponible":
+                    print("disponible")
+                else:
+                    print("noDisponible")
+
+            if familiaProducto == "on":
+                print("algo")
+                if familiaProductoCheck == "todosF":
+                    print("todosF")
+                else:
+                    print("porNombreF")
+                    familia_producto = request.POST.get('familia_producto')
+                    print(familia_producto)
+            
+            if tipoProducto == "on":
+                print("algo")
+                if tipoProductoCheck == "todosT":
+                    print("todosT")
+                else:
+                    print("porNombreT")
+                    tipo_producto = request.POST.get('tipo_producto')
+                    print(tipo_producto)
+
+            listaP = var[1:]
+            print(listaP)
+            print(PRODUCTO.objects.filter().values_list(listaP))
+
+
+
+    # book = self.book_excel(holdings)
+
+    # el archivo se guarda en memoria
+    # with NamedTemporaryFile() as tmp:
+    #     book.save(tmp.name)
+    #     tmp.seek(0)
+    #     stream = tmp.read()
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg
+    }
+    return render(request, 'informes.html', context)
+
+def book_excel(self, holdings):
+
+    book = openpyxl.Workbook()  # Se crea un libro
+    sheet = book.active  # Se activa la primera hoja
+
+    # agrego los datos de la primera fila
+    sheet.append(
+        (
+            "user_code",
+            "account_code",
+            "user_name",
+            "quantity",
+            "value_clp",
+            "value_usd",
+        )
+    )
+
+    # recupero los datos de la query y luego los voy agregando por fila
+    for h in holdings:
+
+        user_code = h[0]
+        account_code = h[1]
+        user_name = h[2] + " " + h[3]
+        quantity = h[4]
+        value_clp = h[4] * h[5]
+        value_usd = h[4] * h[6]
+
+        sheet.append(
+            (
+                user_code,
+                account_code,
+                user_name,
+                quantity,
+                value_clp,
+                value_usd,
+            )
+        )
+    return book
+##********************************************************************
+
+@login_required(login_url="login")
+def CargaDatos(request):
+
+    # # # # # # # # # cliente1 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "12326706-0",
+    # # # # # # # # #     nombre = "Jose Palomo",
+    # # # # # # # # #     telefono = "56914213464",
+    # # # # # # # # #     correo = "jose.palomo.22@gmail.com",
+    # # # # # # # # #     direccion = "San bernardo, Portales 15256",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente1.save()
+
+    # # # # # # # # # cliente2 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "12413992-9",
+    # # # # # # # # #     nombre = "Andrea Castillo",
+    # # # # # # # # #     telefono = "56917489290",
+    # # # # # # # # #     correo = "andre.cast.19@yahoo.com",
+    # # # # # # # # #     direccion = "San bernardo, maestranza 1523",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente2.save()
+
+    # # # # # # # # # cliente3 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "9455284-2",
+    # # # # # # # # #     nombre = "Felipe Cordova",
+    # # # # # # # # #     telefono = "56945031309",
+    # # # # # # # # #     correo = "felipecor.va@outlook.com",
+    # # # # # # # # #     direccion = "Santiago, lira 1444",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente3.save()
+
+    # # # # # # # # # cliente4 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "18587107-k",
+    # # # # # # # # #     nombre = "Andres Rodriguez",
+    # # # # # # # # #     telefono = "56991802233",
+    # # # # # # # # #     correo = "andre.roro@gmail.com",
+    # # # # # # # # #     direccion = "Avenida Vicuña Mackenna, 439",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente4.save()
+
+    # # # # # # # # # cliente5 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "6643850-3",
+    # # # # # # # # #     nombre = "Joshua Carrillo",
+    # # # # # # # # #     telefono = "56970002740",
+    # # # # # # # # #     correo = "josh.carr_@gmail.com",
+    # # # # # # # # #     direccion = "Calle Freire, 537",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente5.save()
+
+    # # # # # # # # # cliente6 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "14748934-k",
+    # # # # # # # # #     nombre = "Edward Norton",
+    # # # # # # # # #     telefono = "56970864468",
+    # # # # # # # # #     correo = "ed.norton@hotmail.com",
+    # # # # # # # # #     direccion = "Avenida Providencia, 2653 - Of. 901",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente6.save()
+
+    # # # # # # # # # cliente7 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "15945244-1",
+    # # # # # # # # #     nombre = "Leonardo Pitt",
+    # # # # # # # # #     telefono = "56908528619",
+    # # # # # # # # #     correo = "leo@gmail.com",
+    # # # # # # # # #     direccion = "Avenida Presidente Riesco, 5335 - Of. 925 Piso 9",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente7.save()
+
+    # # # # # # # # # cliente8 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "16134207-6",
+    # # # # # # # # #     nombre = "Brad Evans",
+    # # # # # # # # #     telefono = "56932390401",
+    # # # # # # # # #     correo = "brad@hotmail.com",
+    # # # # # # # # #     direccion = "Calle Santo Domingo, 1160 - Of. 303",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente8.save()
+
+    # # # # # # # # # cliente9 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "5945505-2",
+    # # # # # # # # #     nombre = "Chris Pascal",
+    # # # # # # # # #     telefono = "56986763759",
+    # # # # # # # # #     correo = "chris_pascal@yahoo.com",
+    # # # # # # # # #     direccion = "Calle Santos Dumont, 760",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente9.save()
+
+    # # # # # # # # # cliente10 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "18251911-1",
+    # # # # # # # # #     nombre = "Pedro Dicaprio",
+    # # # # # # # # #     telefono = "56996056909",
+    # # # # # # # # #     correo = "pedro_eldi@gmail.com",
+    # # # # # # # # #     direccion = "Calle Marco Polo, 9038 - Loc.15",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente10.save()
+
+    # # # # # # # # # cliente11 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "17749806-8",
+    # # # # # # # # #     nombre = "Edgar Waltz",
+    # # # # # # # # #     telefono = "56970764004",
+    # # # # # # # # #     correo = "edg.altz@gmail.com",
+    # # # # # # # # #     direccion = "Avenida Irarrazaval, 4888 - Of.202",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente11.save()
+
+    # # # # # # # # # cliente12 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "16638053-7",
+    # # # # # # # # #     nombre = "Angelina Lopez",
+    # # # # # # # # #     telefono = "56945214880",
+    # # # # # # # # #     correo = "angie_lo@yahoo.com",
+    # # # # # # # # #     direccion = "Avenida Eliodoro Yañez, 1649 - Of. 805",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente12.save()
+
+    # # # # # # # # # cliente13 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "22388500-4",
+    # # # # # # # # #     nombre = "Jennifer Jolie",
+    # # # # # # # # #     telefono = "56955285990",
+    # # # # # # # # #     correo = "jenn_jo@gmail.com",
+    # # # # # # # # #     direccion = "Avenida Providencia 2529 loc. 35, Providencia",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente13.save()
+
+    # # # # # # # # # cliente14 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "13743818-6",
+    # # # # # # # # #     nombre = "Keira Portman",
+    # # # # # # # # #     telefono = "56980577654",
+    # # # # # # # # #     correo = "k.port_@hotmail.com",
+    # # # # # # # # #     direccion = "Calle Valdivieso, 45",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente14.save()
+
+    # # # # # # # # # cliente15 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "6804734-k",
+    # # # # # # # # #     nombre = "Natalie Knightley",
+    # # # # # # # # #     telefono = "56965679100",
+    # # # # # # # # #     correo = "nat_knightley@gmail.com",
+    # # # # # # # # #     direccion = "Calle Juan De La Fuente, 0 - 027-a",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente15.save()
+
+    # # # # # # # # # cliente16 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "16885911-2",
+    # # # # # # # # #     nombre = "Kiernan Watson",
+    # # # # # # # # #     telefono = "56998614242",
+    # # # # # # # # #     correo = "kier.nan@gmail.com",
+    # # # # # # # # #     direccion = "Avenida Peru, 8757",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente16.save()
+
+    # # # # # # # # # cliente17 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "22019701-8",
+    # # # # # # # # #     nombre = "Emma Shipka",
+    # # # # # # # # #     telefono = "56931890958",
+    # # # # # # # # #     correo = "emmshipka@gmail.com",
+    # # # # # # # # #     direccion = "Calle Valdivieso, 45",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente17.save()
+
+    # # # # # # # # # cliente18 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "11811887-1",
+    # # # # # # # # #     nombre = "Andreina Borges",
+    # # # # # # # # #     telefono = "56923139607",
+    # # # # # # # # #     correo = "andre.borges_sr@gmail.com",
+    # # # # # # # # #     direccion = "Calle Los Quillayes, 10757 - Parad.33",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente18.save()
+
+    # # # # # # # # # cliente19 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "13066317-6",
+    # # # # # # # # #     nombre = "George Gilmour",
+    # # # # # # # # #     telefono = "56917777648",
+    # # # # # # # # #     correo = "george.gilmour@yahoo.com",
+    # # # # # # # # #     direccion = "Calle Merino Jarpa, 496 - Herradura Norte",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente19.save()
+
+    # # # # # # # # # cliente20 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "22322272-2",
+    # # # # # # # # #     nombre = "Dave Harrison",
+    # # # # # # # # #     telefono = "56973356546",
+    # # # # # # # # #     correo = "dave2harr@hotmail.com",
+    # # # # # # # # #     direccion = "Calle Almirante Montt, 472",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente20.save()
+
+    # # # # # # # # # cliente21 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "12297591-6",
+    # # # # # # # # #     nombre = "Eric Page",
+    # # # # # # # # #     telefono = "56987559327",
+    # # # # # # # # #     correo = "eric.page@gmail.com",
+    # # # # # # # # #     direccion = "Calle Lastra, 1209",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente21.save()
+
+    # # # # # # # # # cliente22 = CLIENTE.objects.create(
+    # # # # # # # # #     run = "23227346-1",
+    # # # # # # # # #     nombre = "Jimmy Clapton",
+    # # # # # # # # #     telefono = "56931404827",
+    # # # # # # # # #     correo = "jim_clapton@outlook.com",
+    # # # # # # # # #     direccion = "Calle Marco Polo, 9038 - Loc.15",
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # cliente22.save()
+
+    # # # # # # # # # #CATEGORIA PROVEEDOR
+    # # # # # # # # # categProv1 = CATEGORIA_PROVEEDOR.objects.create(
+    # # # # # # # # #     descripcion = "BEBIDAS"
+    # # # # # # # # # )
+    # # # # # # # # # categProv1.save()
+
+    # # # # # # # # # categProv2 = CATEGORIA_PROVEEDOR.objects.create(
+    # # # # # # # # #     descripcion = "COMIDA Y DESPENSA"
+    # # # # # # # # # )
+    # # # # # # # # # categProv2.save()
+
+    # # # # # # # # # categProv3 = CATEGORIA_PROVEEDOR.objects.create(
+    # # # # # # # # #     descripcion = "DULCES Y SNACKS"
+    # # # # # # # # # )
+    # # # # # # # # # categProv3.save()
+
+    # # # # # # # # # categProv4 = CATEGORIA_PROVEEDOR.objects.create(
+    # # # # # # # # #     descripcion = "PRODUCTOS DE LIMPIEZA"
+    # # # # # # # # # )
+    # # # # # # # # # categProv4.save()
+
+    # # # # # # # # # categProv5 = CATEGORIA_PROVEEDOR.objects.create(
+    # # # # # # # # #     descripcion = "HIGIENE Y CUIDADOS"
+    # # # # # # # # # )
+    # # # # # # # # # categProv5.save()
+
+    # # # # # # # # # categ1 = CATEGORIA_PROVEEDOR.objects.get(id=1)
+    # # # # # # # # # categ2 = CATEGORIA_PROVEEDOR.objects.get(id=2)
+    # # # # # # # # # categ3 = CATEGORIA_PROVEEDOR.objects.get(id=3)
+    # # # # # # # # # categ4 = CATEGORIA_PROVEEDOR.objects.get(id=4)
+    # # # # # # # # # categ5 = CATEGORIA_PROVEEDOR.objects.get(id=5)
+
+    # # # # # # # # # #proveedores
+    # # # # # # # # # proveedor1 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Coca-Cola Company",
+    # # # # # # # # #     correo = "hernan_Danes@cocacola.cl",
+    # # # # # # # # #     telefono = "800 21 99 99",
+    # # # # # # # # #     direccion = "Av. Kennedy 5757 Piso 12, Torre Oriente, Las Condes, Santiago",
+    # # # # # # # # #     categoria_proveedor = categ1,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor1.save()
+
+    # # # # # # # # # proveedor2 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Carozzi Corp",
+    # # # # # # # # #     correo = "contacto.clientes@carozzi.cl",
+    # # # # # # # # #     telefono = "800 321 111",
+    # # # # # # # # #     direccion = "Avenida Longitudinal Sur 5201 KM. 23, San Bernardo, Santiago",
+    # # # # # # # # #     categoria_proveedor = categ2,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor2.save()
+
+    # # # # # # # # # proveedor3 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Pepsico",
+    # # # # # # # # #     correo = "consumidores.chile800@pepsico.com",
+    # # # # # # # # #     telefono = "800-395 176",
+    # # # # # # # # #     direccion = "PepsiCo Corporativo Avenida Kennedy 5454, piso 4. Las Condes, Santiago.",
+    # # # # # # # # #     categoria_proveedor = categ3,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor3.save()
+
+    # # # # # # # # # proveedor4 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Colgate-Palmolive",
+    # # # # # # # # #     correo = "servicios@colgate-palmolive.cl",
+    # # # # # # # # #     telefono = "800 200 510",
+    # # # # # # # # #     direccion = "Las Esteras Sur 2800, Quilicura, Region Metropolitana",
+    # # # # # # # # #     categoria_proveedor = categ5,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor4.save()
+
+    # # # # # # # # # proveedor5 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Beiesdorf",
+    # # # # # # # # #     correo = "Recepcion.Chile@beiersdorf.com",
+    # # # # # # # # #     telefono = "56223688800",
+    # # # # # # # # #     direccion = "Camino Lo Espejo 501, Maip�, Santiago, Chile.",
+    # # # # # # # # #     categoria_proveedor = categ5,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor5.save()
+
+    # # # # # # # # # proveedor6 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Nestle",
+    # # # # # # # # #     correo = "servicio.alcliente@nestle.cl",
+    # # # # # # # # #     telefono = "9 4264 0564",
+    # # # # # # # # #     direccion = "Carr Camino A Melipilla 15300, Maipu, Santiago, Region Metropolitana",
+    # # # # # # # # #     categoria_proveedor = categ3,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor6.save()
+
+    # # # # # # # # # proveedor7 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Ideal",
+    # # # # # # # # #     correo = "ventas.ideal@grupobimbo.com",
+    # # # # # # # # #     telefono = "56959175002",
+    # # # # # # # # #     direccion = "Av. Lo Espejo 02128, Lo Espejo, Region Metropolitana",
+    # # # # # # # # #     categoria_proveedor = categ4,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor7.save()
+
+    # # # # # # # # # proveedor8 = PROVEEDOR.objects.create(
+    # # # # # # # # #     razon_social = "Lider",
+    # # # # # # # # #     correo = "servicioalcliente@lider.cl",
+    # # # # # # # # #     telefono = "600 400 9000",
+    # # # # # # # # #     direccion = "Av. Los Pajaritos 1790, Maip�, Regi�n Metropolitana",
+    # # # # # # # # #     categoria_proveedor = categ2,
+    # # # # # # # # #     estado = 1
+    # # # # # # # # # )
+    # # # # # # # # # proveedor8.save()
+
+
+    # # # # # # # # # #tipo producto
+    # # # # # # # # # prov1 = PROVEEDOR.objects.get(id=1)
+    # # # # # # # # # prov2 = PROVEEDOR.objects.get(id=2)
+    # # # # # # # # # prov3 = PROVEEDOR.objects.get(id=3)
+    # # # # # # # # # prov4 = PROVEEDOR.objects.get(id=4)
+    # # # # # # # # # prov5 = PROVEEDOR.objects.get(id=5)
+    # # # # # # # # # prov6 = PROVEEDOR.objects.get(id=6)
+    # # # # # # # # # prov7 = PROVEEDOR.objects.get(id=7)
+    # # # # # # # # # prov8 = PROVEEDOR.objects.get(id=8)
+
+
+    # # # # # # # # # tipoProd1 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Enlatados",
+    # # # # # # # # #     proveedor = prov8
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd1.save()
+
+    # # # # # # # # # tipoProd2 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Granos",
+    # # # # # # # # #     proveedor = prov2
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd2.save()
+
+    # # # # # # # # # tipoProd3 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Carnes",
+    # # # # # # # # #     proveedor = prov5
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd3.save()
+
+    # # # # # # # # # tipoProd4 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Bebidas",
+    # # # # # # # # #     proveedor = prov1
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd4.save()
+
+    # # # # # # # # # tipoProd5 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Dulces y Snacks",
+    # # # # # # # # #     proveedor = prov3
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd5.save()
+
+    # # # # # # # # # tipoProd6 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Lacteos",
+    # # # # # # # # #     proveedor = prov6
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd6.save()
+
+    # # # # # # # # # tipoProd7 = TIPO_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Panaderia y Pasteleria",
+    # # # # # # # # #     proveedor = prov7
+    # # # # # # # # # )
+    # # # # # # # # # tipoProd7.save()
+
+    # # # # # # # # # #familia producto
+    # # # # # # # # # fam1 = TIPO_PRODUCTO.objects.get(id=1)
+    # # # # # # # # # fam2 = TIPO_PRODUCTO.objects.get(id=2)
+    # # # # # # # # # fam3 = TIPO_PRODUCTO.objects.get(id=3)
+    # # # # # # # # # fam4 = TIPO_PRODUCTO.objects.get(id=4)
+    # # # # # # # # # fam5 = TIPO_PRODUCTO.objects.get(id=5)
+    # # # # # # # # # fam6 = TIPO_PRODUCTO.objects.get(id=6)
+    # # # # # # # # # fam7 = TIPO_PRODUCTO.objects.get(id=7)
+
+    # # # # # # # # # famProd1 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Atun",
+    # # # # # # # # #     tipo_producto = fam1
+    # # # # # # # # # )
+    # # # # # # # # # famProd1.save()
+
+    # # # # # # # # # famProd2 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Arroz",
+    # # # # # # # # #     tipo_producto = fam2
+    # # # # # # # # # )
+    # # # # # # # # # famProd2.save()
+
+    # # # # # # # # # famProd3 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Pollo",
+    # # # # # # # # #     tipo_producto = fam3
+    # # # # # # # # # )
+    # # # # # # # # # famProd3.save()
+
+    # # # # # # # # # famProd4 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Productos CocaCola",
+    # # # # # # # # #     tipo_producto = fam4
+    # # # # # # # # # )
+    # # # # # # # # # famProd4.save()
+
+    # # # # # # # # # famProd5 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Productos Pepsico",
+    # # # # # # # # #     tipo_producto = fam5
+    # # # # # # # # # )
+    # # # # # # # # # famProd5.save()
+
+    # # # # # # # # # famProd6 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Galletas Nestle",
+    # # # # # # # # #     tipo_producto = fam5
+    # # # # # # # # # )
+    # # # # # # # # # famProd6.save()
+
+    # # # # # # # # # famProd7 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Pan ideal",
+    # # # # # # # # #     tipo_producto = fam7
+    # # # # # # # # # )
+    # # # # # # # # # famProd7.save()
+
+    # # # # # # # # # famProd8 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Dulces Ideal",
+    # # # # # # # # #     tipo_producto = fam5
+    # # # # # # # # # )
+    # # # # # # # # # famProd8.save()
+
+    # # # # # # # # # famProd9 = FAMILIA_PRODUCTO.objects.create(
+    # # # # # # # # #     descripcion = "Pastas",
+    # # # # # # # # #     tipo_producto = fam2
+    # # # # # # # # # )
+    # # # # # # # # # famProd9.save()
+
+    # #productos
+
+    prod1 = FAMILIA_PRODUCTO.objects.get(id=1)
+    prod2 = FAMILIA_PRODUCTO.objects.get(id=2)
+    prod3 = FAMILIA_PRODUCTO.objects.get(id=3)
+    prod4 = FAMILIA_PRODUCTO.objects.get(id=4)
+    prod5 = FAMILIA_PRODUCTO.objects.get(id=5)
+    prod6 = FAMILIA_PRODUCTO.objects.get(id=6)
+    prod7 = FAMILIA_PRODUCTO.objects.get(id=7)
+    prod8 = FAMILIA_PRODUCTO.objects.get(id=8)
+    prod9 = FAMILIA_PRODUCTO.objects.get(id=9)
+
+    # producto1 = PRODUCTO.objects.create(
+    #     nombre = "Coca-Cola 3 litros",
+    #     precio = 1300,
+    #     descripcion = "Bebida fantasia Cocacola 3 litros",
+    #     precio_compra = 900,
+    #     stock = 50,
+    #     stock_critico = 10,
+    #     estado = 1,
+    #     fecha_vencimiento = "2022/12/29 12:00:00",
+    #     codigo_barra = "100429122022004",
+    #     familia_producto = prod4
+    # )
+    # producto1.save()
+
+    # # # # # producto2 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Papas Chips Lays Pepsico",
+    # # # # #     precio = 1000,
+    # # # # #     descripcion = "Bolsa de Chips lays",
+    # # # # #     precio_compra = 750,
+    # # # # #     stock = 20,
+    # # # # #     stock_critico = 5,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "300529122022005",
+    # # # # #     familia_producto = prod5
+    # # # # # )
+    # # # # # producto2.save()
+    
+    # # # # # producto3 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Nuggets de pollo Lider",
+    # # # # #     precio = 2300,
+    # # # # #     descripcion = "Bolsa de nuggets",
+    # # # # #     precio_compra = 1700,
+    # # # # #     stock = 10,
+    # # # # #     stock_critico = 3,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "800329122022003",
+    # # # # #     familia_producto = prod3
+    # # # # # )
+    # # # # # producto3.save()
+
+    # # # # # producto4 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Galletas Triton x4 Nestle",
+    # # # # #     precio = 300,
+    # # # # #     descripcion = "Galletas Triton 4un",
+    # # # # #     precio_compra = 200,
+    # # # # #     stock = 50,
+    # # # # #     stock_critico = 10,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "600529122022005",
+    # # # # #     familia_producto = prod6
+    # # # # # )
+    # # # # # producto4.save()
+
+    # # # # # producto5 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Pepsi 3 litros",
+    # # # # #     precio = 1300,
+    # # # # #     descripcion = "Bebida Pepsi 3 litros",
+    # # # # #     precio_compra = 850,
+    # # # # #     stock = 30,
+    # # # # #     stock_critico = 10,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "300529122022005",
+    # # # # #     familia_producto = prod5
+    # # # # # )
+    # # # # # producto5.save()
+
+    # # # # # producto6 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Rallita de vainilla Marinela",
+    # # # # #     precio = 1200,
+    # # # # #     descripcion = "Rayita crema sabor vainilla",
+    # # # # #     precio_compra = 900,
+    # # # # #     stock = 50,
+    # # # # #     stock_critico = 10,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "700829122022005",
+    # # # # #     familia_producto = prod8
+    # # # # # )
+    # # # # # producto6.save()
+
+    # # # # # producto7 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Pinguinos x6 un Marinela",
+    # # # # #     precio = 1300,
+    # # # # #     descripcion = "Pack de 6un Pinguinos",
+    # # # # #     precio_compra = 1000,
+    # # # # #     stock = 30,
+    # # # # #     stock_critico = 5,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/28 12:00:00",
+    # # # # #     codigo_barra = "700828122022005",
+    # # # # #     familia_producto = prod8
+    # # # # # )
+    # # # # # producto7.save()
+
+    # # # # # producto8 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Rayita frutilla Marinela",
+    # # # # #     precio = 1200,
+    # # # # #     descripcion = "Rayita crema sabor frutilla",
+    # # # # #     precio_compra = 900,
+    # # # # #     stock = 30,
+    # # # # #     stock_critico = 10,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/27 12:00:00",
+    # # # # #     codigo_barra = "700827122022005",
+    # # # # #     familia_producto = prod8
+    # # # # # )
+    # # # # # producto8.save()
+
+    # # # # # producto9 = PRODUCTO.objects.create(
+    # # # # #     nombre = "Tortillas Rapiditas 8un Ideal",
+    # # # # #     precio = 1000,
+    # # # # #     descripcion = "Pack 8 un 200g Tortillas",
+    # # # # #     precio_compra = 9850,
+    # # # # #     stock = 20,
+    # # # # #     stock_critico = 5,
+    # # # # #     estado = 1,
+    # # # # #     fecha_vencimiento = "2022/12/29 12:00:00",
+    # # # # #     codigo_barra = "700729122022007",
+    # # # # #     familia_producto = prod7
+    # # # # # )
+    # # # # # producto9.save()
+
+    producto10 = PRODUCTO.objects.create(
+        nombre = "Atun lomito en agua Lider",
+        precio = 1300,
+        descripcion = "Lata de atun",
+        precio_compra = 1090,
+        stock = 20,
+        stock_critico = 10,
+        estado = 1,
+        fecha_vencimiento = "2022-12-29 12:00:00",
+        codigo_barra = "800129122022001",
+        familia_producto = prod1
+    )
+    producto10.save()
+
+    producto11 = PRODUCTO.objects.create(
+        nombre = "Arroz Pregraneado 1kg Lider",
+        precio = 1300,
+        descripcion = "Paquete de arroz pregraneado 1kg",
+        precio_compra = 1160,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-22 12:00:00",
+        codigo_barra = "800229122022002",
+        familia_producto = prod2
+    )
+    producto11.save()
+
+    producto12 = PRODUCTO.objects.create(
+        nombre = "Arroz 1kg Lider",
+        precio = 1000,
+        descripcion = "Paquete de 1kg arroz lider",
+        precio_compra = 890,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-30 12:00:00",
+        codigo_barra = "800230122022002",
+        familia_producto = prod2
+    )
+    producto12.save()
+
+    producto13 = PRODUCTO.objects.create(
+        nombre = "Pasta 400g tallarines Carozzi",
+        precio = 600,
+        descripcion = "Paquete de 400g de tallarines",
+        precio_compra = 490,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-29 12:00:00",
+        codigo_barra = "200929122022003",
+        familia_producto = prod9
+    )
+    producto13.save()
+
+    producto14 = PRODUCTO.objects.create(
+        nombre = "Pasta 400g spaghetti Carozzi",
+        precio = 590,
+        descripcion = "Paquete de 400g de spaghetti",
+        precio_compra = 440,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-30 12:00:00",
+        codigo_barra = "200930122022002",
+        familia_producto = prod9
+    )
+    producto14.save()
+
+    producto15 = PRODUCTO.objects.create(
+        nombre = "Pasta 400g quifaros Carozzi",
+        precio = 600,
+        descripcion = "Paquete de 400g de quifaros",
+        precio_compra = 490,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-28 12:00:00",
+        codigo_barra = "200928122022002",
+        familia_producto = prod4
+    )
+    producto15.save()
+
+    producto16 = PRODUCTO.objects.create(
+        nombre = "Coca-Cola 1.5 litros",
+        precio = 700,
+        descripcion = "Bebida de 1.5 litros coca-cola",
+        precio_compra = 590,
+        stock = 15,
+        stock_critico = 3,
+        estado = 1,
+        fecha_vencimiento = "2022-12-28 12:00:00",
+        codigo_barra = "100428122022004",
+        familia_producto = prod4
+    )
+    producto16.save()
+
+    producto17 = PRODUCTO.objects.create(
+        nombre = "Fanta Naranja 3 litros",
+        precio = 1290,
+        descripcion = "Bebida 3 litros sabor naranja",
+        precio_compra = 900,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-30 12:00:00",
+        codigo_barra = "100430122022004",
+        familia_producto = prod4
+    )
+    producto17.save()
+
+    producto18 = PRODUCTO.objects.create(
+        nombre = "Agua 6.5 litros Benedictino",
+        precio = 1600,
+        descripcion = "Agua Benedictino 6.5 litros",
+        precio_compra = 1400,
+        stock = 10,
+        stock_critico = 2,
+        estado = 1,
+        fecha_vencimiento = "2023-12-29 12:00:00",
+        codigo_barra = "100429122023004",
+        familia_producto = prod4
+    )
+    producto18.save()
+
+    producto19 = PRODUCTO.objects.create(
+        nombre = "Agua 1.5 litros Benedictino",
+        precio = 800,
+        descripcion = "Agua Benedictino 1.5 litros",
+        precio_compra = 600,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2023-12-28 12:00:00",
+        codigo_barra = "100428122023004",
+        familia_producto = prod4
+    )
+    producto19.save()
+
+    producto20 = PRODUCTO.objects.create(
+        nombre = "Galletas Triton Limon x4 Nestle",
+        precio = 300,
+        descripcion = "Galletas Triton sabor limon 4un",
+        precio_compra = 200,
+        stock = 20,
+        stock_critico = 5,
+        estado = 1,
+        fecha_vencimiento = "2022-12-30 12:00:00",
+        codigo_barra = "600530122022005",
+        familia_producto = prod6
+    )
+    producto20.save()
+
+    # ##pago fiados
+    # pagoFiado1 = PAGO_FIADO.objects.create(
+    #     estado = 1,
+    #     monto = 1500,
+    #     fecha = "12-06-2021",
+    #     fecha_final = "29-06-2021"
+    # )
+    # pagoFiado1.save()
+
+    # pagoFiado2 = PAGO_FIADO.objects.create(
+    #     estado = 1,
+    #     monto = 3500,
+    #     fecha = "20-06-2021",
+    #     fecha_final = "12-07-2021"
+    # )
+    # pagoFiado2.save()
+
+    # pagoFiado3 = PAGO_FIADO.objects.create(
+    #     estado = 1,
+    #     monto = 6500,
+    #     fecha = "04-07-2021",
+    #     fecha_final = "21-07-2021"
+    # )
+    # pagoFiado3.save()
+
+    # pagoFiado4 = PAGO_FIADO.objects.create(
+    #     estado = 1,
+    #     monto = 2500,
+    #     fecha = "05-07-2021",
+    #     fecha_final = "25-07-2021"
+    # )
+    # pagoFiado4.save()
+
+    # ##detalle fiado
+    # cli1 = CLIENTE.objects.get(id=1)
+    # cli2 = CLIENTE.objects.get(id=2)
+    # cli3 = CLIENTE.objects.get(id=3)
+    # cli4 = CLIENTE.objects.get(id=4)
+    # pag1 = PAGO_FIADO.objects.get(id=1)
+    # pag2 = PAGO_FIADO.objects.get(id=2)
+    # pag3 = PAGO_FIADO.objects.get(id=3)
+    # pag4 = PAGO_FIADO.objects.get(id=4)
+
+    # detPagoFiado1 = DETALLE_FIADO.objects.create(
+    #     monto_abonado = 1500,
+    #     pago_fiado = pag1,
+    #     fecha_abono = "23-06-2021",
+    #     cliente = cli1
+    # )
+    # detPagoFiado1.save()
+
+    # detPagoFiado2 = DETALLE_FIADO.objects.create(
+    #     monto_abonado = 3000,
+    #     pago_fiado = pag2,
+    #     fecha_abono = "21-06-2021",
+    #     cliente = cli2
+    # )
+    # detPagoFiado2.save()
+
+    # detPagoFiado3 = DETALLE_FIADO.objects.create(
+    #     monto_abonado = 500,
+    #     pago_fiado = pag3,
+    #     fecha_abono = "22-06-2021",
+    #     cliente = cli2
+    # )
+    # detPagoFiado3.save()
+
+    # detPagoFiado4 = DETALLE_FIADO.objects.create(
+    #     monto_abonado = 5000,
+    #     pago_fiado = pag4,
+    #     fecha_abono = "07-07-2021",
+    #     cliente = cli3
+    # )
+    # detPagoFiado4.save()
+
+    # detPagoFiado5 = DETALLE_FIADO.objects.create(
+    #     monto_abonado = 2500,
+    #     pago_fiado = pag4,
+    #     fecha_abono = "27-07-2021",
+    #     cliente = cli1
+    # )
+    # detPagoFiado5.save()
+
+    # # # # ##orden pedido
+    # # # # pagoFiado1 = ORDEN_PEDIDO.objects.create(
+    # # # #     estado_recepcion = 1,
+    # # # #     proveedor = 1,
+    # # # #     fecha_pedido = "01-07-2021",
+    # # # #     fecha_llegada = "11-07-2021",
+    # # # #     fecha_recepcion = "25-07-2021",
+    # # # #     hora_recepcion = "12:00:00"
+    # # # # )
+    # # # # pagoFiado1.save()
+
+    # # # # pagoFiado2 = ORDEN_PEDIDO.objects.create(
+    # # # #     estado_recepcion = 1,
+    # # # #     proveedor = 2,
+    # # # #     fecha_pedido = "01-08-2021",
+    # # # #     fecha_llegada = "14-08-2021",
+    # # # #     fecha_recepcion = "18-08-2021",
+    # # # #     hora_recepcion = "12:00:00"
+    # # # # )
+    # # # # pagoFiado2.save()
+
+    # # # # pagoFiado3 = ORDEN_PEDIDO.objects.create(
+    # # # #     estado_recepcion = 1,
+    # # # #     proveedor = 3,
+    # # # #     fecha_pedido = "01-12-2021",
+    # # # #     fecha_llegada = "07-12-2021",
+    # # # #     fecha_recepcion = "09-12-2021",
+    # # # #     hora_recepcion = "12:00:00"
+    # # # # )
+    # # # # pagoFiado3.save()
+
+    # # # # pagoFiado4 = ORDEN_PEDIDO.objects.create(
+    # # # #     estado_recepcion = 4,
+    # # # #     proveedor = 1,
+    # # # #     fecha_pedido = "01-12-2021",
+    # # # #     fecha_llegada = "04-12-2021",
+    # # # #     fecha_recepcion = "16-12-2021",
+    # # # #     hora_recepcion = "12:00:00"
+    # # # # )
+    # # # # pagoFiado4.save()
+
+    # # # # pagoFiado5 = ORDEN_PEDIDO.objects.create(
+    # # # #     estado_recepcion = 2,
+    # # # #     proveedor = 1,
+    # # # #     fecha_pedido = "01-11-2021",
+    # # # #     fecha_llegada = "03-10-2021",
+    # # # #     fecha_recepcion = "09-10-2021",
+    # # # #     hora_recepcion = "12:00:00"
+    # # # # )
+    # # # # pagoFiado5.save()
+
+    # # # # ##detalle orden
+    # # # # detalleOrden = DETALLE_ORDEN.objects.create(
+    # # # #     cantidad = 2,
+    # # # #     orden_pedido = 1,
+    # # # #     producto = 1,
+    # # # # )
+    # # # # detalleOrden.save()
+
+    # # # # detalleOrden = DETALLE_ORDEN.objects.create(
+    # # # #     cantidad = 2,
+    # # # #     orden_pedido = 1,
+    # # # #     producto = 1,
+    # # # # )
+    # # # # detalleOrden.save()
+
+    # # # # detalleOrden = DETALLE_ORDEN.objects.create(
+    # # # #     cantidad = 2,
+    # # # #     orden_pedido = 1,
+    # # # #     producto = 1,
+    # # # # )
+    # # # # detalleOrden.save()
+
+    # # # # detalleOrden = DETALLE_ORDEN.objects.create(
+    # # # #     cantidad = 2,
+    # # # #     orden_pedido = 1,
+    # # # #     producto = 1,
+    # # # # )
+    # # # # detalleOrden.save()
+
+    # # # # detalleOrden = DETALLE_ORDEN.objects.create(
+    # # # #     cantidad = 2,
+    # # # #     orden_pedido = 1,
+    # # # #     producto = 1,
+    # # # # )
+    # # # # detalleOrden.save()
+        
+    
+
+    return render(request, 'carga.html')

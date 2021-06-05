@@ -63,8 +63,26 @@ class BOLETA(models.Model):
     class Meta:
         ordering = ['id']
 
+class CATEGORIA_PROVEEDOR(models.Model):
+    descripcion = models.CharField(max_length=100, default=None)
+
+    def __str__(self):
+        return self.descripcion
+
+class PROVEEDOR(models.Model):
+    razon_social = models.CharField(max_length=100, default=None)
+    correo = models.CharField(max_length=100, default=None)
+    telefono = models.CharField(max_length=12, default=None)
+    direccion = models.CharField(max_length=150, default=None)
+    categoria_proveedor = models.ForeignKey(CATEGORIA_PROVEEDOR, on_delete=models.CASCADE, default=None)
+    estado = models.IntegerField(default=None, choices=estado_proveedor)
+
+    def __str__(self):
+        return self.razon_social
+
 class TIPO_PRODUCTO(models.Model):
     descripcion = models.CharField(max_length=150, default=None)
+    proveedor = models.ForeignKey(PROVEEDOR, on_delete=models.CASCADE, default=None, blank=True, null=True)
     
     def __str__(self):
         return self.descripcion
@@ -97,31 +115,13 @@ class DETALLE_BOLETA(models.Model):
     monto_a_pagar = models.IntegerField(default=None)
     producto = models.ForeignKey(PRODUCTO, on_delete=models.CASCADE, default=None, blank=True)
 
-class CATEGORIA_PROVEEDOR(models.Model):
-    descripcion = models.CharField(max_length=100, default=None)
-
-    def __str__(self):
-        return self.descripcion
-
-class PROVEEDOR(models.Model):
-    razon_social = models.CharField(max_length=100, default=None)
-    correo = models.CharField(max_length=100, default=None)
-    telefono = models.CharField(max_length=12, default=None)
-    direccion = models.CharField(max_length=150, default=None)
-    categoria_proveedor = models.ForeignKey(CATEGORIA_PROVEEDOR, on_delete=models.CASCADE, default=None, blank=True)
-    estado = models.IntegerField(default=None, choices=estado_proveedor)
-
-    def __str__(self):
-            return self.razon_social
-
 class ORDEN_PEDIDO(models.Model):
     estado_recepcion = models.IntegerField(default=None)
     proveedor = models.ForeignKey(PROVEEDOR, on_delete=models.CASCADE, default=None)
     fecha_pedido = models.DateField(auto_now_add=False, auto_now=True)
-    fecha_llegada = models.DateField(blank=True)
-    fecha_recepcion = models.DateField(blank=True)
-    hora_recepcion = models.TimeField(blank=True)
-    
+    fecha_llegada = models.DateField(blank=True, null=True)
+    fecha_recepcion = models.DateField(blank=True, null=True)
+    hora_recepcion = models.TimeField(blank=True, null=True)
 
 class DETALLE_ORDEN(models.Model):
     cantidad = models.IntegerField(default=None)
