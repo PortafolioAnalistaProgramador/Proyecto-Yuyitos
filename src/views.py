@@ -83,6 +83,7 @@ def Venta(request):
                     for key,value in request.POST.items():
                         contador = contador + 1
                     
+                    
                     contador2 = 0
                     producto = []
                     for key,value in request.POST.items():
@@ -90,7 +91,10 @@ def Venta(request):
                         contador2 = contador2 +1
 
                         if contador2 == contador:
+                            
                             total = value
+                            
+                            
 
                         if contador2 > 1 and contador2 < contador -2:
 
@@ -153,11 +157,13 @@ def Venta(request):
                 contador2 = 0
                 producto = []
                 for key,value in request.POST.items():
-
+                    
                     contador2 = contador2 +1
 
                     if contador2 == contador:
+                        
                         total = value
+                        
 
                     if contador2 > 1 and contador2 < contador -2:
 

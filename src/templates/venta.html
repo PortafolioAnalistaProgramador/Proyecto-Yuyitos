@@ -121,8 +121,20 @@
     function ValidarFiado(){
         let combo = document.getElementById("id_cliente");
         let selected = combo.options[combo.selectedIndex].text;
-        console.log(selected);
+        
         if (selected == '---------'){
+            let total = document.getElementById('total_precios').innerText;
+            
+            bloque = document.getElementById('formulario');
+            elemento2 = document.createElement('input');
+            elemento2.setAttribute("class", "form-control col-sm-3 mb-2 bg-dark" );
+            elemento2.setAttribute("style", "width:200px" );
+            elemento2.setAttribute("name", `total` );
+            elemento2.id = 'total';
+            elemento2.setAttribute("readonly", "" );
+            bloque.appendChild(elemento2);
+            document.getElementById(elemento2.id).value = total;
+
             document.formulario.submit();
         }
         else{
@@ -165,6 +177,7 @@
         document.getElementById(elemento1.id).value = contrasena;
 
         let total = document.getElementById('total_precios').innerText;
+        console.log(total)
         bloque = document.getElementById('formulario');
         elemento2 = document.createElement('input');
         elemento2.setAttribute("class", "form-control col-sm-3 mb-2 bg-dark" );
@@ -177,6 +190,8 @@
 
         document.formulario.submit();
     }
+
+    
     
 </script>
 
