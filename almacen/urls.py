@@ -7,11 +7,11 @@ from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActua
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar, DesactivarCliente, ActivarCliente
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
-from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar
+from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar, DesactivarPedido, ActivarPedido
 from src.views import BoletaListado, DesactivarBoleta, ActivarBoleta, BoletaDetalle
 from src.views import TipoProductoActualizar, TipoProductoListado, TipoProductoCrear
 from src.views import FamiliaProductoListado, FamiliaProductoActualizar, FamiliaProductoCrear
-
+from src.views import CategoriaProvActualizar, CategoriaProvCrear, CategoriasProvListar
 
 from django.urls import path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
@@ -24,6 +24,8 @@ urlpatterns = [
     path('index/', views.Index, name="index"),
     path('venta/', views.Venta, name="venta"),
     path('informes/', views.CreacionInformes, name="informes"),
+    path('recepcion/', views.RecepcionPedido, name="RecepcionPedido"),
+    path('recepcion/<int:id>', views.RecepcionPedido, name="RecepcionPedido"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
@@ -109,9 +111,12 @@ urlpatterns = [
     path('pedidos/crear/', views.PedidosCrear, name="crearPedido"),
     path('pedidos/crear/<int:id>', views.PedidosCrear, name="crearPedido"),
     
-    path('pedidos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+    path('pedidos/detalle/<int:id>', views.PedidosDetalle, name="detallePedido"),
 
-    path('pedidos/editar/<int:pk>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
+    path('pedidos/editar/<int:id>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
+    
+    path('pedidos/desactivarPedido/<int:id>', views.DesactivarPedido, name="desactivarPedido"),
+    path('pedidos/activarPedido/<int:id>', views.ActivarPedido, name="activarPedido"),
     # # **************************************************************************************************************************
 
 
@@ -145,6 +150,11 @@ urlpatterns = [
     path('familias_productos/editar/<int:pk>', FamiliaProductoActualizar.as_view(template_name = "familia_producto/actualizar.html"), name='actualizarFamiliaProducto'), 
     # # **************************************************************************************************************************
 
+    ##*********************************categoria proveedor**************************
+    path('categoria_proveedor/', views.CategoriasProvListar, name="listarCategoriasProv"),
+    path('categoria_proveedor/crear/', views.CategoriaProvCrear, name="crearCategoriaProv"),
+    path('categoria_proveedor/editar/<int:id>', views.CategoriaProvActualizar, name="actualizarCategoriaProv"),
+    ##*****************************************************************************
     path('datos/', views.CargaDatos, name="datos"),
     
 ]

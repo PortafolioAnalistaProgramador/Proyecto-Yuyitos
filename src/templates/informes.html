@@ -15,6 +15,9 @@
             
             <div class="col border border-primary rounded">
                 
+                <label for="productos" class="p-2">Nombre:</label>
+                <input type="checkbox" class="nombre" name="nombre" id="nombre"/></br>
+
                 <label for="productos" class="p-2">Precio:</label>
                 <input type="checkbox" class="precio" name="precio" id="precio"/></br>
 
@@ -351,6 +354,7 @@
     document.getElementById("fechaVencimiento").disabled=true;
     document.getElementById("codigoBarra").disabled=true;
     document.getElementById("stock").disabled=true;
+    document.getElementById("nombre").disabled=true;
     
     document.getElementById("estado").disabled=true;
     
@@ -479,6 +483,7 @@
             form.estado.disabled = false;
             form.familiaProducto.disabled = false;
             form.tipoProducto.disabled = false;
+            form.nombre.disabled = false;
             
         }
 
@@ -493,6 +498,7 @@
             form.stock.disabled = true;
             form.estado.disabled = true;
             form.familiaProducto.disabled = true;
+            form.nombre.disabled = true;
             
         }
 

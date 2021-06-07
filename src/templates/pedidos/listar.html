@@ -20,35 +20,46 @@
           <tr>
             <th>Numero de Orden</th>
             <th>Proveedor</th>
-            <th>Fecha de pedido</th>
-            <th>Fecha de llegada</th>
-            <th>Fecha de Recepcion</th>
-            <th>Hora de Recepcion</th>
+            <th>Fecha creacion</th>
+            <th>Estado pedido</th>
            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
         
         <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
-        {% for ORDEN_PEDIDO in object_list %}
+        {% for orden in object_list %}
           <tr>
-            <TD>{{ORDEN_PEDIDO.id}}</TD>
-            <td>{{ORDEN_PEDIDO.proveedor }}</td>
-            <td>{{ORDEN_PEDIDO.estado_recepcion }}</td>
-            <td>{{ORDEN_PEDIDO.fecha_pedido }}</td>
-            <td>{{ORDEN_PEDIDO.fecha_llegada }}</td>
-            <td>{{ORDEN_PEDIDO.fecha_recepcion }}</td>
-            <td>{{ORDEN_PEDIDO.hora_recepcion }}</td>
+            <TD>{{orden.id}}</TD>
+            <td>{{orden.proveedor }}</td>
+            <td>{{orden.fecha_pedido }}</td>
+            {% if orden.estado_recepcion == 0 %}
+              <td class="">En espera</td>
+            {% elif orden.estado_recepcion == 1 %}
+              <td class="">Recepcionado</td>
+            {% elif orden.estado_recepcion == 3 %}
+              <td class="">Anulado</td>
+            {% else %}
+              <td class="">Atrasado</td>
+            {% endif %}
             <td>
       
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
-              <form method="POST" action="eliminar/{{ORDEN_PEDIDO.id}}">
+              <form method="POST" action="">
                 {% csrf_token %}
                 <div class="btn-group">
       
                   <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
-                  <a href="detalle/{{ORDEN_PEDIDO.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
-                  <a href="editar/{{ORDEN_PEDIDO.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                  <a href="detalle/{{orden.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                  <!-- <a href="editar/{{orden.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a> -->
+                  
+                  {% if orden.estado_recepcion == 0 or orden.estado_recepcion == 2 %}
+                    <a href="desactivarPedido/{{orden.id}}" title="DesactivarPedido" type="button" class="btn btn-danger">Desactivar Pedido</a>
+                  {% endif %}
+                  {% if orden.estado_recepcion == 3 %}
+                    <a href="activarPedido/{{orden.id}}" title="ActivarPedido" type="button" class="btn btn-danger">Activar Pedido</a>
+                  {% endif %}
+                
                 </div>
               </form>
       

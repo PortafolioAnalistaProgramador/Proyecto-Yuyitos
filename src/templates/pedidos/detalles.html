@@ -2,33 +2,69 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block content %}
-     <div class="container p-5">
-    <h1 class="text-center" >Detalles del Proveedor</h1>
-        <div class="row p-5">
-            <div class="col-md-3">
-            </div>
-            <div class="col-md-3">
-                <p><span class="txt_negrita">Nombre:</span> <br> {{object.nombre}}</p>
-                <p><span class="txt_negrita">Stock:</span> <br> {{object.stock}}</p>
-                <p><span class="txt_negrita">Precio:</span> <br> {{object.precio}}</p>
-                <p><span class="txt_negrita">Descripcion:</span> <br> {{object.descripcion}}</p>
-                <p><span class="txt_negrita">Precio compra:</span> <br> {{object.precio_compra}}</p>
-                <p><span class="txt_negrita">Stock:</span> <br> {{object.stock}}</p>
-                <p><span class="txt_negrita">stock critico:</span> <br> {{object.stock_critico}}</p>
-                <p><span class="txt_negrita">Estado:</span> <br> {{object.estado}}</p>
-                <p><span class="txt_negrita">fecha de vencimiento:</span> <br> {{object.fecha_vencimiento}}</p>
-                <p><span class="txt_negrita">Codigo de barra:</span> <br> {{object.codigo_barra}}</p>     
-                <p><span class="txt_negrita">familia de producto:</span> <br> {{object.familia_producto}}</p>
-            </div>
-            <div class="col-md-3">
-                
-                <!-- Botón para volver a la vista principal (Home) -->
-                <a href="../" type="submit" class="btn btn-primary">Volver</a>
-            </div>
-            <div class="col-md-3">
-            </div>
-        </div>
+<link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+<div class="container pt-4">
+    <table class="table table-striped table-hover">
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Detalles de Pedido {{ id }}</h3>
+        <thead>
+            <tr>
+                <th>Numero de pedido</th>
+                <th>Proveedor</th>
+                <th>Fecha pedido</th>
+                <th>Fecha llegada</th>
+                <th>Fecha recepcion</th>
+                <th>Hora recepcion</th>
+                <th>Estado recepcion</th>
+            </tr>
+        </thead>
+
+        <tbody>
         
-    </div>
-    
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+            {% for ped in pedido %}
+                <tr>
+                    <td>{{ped.id}}</td>
+                    <td>{{ped.proveedor }}</td>
+                    <td>{{ped.fecha_pedido }}</td>
+                    <td>{{ped.fecha_llegada }}</td>
+                    <td>{{ped.fecha_recepcion }}</td>
+                    <td>{{ped.hora_recepcion }}</td>
+                    {% if ped.estado_recepcion == 0 %}
+                        <td class="">En espera</td>
+                    {% elif ped.estado_recepcion == 1 %}
+                        <td class="">Recepcionado</td>
+                    {% elif orden.estado_recepcion == 3 %}
+                        <td class="">Anulado</td>
+                    {% else %}
+                        <td class="">Atrasado</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-hover">
+        
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        
+        <!-- Recorremos los objetos o registros que tenemos en nuestra tabla 'postres' y los listamos -->
+            {% for detP in detallesP %}
+                <tr>
+                    <td>{{ detP.producto }}</td>
+                    <td>{{ detP.cantidad }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="../" type="submit" class="btn btn-primary">Volver</a>
+</div>
+
 {% endblock %}
