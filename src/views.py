@@ -833,26 +833,35 @@ def ProductoActualizar(request, id):
                 for famP in familia_producto:
                     familia_producto = famP
 
-                producto = PRODUCTO.objects.create(
-                    nombre = nombre.strip(),
-                    precio = precio.strip(),
-                    descripcion = descripcion.strip(),
-                    precio_compra = precio_compra.strip(),
-                    stock = stock.strip(),
-                    stock_critico = stock_critico.strip(),
-                    estado = 1,
-                    fecha_vencimiento = fecha_v,
-                    codigo_barra = codigo_barra,
-                    familia_producto = familia_producto
-                )
-
                 if producto is not None:
+                    producto.nombre = nombre.strip()
                     producto.save()
+
+                    producto.precio = precio.strip()
+                    producto.save()
+                    
+                    producto.descripcion = descripcion.strip()
+                    producto.save()
+
+                    producto.precio_compra = precio_compra.strip()
+                    producto.save()
+                    producto.stock = stock.strip()
+                    producto.save()
+                    producto.stock_critico = stock_critico.strip()
+                    producto.save()
+                    producto.estado = 1
+                    producto.save()
+                    producto.fecha_vencimiento = fecha_v
+                    producto.save()    
+                    producto.codigo_barra = codigo_barra
+                    producto.save()   
+                    producto.familia_producto = familia_producto
+                    producto.save()     
+                    
                     messages.warning(request, 'Producto creado correctamente')
                     return redirect('listarProductos')
                 else:
                     messages.warning(request, 'No se pudo crear el Producto')
-
 
     return render(request, 'productos/actualizar.html',context)
 
