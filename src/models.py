@@ -123,6 +123,9 @@ class ORDEN_PEDIDO(models.Model):
     fecha_recepcion = models.DateField(blank=True, null=True)
     hora_recepcion = models.TimeField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['id']
+
 class DETALLE_ORDEN(models.Model):
     cantidad = models.IntegerField(default=None)
     orden_pedido = models.ForeignKey(ORDEN_PEDIDO, on_delete=models.CASCADE, default=None)

@@ -27,3 +27,13 @@ table tbody {
 .cajaDetalles{
     flex: auto;
 }
+
+.botones{
+    width: 220px;
+    height: 60px;
+}
+
+.titulo-prov{
+    text-align: center;
+    padding-top: 30px;
+}

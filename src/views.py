@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA, PAGO_FIADO, DETALLE_FIADO, DETALLE_ORDEN
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina, FormCategProv
 import openpyxl
 from tempfile import NamedTemporaryFile
+from datetime import datetime
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -197,6 +198,47 @@ def Venta(request):
                 return redirect('venta')
    
     return render(request, 'venta.html',{'productos':productos, 'form':form})
+
+def RecepcionPedido(request, id = None):
+
+    ordenPedido = ORDEN_PEDIDO.objects.all()
+    detalleOrden = DETALLE_ORDEN.objects.all()
+
+    ordenPedido2 = ""
+    detalleOrden2 = ""
+    if id:
+        ordenPedido2 = ORDEN_PEDIDO.objects.filter(id=id)
+        detalleOrden2 = DETALLE_ORDEN.objects.filter(orden_pedido=id)
+    
+    productos = PRODUCTO.objects.all()
+
+    if request.method == 'POST':
+
+        ordenPedido3 = ORDEN_PEDIDO.objects.get(id=id)
+        validado = request.POST.get('validado')
+        fecha = datetime.now().date()
+        hora = datetime.now().time()
+        print(fecha)
+        print(hora)
+        
+        ordenPedido3.estado_recepcion = 1
+        ordenPedido3.save()
+        ordenPedido3.fecha_recepcion = fecha
+        ordenPedido3.save()
+        ordenPedido3.hora_recepcion = hora
+        ordenPedido3.save()
+
+        return redirect('RecepcionPedido')
+
+    context= {
+        'ordenPedido':ordenPedido,
+        'productos':productos,
+        'detalleOrden':detalleOrden,
+        'ordenPedido2':ordenPedido2,
+        'detalleOrden2':detalleOrden2
+    }
+
+    return render(request, 'recepcion_pedido.html',context)
 
 
 ##**************************Usuarios***************************************
@@ -950,8 +992,6 @@ class PedidosListado(ListView):
 
 def PedidosCrear(request, id = None):
 
-    
-
     proveedores = PROVEEDOR.objects.all()
 
     tiposProductos = TIPO_PRODUCTO.objects.filter(proveedor=id)
@@ -1040,7 +1080,7 @@ def PedidosCrear(request, id = None):
             detallePedido.save()
         
         messages.warning(request, 'Orden de pedido realizada con exito')
-        return redirect('crearPedido')
+        return redirect('listarPedidos')
 
     
     context = {
@@ -1049,9 +1089,16 @@ def PedidosCrear(request, id = None):
     }
     return render(request, 'pedidos/crear.html', context)
 
-@method_decorator(login_required, name='dispatch')
-class PedidosDetalle(DetailView):
-    model = ORDEN_PEDIDO
+@login_required(login_url="login")
+def PedidosDetalle(request, id):
+    pedido = ORDEN_PEDIDO.objects.filter(id=id)
+    detallesP = DETALLE_ORDEN.objects.filter(orden_pedido=id)
+    context = {
+        'pedido':pedido,
+        'detallesP':detallesP,
+        'id':id
+    }
+    return render(request, 'pedidos/detalles.html', context)
 
 @method_decorator(login_required, name='dispatch')
 class PedidosActualizar(SuccessMessageMixin, UpdateView):
@@ -1062,6 +1109,61 @@ class PedidosActualizar(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse('listarPedidos')
 
+def DesactivarPedido(request, id):
+    pedido = ORDEN_PEDIDO.objects.get(id = id)
+    pedido.estado_recepcion = 3
+    pedido.save()
+    messages.warning(request, f'Pedido {pedido.id} anulado')
+    return redirect('listarPedidos')
+
+def ActivarPedido(request, id):
+    pedido = ORDEN_PEDIDO.objects.get(id = id)
+    pedido.estado_recepcion = 0
+    pedido.save()
+    messages.warning(request, f'Pedido {pedido.id} activado')
+    return redirect('listarPedidos')
+
+##******************************************************************
+
+##**************************Categoria proveedor**********************************
+@login_required(login_url="login")
+def CategoriasProvListar(request):
+
+    categorias = CATEGORIA_PROVEEDOR.objects.all()
+
+    return render(request, 'categoria_proveedor/listar.html', {'categorias':categorias})
+
+@login_required(login_url="login")
+def CategoriaProvCrear(request):
+
+    if request.method == 'POST':
+
+        categoria = request.POST.get('descripcion')
+
+        categProv = CATEGORIA_PROVEEDOR.objects.create(
+            descripcion = categoria
+        )
+        categProv.save()
+        messages.warning(request, 'Categoria Proveedor creada con exito')
+        return redirect('listarCategoriasProv')
+
+    return render(request, 'categoria_proveedor/crear.html')
+
+@login_required(login_url="login")
+def CategoriaProvActualizar(request, id):
+    
+    categoriaProv = CATEGORIA_PROVEEDOR.objects.get(id=id)
+    form = FormCategProv(request.POST or None, instance=categoriaProv)
+
+    if request.method == 'POST':
+
+        categoria = request.POST.get('descripcion')
+        categoriaProv.descripcion = categoria
+        categoriaProv.save()
+        messages.warning(request, 'Categoria Proveedor actualizada con exito')
+        return redirect('listarCategoriasProv')
+
+    return render(request, 'categoria_proveedor/actualizar.html',{'form':form})
 ##******************************************************************
 
 ##**************************Boleta***************************************
@@ -1069,6 +1171,7 @@ class PedidosActualizar(SuccessMessageMixin, UpdateView):
 class BoletaListado(ListView):
     model = BOLETA
 
+@login_required(login_url="login")
 def BoletaDetalle(request, id):
     boleta = BOLETA.objects.filter(id=id)
     detalles = DETALLE_BOLETA.objects.filter(boleta=id)
@@ -1109,13 +1212,14 @@ def CreacionInformes(request):
     formProveeOrden = FormInformeOrdenPedido()
     FormSeg = FormSeguimientoPagina()
 
-    listaProducto = {}
+    listaProducto = []
 
     if request.method == 'POST':
 
         productos = request.POST.get('productos')
         precio = request.POST.get('precio')
         descripcion = request.POST.get('descripcion')
+        nombre = request.POST.get('nombre')
         precioCompra = request.POST.get('precioCompra')
         stockCritico = request.POST.get('stockCritico')
         fechaVencimiento = request.POST.get('fechaVencimiento')
@@ -1133,27 +1237,75 @@ def CreacionInformes(request):
         tipoProducto = request.POST.get('tipoProducto')
         tipoProductoCheck = request.POST.get('tipoProductoCheck')
         
-        var = ""
+        lista = []
+        titulos = []
         # PRODUCTO.objects.filter().values_list("account__owner__code",)
 
         if productos == "on":
-            if precio == "on":
-                var = var + ",'precio'"
-                
+
+            ids = PRODUCTO.objects.all().values_list("id")
+            titulos.append("ID")
+            for valores in ids:
+                valor = valores
+                listaProducto.append(valor)
+            lista.append(listaProducto)
+            listaProducto = []
+
+            if nombre == "on":
+                valores = PRODUCTO.objects.all().values_list("nombre")
+                titulos.append("NOMBRE")
+                for valor in valores:
+                    listaProducto.append(valor)
+            lista.append(listaProducto)
+            listaProducto = []
+
             if descripcion == "on":
-                var = var + ",'descripcion'"
-            
+                valores = PRODUCTO.objects.all().values_list("descripcion")
+                titulos.append("DESCRIPCION")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
+
+            if precio == "on":
+                valores = PRODUCTO.objects.all().values_list("precio")
+                titulos.append("PRECIO")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
+
             if precioCompra == "on":
-                var = var + ",'precio_compra'"
+                valores = PRODUCTO.objects.all().values_list("precio_compra")
+                titulos.append("PRECIO DE COMPRA")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
 
             if stockCritico == "on":
-                var = var + ",'stock_critico'"
+                valores = PRODUCTO.objects.all().values_list("stock_critico")
+                titulos.append("STOCK CRITICO")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
 
             if fechaVencimiento == "on":
-                var = var + ",'fecha_vencimiento'"
-            
+                valores = PRODUCTO.objects.all().values_list("fecha_vencimiento")
+                titulos.append("FECHA_VENCIMIENTO")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
+
             if codigoBarra == "on":
-                var = var + ",'codigo_barra'"
+                valores = PRODUCTO.objects.all().values_list("codigo_barra")
+                titulos.append("CODIGO_BARRA")
+                for valor in valores:
+                    listaProducto.append(valor)
+                lista.append(listaProducto)
+                listaProducto = []
 
             if stock == "on":
                 print("algo")
@@ -1191,9 +1343,10 @@ def CreacionInformes(request):
                     tipo_producto = request.POST.get('tipo_producto')
                     print(tipo_producto)
 
-            listaP = var[1:]
-            print(listaP)
-            print(PRODUCTO.objects.filter().values_list(listaP))
+            print(lista)
+            book_excel( lista, titulos)
+            book_excel.book.save('productos.xlsx')
+            
 
 
 
@@ -1218,47 +1371,37 @@ def CreacionInformes(request):
     }
     return render(request, 'informes.html', context)
 
-def book_excel(self, holdings):
+def book_excel( datos, titulos):
 
     book = openpyxl.Workbook()  # Se crea un libro
     sheet = book.active  # Se activa la primera hoja
 
     # agrego los datos de la primera fila
+    
+    
     sheet.append(
+        
         (
-            "user_code",
-            "account_code",
-            "user_name",
-            "quantity",
-            "value_clp",
-            "value_usd",
+            datos,
         )
     )
 
     # recupero los datos de la query y luego los voy agregando por fila
-    for h in holdings:
+    for h in datos:
 
-        user_code = h[0]
-        account_code = h[1]
-        user_name = h[2] + " " + h[3]
-        quantity = h[4]
-        value_clp = h[4] * h[5]
-        value_usd = h[4] * h[6]
+        
 
         sheet.append(
             (
-                user_code,
-                account_code,
-                user_name,
-                quantity,
-                value_clp,
-                value_usd,
+                "hola",
+               
             )
         )
     return book
 ##********************************************************************
 
 @login_required(login_url="login")
+
 def CargaDatos(request):
 
     # # # # # # # # # cliente1 = CLIENTE.objects.create(

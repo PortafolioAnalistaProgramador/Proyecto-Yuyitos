@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import BOLETA, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, SEGUIMIENTO_PAGINA
+from .models import BOLETA, CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, SEGUIMIENTO_PAGINA
 # from django.utils import timezone
 
         
@@ -72,6 +72,12 @@ class FormProductoProv(forms.ModelForm):
     class Meta:
         model = ORDEN_PEDIDO
         fields = ("proveedor",)
+
+class FormCategProv(forms.ModelForm):
+    
+    class Meta:
+        model = CATEGORIA_PROVEEDOR
+        fields = ("descripcion",)
 
 class FormInformeOrdenPedido(forms.ModelForm):
     def __init__(self, *args, **kwargs):
