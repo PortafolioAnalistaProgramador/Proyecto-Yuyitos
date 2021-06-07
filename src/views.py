@@ -856,7 +856,7 @@ def ProductoActualizar(request, id):
                     producto.codigo_barra = codigo_barra
                     producto.save()   
                     producto.familia_producto = familia_producto
-                    producto.save()     
+                    producto.save()
                     
                     messages.warning(request, 'Producto creado correctamente')
                     return redirect('listarProductos')
