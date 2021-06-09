@@ -10,6 +10,7 @@ linea de comandos dependiendo del sistema operativo que use.
 2.- una vez activado el entorno virtual ejecutar los siguientes comandos si esta en Windows
 
 pip install django-extensions
+
 pip instal cx-Oracle
 
 si esta desde distrubuciones de ubuntu solo ejecutar el primero.
@@ -17,14 +18,18 @@ si esta desde distrubuciones de ubuntu solo ejecutar el primero.
 3.- Luego desde SqlDeveloper ejecutar en el usuario principal los siguientes comandos, esto funcionara si tiene una version de oracle desde 12c para arriba:
 
 CREATE USER "C##JUANITA" IDENTIFIED BY "123456";
+
 GRANT CONNECT TO "C##JUANITA";
+
 GRANT RESOURCE TO "C##JUANITA";
+
 ALTER USER C##JUANITA quota 100M on USERS;
 
 4.- Una vez creado el usuario, migraremos el modelo desde el proyecto, nos ubicaremos en la ruta Proyecto_Yuyitos/almacen y ejecutaremos los siguientes 
 comandos por separados desde el terminal:
 
 python manage.py makemigrations
+
 python manage.py migrate
 
 5.- ahora podemos proceder a ejecutar el script en sqldeveloper, el archivo tiene por nombre inserciones.sql
