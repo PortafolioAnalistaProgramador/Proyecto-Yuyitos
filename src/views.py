@@ -205,6 +205,7 @@ def Venta(request):
    
     return render(request, 'venta.html',{'productos':productos, 'form':form})
 
+@login_required(login_url="login")
 def RecepcionPedido(request, id = None):
 
     ordenPedido = ORDEN_PEDIDO.objects.all()
