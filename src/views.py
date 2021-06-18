@@ -1724,14 +1724,16 @@ def CreacionInformesBoletas(request):
         cantidadDetalle = request.POST.get('cantidadDetalle')
         precioDetalle = request.POST.get('precioDetalle')
 
-        # nomFamiliaProducto = request.POST.get('familia_producto')
-        # nomFamiliaProducto = FAMILIA_PRODUCTO.objects.filter(id = nomFamiliaProducto)
-        # for fam in nomFamiliaProducto:
-        #     nomFamiliaProducto = fam.descripcion
-
         lista = []
 
         tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
 
         if boletas == "on":
 
@@ -1849,7 +1851,6 @@ def CreacionInformesBoletas(request):
             np_array = []
             lista = np_arrayProd.tolist()
             np_arrayProd = np.array(lista)
-            
 
             if clienteBoletaCheck == "porNombreB":
                 np_array = np.array(lista)
@@ -1922,12 +1923,88 @@ def CreacionInformesBoletas(request):
             np_array = []
             lista = np_arrayProd.tolist()
             np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
             
             if tipoInforme == "informeExcel":
 
-                nombre_archivo = "Boletas.xlsx"
-                
-                return  creacion_excel(nombre_archivo, lista)
+                nombre_archivo = "Boletas"
+                if visitas == []:
+                    return  creacion_excel(nombre_archivo, lista)
+                else:
+                    return  creacion_excel(nombre_archivo, lista, visitas)
 
             if tipoInforme == "informePdf":
                 
@@ -1935,7 +2012,16 @@ def CreacionInformesBoletas(request):
                 extension = 'pdf'
                 
                 nombre = 'Boletas'
-                return creacion_doc(lista, tipo_doc, A3, nombre, extension)
+                if vistaPrevia:
+                    if visitas == []:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                    else:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+                else:
+                    if visitas == []:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                    else:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
 
             if tipoInforme == "informeWord": 
 
@@ -1943,7 +2029,17 @@ def CreacionInformesBoletas(request):
                 extension = 'docx'
                 
                 nombre = 'Boletas'
-                return creacion_doc(lista, tipo_doc, A3, nombre, extension)
+
+                if vistaPrevia:
+                    if visitas == []:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                    else:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+                else:
+                    if visitas == []:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                    else:
+                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
 
     context = {
         'formP':formP,
@@ -2081,64 +2177,3 @@ def creacion_doc(lista,tipo_doc,tamaño_pagina, nombre, extension, visitas = Non
     return FileResponse(buff, as_attachment=valor, filename=f'{nombre}.{extension}')
 
 
-def documento_enlinea(lista,tipo_doc,tamaño_pagina, nombre, extension, visitas = None):
-    response = HttpResponse(content_type=f'application/{tipo_doc}')  
-
-    buff = BytesIO()  
-
-    doc = SimpleDocTemplate(buff,  
-        pagesize=tamaño_pagina,  
-        rightMargin=40,  
-        leftMargin=40,  
-        topMargin=60,  
-        bottomMargin=18,  
-    ) 
-    
-    data = []  
-    styles = getSampleStyleSheet()  
-    styles = styles['Heading1']
-    styles.alignment = TA_CENTER 
-
-    header = Paragraph(f"{nombre}", styles)  
-    
-    data.append(header)  
-
-    t = Table(lista)  
-
-    t.setStyle(TableStyle(  
-        [  
-        ('GRID', (0, 0), (12, -1), 1, colors.dodgerblue),  
-        ('LINEBELOW', (0, 0), (-1, 0), 3, colors.darkblue),  
-        ('BACKGROUND', (0, 0), (-1, 0), colors.dodgerblue)  
-        ]  
-    ))  
-    
-    data.append(t)
-
-    if visitas:
-
-        styles = getSampleStyleSheet()  
-        styles.pageBreakBefore = 2
-        styles = styles['Heading1']
-        styles.alignment = TA_CENTER 
-        header = Paragraph("Visitas", styles)  
-        
-        data.append(header)  
-
-        t = Table(visitas)  
-
-        t.setStyle(TableStyle(  
-            [  
-            ('GRID', (0, 0), (12, -1), 1, colors.dodgerblue),  
-            ('LINEBELOW', (0, 0), (-1, 0), 3, colors.darkblue),  
-            ('BACKGROUND', (0, 0), (-1, 0), colors.dodgerblue)  
-            ]  
-        ))  
-        
-        data.append(t)
-
-    doc.build(data)  
-    response.write(buff.getvalue())   
-
-    buff.seek(0)
-    return FileResponse(buff, as_attachment=False, filename=f'{nombre}.{extension}')

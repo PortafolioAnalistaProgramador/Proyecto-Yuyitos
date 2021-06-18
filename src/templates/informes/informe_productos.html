@@ -114,8 +114,8 @@
 
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
-                <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento (Para formato excel no existe vista previa):</label></br></br>
-                <button type="submit" name="vistaPrevia" target="_blank" value="vistaPrevia" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <label for="">Para descargar el informe debe seleccionar un formato de documento, para obtener una vista previa del informe solo se puede en formato PDF:</label></br></br>
+                <button type="submit" name="vistaPrevia" value="vistaPrevia" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
                 <button type="submit" name="descargarInforme" value="descargarInforme" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
             </div>
 
@@ -306,16 +306,16 @@
 
         //informes
 
-        if (form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+        if (form.informeCheck3.checked == true ){
             form.descargarInforme.disabled = false;
             form.vistaPrevia.disabled = false;
         }
 
-        if (form.informeCheck1.checked == true){
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
             form.descargarInforme.disabled = false;
         }
 
-        if (form.informeCheck1.checked == true){
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
             form.vistaPrevia.disabled = true;
         }
     }
