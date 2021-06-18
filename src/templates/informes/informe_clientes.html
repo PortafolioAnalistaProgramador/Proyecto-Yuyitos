@@ -32,7 +32,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Nombre:</label>
                 <input type="checkbox" class="nombreC" name="nombreC" id="nombreC" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="nombreClienteCheck" value="todosC" id="nombreClienteCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="nombreClienteCheck" value="todosC" id="nombreClienteCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="nombreClienteCheck" value="porNombreC" id="nombreClienteCheck2" onclick="checkeado(this.form)"> Por nombre</br>
                 {{ formCliente.cliente }} 
             </div>
@@ -40,7 +40,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Estado cliente:</label>
                 <input type="checkbox" class="estadoIC" name="estadoIC" id="estadoIC" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="estadoIClienteCheck" value="todosIC" id="estadoIClienteCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="estadoIClienteCheck" value="todosIC" id="estadoIClienteCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="estadoIClienteCheck" value="activoIC" id="estadoIClienteCheck2" onclick="checkeado(this.form)"> Activos</br></br>
                 <input type="radio" name="estadoIClienteCheck" value="bloqueadoIC" id="estadoIClienteCheck3" onclick="checkeado(this.form)"> Bloqueados</br></br>
             </div>
@@ -59,7 +59,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Usuario:</label>
                 <input type="checkbox" class="usuarioPaginaVisitada" name="usuarioPaginaVisitada" id="usuarioPaginaVisitada" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="usuarioVisitasPaginaCheck" value="todosVisitasP" id="usuarioVisitasPaginaCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="usuarioVisitasPaginaCheck" value="todosVisitasP" id="usuarioVisitasPaginaCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="usuarioVisitasPaginaCheck" value="porNombreVisitasP" id="usuarioVisitasPaginaCheck2" onclick="checkeado(this.form)"> Por nombre</br>
                 {{ FormSeg.usuario }} 
                 </br></br>
@@ -92,9 +92,9 @@
 
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
-                <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento:</label></br></br>
-                <button type="" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
-                <button type="submit" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
+                <label for="">Para descargar el informe debe seleccionar un formato de documento, para obtener una vista previa del informe solo se puede en formato PDF:</label></br></br>
+                <button type="submit" name="vistaPrevia" value="vistaPrevia" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <button type="submit" name="descargarInforme" value="descargarInforme" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
             </div>
 
             <div class="col-md-2">
@@ -224,9 +224,17 @@
 
         //informes
 
-        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+        if (form.informeCheck3.checked == true ){
             form.descargarInforme.disabled = false;
             form.vistaPrevia.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.descargarInforme.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.vistaPrevia.disabled = true;
         }
     }
     

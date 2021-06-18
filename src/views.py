@@ -1549,7 +1549,7 @@ def CreacionInformesProductos(request):
             np_array = []
             lista = np_arrayProd.tolist()
             np_arrayProd = np.array(lista)
-########################################################
+
         if visitasPagina == "on":
             
             paginaVisitada = request.POST.get('paginaVisitada')
@@ -1723,8 +1723,6 @@ def CreacionInformesBoletas(request):
         productoDetalle = request.POST.get('productoDetalle')
         cantidadDetalle = request.POST.get('cantidadDetalle')
         precioDetalle = request.POST.get('precioDetalle')
-
-        lista = []
 
         tipoInforme = request.POST.get('informeCheck')
 
@@ -1998,48 +1996,48 @@ def CreacionInformesBoletas(request):
             visitas = np_arrayProd.tolist()
             np_arrayProd = np.array(visitas)
             
-            if tipoInforme == "informeExcel":
+        if tipoInforme == "informeExcel":
 
-                nombre_archivo = "Boletas"
+            nombre_archivo = "Boletas"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Boletas'
+            if vistaPrevia:
                 if visitas == []:
-                    return  creacion_excel(nombre_archivo, lista)
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
                 else:
-                    return  creacion_excel(nombre_archivo, lista, visitas)
-
-            if tipoInforme == "informePdf":
-                
-                tipo_doc = 'pdf'
-                extension = 'pdf'
-                
-                nombre = 'Boletas'
-                if vistaPrevia:
-                    if visitas == []:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
-                    else:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
                 else:
-                    if visitas == []:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
-                    else:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
 
-            if tipoInforme == "informeWord": 
+        if tipoInforme == "informeWord": 
 
-                tipo_doc = 'ms-word'
-                extension = 'docx'
-                
-                nombre = 'Boletas'
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Boletas'
 
-                if vistaPrevia:
-                    if visitas == []:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
-                    else:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
                 else:
-                    if visitas == []:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
-                    else:
-                        return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
 
     context = {
         'formP':formP,
@@ -2058,7 +2056,318 @@ def CreacionInformesBoletas(request):
 @login_required(login_url="login")
 def CreacionInformesClientes(request):
 
-    return render(request, 'informes/informe_clientes.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        clientes = request.POST.get('clientes')
+        runC = request.POST.get('runC')
+        telefonoC = request.POST.get('telefonoc')
+        correoC = request.POST.get('correoC')
+        direccionC = request.POST.get('direccionC')
+        
+        nombreC = request.POST.get('nombreC')
+        nombreClienteCheck = request.POST.get('nombreClienteCheck')
+        nomCliente = request.POST.get('cliente')
+        nomCliente = CLIENTE.objects.filter(id = nomCliente)
+        for us in nomCliente:
+            nomCliente = us.nombre
+
+        estadoIC = request.POST.get('estadoIC')
+        estadoBoletaCheck = request.POST.get('estadoIClienteCheck')
+
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if clientes == "on":
+
+            val = CLIENTE.objects.all().values_list("id","run","nombre","telefono","correo","direccion","estado").order_by("id")
+            lista.append(["id","run","nombre","telefono","correo","direccion","estado"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if runC == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "run")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if nombreC == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "nombre")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if telefonoC == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "telefono")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if correoC == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "correo")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if direccionC == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "direccion")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoIC == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+
+            if nombreClienteCheck == "porNombreC":
+                np_array = np.array(lista)
+                val = np.where(np_array == "nombre")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomCliente:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+            
+            if estadoBoletaCheck == "activoIC":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) < 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoBoletaCheck == "bloqueadoIC":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) > 0:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Clientes"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Clientes'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Clientes'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_clientes.html', context)
 
 @login_required(login_url="login")
 def CreacionInformesFiados(request):
