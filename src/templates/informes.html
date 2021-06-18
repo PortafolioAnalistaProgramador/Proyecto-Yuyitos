@@ -347,16 +347,16 @@
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
                 <label for="">Exportar a documento tipo:</label></br></br>
-                <input type="radio" name="informeCheck" value="" id="" onclick=""> Excel</br></br>
-                <input type="radio" name="informeCheck" value="" id="" onclick=""> Word</br></br>
-                <input type="radio" name="informeCheck" value="" id="" onclick=""> PDF</br><br>
+                <input type="radio" name="informeCheck" value="informeExcel" id="informeCheck1" onclick="checkeado(this.form)"> Excel</br></br>
+                <input type="radio" name="informeCheck" value="informeWord" id="informeCheck2" onclick="checkeado(this.form)"> Word</br></br>
+                <input type="radio" name="informeCheck" value="informePdf" id="informeCheck3" onclick="checkeado(this.form)"> PDF</br><br>
             </div>
 
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
                 <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento:</label></br></br>
-                <button type="" id="" class="btn btn-primary">Vista previa</button><br><br>
-                <button type="" id="" class="btn btn-primary">Descargar</button><br><br>
+                <button type="" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <button type="submit" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
             </div>
 
             <div class="col-md-2">
@@ -365,6 +365,21 @@
     </div>
 
 </form>
+
+<!-- {% for prod in productos %}
+    <li class="productoValores" disable id="{{ prod.id }}">{{ prod.id }}</li>
+    <li class="productoValores" disabled id="{{ prod.nombre }}">{{ prod.nombre }}</li>
+    <li class="productoValores" disabled id="{{ prod.descripcion }}">{{ prod.descripcion }}</li>
+    <li class="productoValores" disabled id="{{ prod.precio }}">{{ prod.precio }}</li>
+    <li class="productoValores" disabled id="{{ prod.precio_compra }}">{{ prod.precio_compra }}</li>
+    <li class="productoValores" disabled id="{{ prod.stock }}">{{ prod.stock }}</li>
+    <li class="productoValores" disabled id="{{ prod.stock_critico }}">{{ prod.stock_critico }}</li>
+    <li class="productoValores" disabled id="{{ prod.estado }}">{{ prod.estado }}</li>
+    <li class="productoValores" disabled id="{{ prod.fecha_vencimiento }}">{{ prod.fecha_vencimiento }}</li>
+    <li class="productoValores" disabled id="{{ prod.codigo_barra }}">{{ prod.codigo_barra }}</li>
+{% endfor %} -->
+
+<!-- <script src="{% static 'js/informes.js' %}"></script>   -->
 <script language="JavaScript">
    
     document.getElementById("precio").disabled=true;
@@ -488,6 +503,9 @@
     document.getElementById("id_visitas_pagina").disabled=true;
     document.getElementById("fechaVisitasP").disabled=true;
     document.getElementById("paginaVisitada").disabled=true;
+    
+    document.getElementById("descargarInforme").disabled=true;
+    document.getElementById("vistaPrevia").disabled=true;
     
     function checkeado(form)
     {
@@ -960,6 +978,14 @@
 
         if (form.usuarioVisitasPaginaCheck1.checked == true){
             form.id_visitas_pagina.disabled = true;
+        }
+
+
+        //informes
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+            form.descargarInforme.disabled = false;
+            form.vistaPrevia.disabled = false;
         }
     }
     
