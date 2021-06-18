@@ -1,0 +1,263 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/informes.css' %}">
+<h1 class="text-center p-3">Crear Informe</h1>
+<form method="post" action="" class="">
+    {% csrf_token %}
+    
+    <!-- orden pedido -->
+    <div class="container border border-primary rounded mt-3">
+        <label for="productos" class="p-2">Ordenes de pedidos:</label>
+        <input type="checkbox" class="ordenes" name="ordenes" id="ordenes" onclick="checkeado(this.form)"/></br>
+        
+        <div class="row row-cols-4">
+            <div class="col border border-primary rounded">
+                </br>
+                <label for="productos" class="p-2">Fecha pedido:</label>
+                <input type="checkbox" class="fechaOrdenP" name="fechaOrdenP" id="fechaOrdenP"/></br>
+
+                <label for="productos" class="p-2">Fecha llegada:</label>
+                <input type="checkbox" class="fechaLlegadaOrdenP" name="fechaLlegadaOrdenP" id="fechaLlegadaOrdenP"/></br>
+
+                <label for="productos" class="p-2">Fecha recepcion:</label>
+                <input type="checkbox" class="fechaRecepOrdenP" name="fechaRecepOrdenP" id="fechaRecepOrdenP"/></br>
+
+                <label for="productos" class="p-2">Hora recepcion:</label>
+                <input type="checkbox" class="horaRecepOrdenP" name="horaRecepOrdenP" id="horaRecepOrdenP"/></br>
+
+                
+            </div>
+            
+            <div class="col border border-primary rounded">
+                <label for="productos" class="p-2">Estado recepcion:</label>
+                <input type="checkbox" class="estadoRecepcionO" name="estadoRecepcionO" id="estadoRecepcionO" onclick="checkeado(this.form)"/></br></br>
+                <input type="radio" name="estadoOrdenPCheck" value="todosOrdenP" id="estadoOrdenPCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="estadoOrdenPCheck" value="enEsperaOrden" id="estadoOrdenPCheck2" onclick="checkeado(this.form)"> En espera</br></br>
+                <input type="radio" name="estadoOrdenPCheck" value="recepcionadoOrden" id="estadoOrdenPCheck3" onclick="checkeado(this.form)"> Recepcionado</br></br>
+            </div>
+
+            <div class="col border border-primary rounded">
+                <label for="productos" class="p-2">Proveedor orden:</label>
+                <input type="checkbox" class="razonSocialOrdenP" name="razonSocialOrdenP" id="razonSocialOrdenP" onclick="checkeado(this.form)"/></br></br>
+                <input type="radio" name="razonSocialOrdenPCheck" value="todosOrdenP" id="razonSocialOrdenPCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="razonSocialOrdenPCheck" value="porRazonSocialOrdenP" id="razonSocialOrdenPCheck2" onclick="checkeado(this.form)"> Por razon social</br>
+                {{ formProveeOrden.proveedor }} 
+            </div>
+
+            <div class="col border border-primary rounded">
+                <label for="productos" class="p-2">Detalle orden</label>
+                <input type="checkbox" class="detalleOrdenP" name="detalleOrdenP" id="detalleOrdenP" onclick="checkeado(this.form)"/></br></br>
+                <label for="productos" class="p-2">Cantidad:</label>
+                <input type="checkbox" class="cantidadOrdenP" name="cantidadOrdenP" id="cantidadOrdenP"/></br>
+                <label for="productos" class="p-2">Producto:</label>
+                <input type="checkbox" class="productoOrdenP" name="productoOrdenP" id="productoOrdenP"/></br>
+            </div>
+  
+        </div>
+    
+    </div>
+    
+    <!-- seguimiento pagina -->
+    <div class="container border border-primary rounded mt-3">
+        <label for="productos" class="p-2">Visitas a paginas:</label>
+        <input type="checkbox" class="visitas" name="visitas" id="visitas" onclick="checkeado(this.form)"/></br>
+        
+        <div class="row row-cols-2">
+
+            <div class="col border border-primary rounded">
+                <label for="productos" class="p-2">Usuario:</label>
+                <input type="checkbox" class="usuarioPaginaVisitada" name="usuarioPaginaVisitada" id="usuarioPaginaVisitada" onclick="checkeado(this.form)"/></br></br>
+                <input type="radio" name="usuarioVisitasPaginaCheck" value="todosVisitasP" id="usuarioVisitasPaginaCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="usuarioVisitasPaginaCheck" value="porNombreVisitasP" id="usuarioVisitasPaginaCheck2" onclick="checkeado(this.form)"> Por nombre</br>
+                {{ FormSeg.usuario }} 
+                </br></br>
+            </div>
+            
+            <div class="col border border-primary rounded">
+                </br>
+                <label for="productos" class="p-2">Fecha ingreso:</label>
+                <input type="checkbox" class="fechaVisitasP" name="fechaVisitasP" id="fechaVisitasP"/></br>
+
+                <label for="productos" class="p-2">Pagina visitada:</label>
+                <input type="checkbox" class="paginaVisitada" name="paginaVisitada" id="paginaVisitada"/></br>
+            </div>
+  
+        </div>
+    
+    </div>
+    <div class="container p-3">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-4 text-center border border-dark rounded">
+                <br>
+                <label for="">Exportar a documento tipo:</label></br></br>
+                <input type="radio" name="informeCheck" value="informeExcel" id="informeCheck1" onclick="checkeado(this.form)"> Excel</br></br>
+                <input type="radio" name="informeCheck" value="informeWord" id="informeCheck2" onclick="checkeado(this.form)"> Word</br></br>
+                <input type="radio" name="informeCheck" value="informePdf" id="informeCheck3" onclick="checkeado(this.form)"> PDF</br><br>
+            </div>
+
+            <div class="col-md-4 text-center border border-dark rounded">
+                <br>
+                <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento:</label></br></br>
+                <button type="" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <button type="submit" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
+            </div>
+
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script language="JavaScript">
+
+    document.getElementById("fechaOrdenP").disabled=true;
+    document.getElementById("fechaLlegadaOrdenP").disabled=true;
+    document.getElementById("fechaRecepOrdenP").disabled=true;
+    document.getElementById("horaRecepOrdenP").disabled=true;
+    document.getElementById("estadoRecepcionO").disabled=true;
+    document.getElementById("estadoOrdenPCheck1").disabled=true;
+    document.getElementById("estadoOrdenPCheck2").disabled=true;
+    document.getElementById("estadoOrdenPCheck3").disabled=true;
+    document.getElementById("razonSocialOrdenP").disabled=true;
+    document.getElementById("razonSocialOrdenPCheck1").disabled=true;
+    document.getElementById("razonSocialOrdenPCheck2").disabled=true;
+    document.getElementById("id_ordenP_informe").disabled=true;
+    document.getElementById("detalleOrdenP").disabled=true;
+    document.getElementById("cantidadOrdenP").disabled=true;
+    document.getElementById("productoOrdenP").disabled=true;
+    
+    document.getElementById("usuarioPaginaVisitada").disabled=true;
+    document.getElementById("usuarioVisitasPaginaCheck1").disabled=true;
+    document.getElementById("usuarioVisitasPaginaCheck2").disabled=true;
+    document.getElementById("id_visitas_pagina").disabled=true;
+    document.getElementById("fechaVisitasP").disabled=true;
+    document.getElementById("paginaVisitada").disabled=true;
+    
+    document.getElementById("descargarInforme").disabled=true;
+    document.getElementById("vistaPrevia").disabled=true;
+    
+    function checkeado(form)
+    {
+
+        //orden pedido
+        if (form.ordenes.checked == true){
+            
+            form.fechaOrdenP.disabled = false;
+            form.fechaLlegadaOrdenP.disabled = false;
+            form.fechaRecepOrdenP.disabled = false;
+            form.horaRecepOrdenP.disabled = false;
+            form.estadoRecepcionO.disabled = false;
+            form.razonSocialOrdenP.disabled = false;
+            form.detalleOrdenP.disabled = false;
+            
+        }
+
+        if (form.ordenes.checked == false || form.ordenes.disabled == true){
+            form.fechaOrdenP.disabled = true;
+            form.fechaLlegadaOrdenP.disabled = true;
+            form.fechaRecepOrdenP.disabled = true;
+            form.horaRecepOrdenP.disabled = true;
+            form.estadoRecepcionO.disabled = true;
+            form.razonSocialOrdenP.disabled = true;
+            form.detalleOrdenP.disabled = true;
+        }
+        
+        if (form.estadoRecepcionO.checked == true){
+            
+            form.estadoOrdenPCheck1.disabled = false;
+            form.estadoOrdenPCheck2.disabled = false;
+            form.estadoOrdenPCheck3.disabled = false;
+        }
+
+        if (form.estadoRecepcionO.checked == false || form.estadoRecepcionO.disabled == true){
+            form.estadoOrdenPCheck1.disabled = true;
+            form.estadoOrdenPCheck2.disabled = true;
+            form.estadoOrdenPCheck3.disabled = true;
+        }
+        
+        if (form.detalleOrdenP.checked == true){
+            
+            form.cantidadOrdenP.disabled = false;
+            form.productoOrdenP.disabled = false;
+        }
+
+        if (form.detalleOrdenP.checked == false || form.detalleOrdenP.disabled == true){
+            form.cantidadOrdenP.disabled = true;
+            form.productoOrdenP.disabled = true;
+        }
+        
+        if (form.razonSocialOrdenP.checked == true){
+            
+            form.razonSocialOrdenPCheck1.disabled = false;
+            form.razonSocialOrdenPCheck2.disabled = false;
+            
+        }
+
+        if (form.razonSocialOrdenP.checked == false || form.razonSocialOrdenP.disabled == true){
+            form.razonSocialOrdenPCheck1.disabled = true;
+            form.razonSocialOrdenPCheck2.disabled = true;
+            
+        }
+
+        if (form.razonSocialOrdenPCheck2.checked == true){
+            form.id_ordenP_informe.disabled = false;
+        }
+
+        if (form.razonSocialOrdenPCheck1.checked == true){
+            form.id_ordenP_informe.disabled = true;
+        }
+
+        //visitas
+        if (form.visitas.checked == true){
+            
+            form.usuarioPaginaVisitada.disabled = false;
+            form.fechaVisitasP.disabled = false;
+            form.paginaVisitada.disabled = false;
+        }
+
+        if (form.visitas.checked == false || form.visitas.disabled == true){
+            form.usuarioPaginaVisitada.disabled = true;
+            form.fechaVisitasP.disabled = true;
+            form.paginaVisitada.disabled = true;
+        }
+        //
+        if (form.usuarioPaginaVisitada.checked == true){
+            
+            form.usuarioVisitasPaginaCheck1.disabled = false;
+            form.usuarioVisitasPaginaCheck2.disabled = false;
+            
+        }
+
+        if (form.usuarioPaginaVisitada.checked == false || form.usuarioPaginaVisitada.disabled == true){
+            form.usuarioVisitasPaginaCheck1.disabled = true;
+            form.usuarioVisitasPaginaCheck2.disabled = true;
+            
+        }
+
+        if (form.usuarioVisitasPaginaCheck2.checked == true){
+            form.id_visitas_pagina.disabled = false;
+        }
+
+        if (form.usuarioVisitasPaginaCheck1.checked == true){
+            form.id_visitas_pagina.disabled = true;
+        }
+
+
+        //informes
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+            form.descargarInforme.disabled = false;
+            form.vistaPrevia.disabled = false;
+        }
+    }
+    
+</script>
+<!-- <script src="{% static 'js/informe.js' %}"></script> -->
+{% endblock %}

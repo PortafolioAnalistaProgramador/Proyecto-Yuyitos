@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path
 from src import views, static
-from src.views import Index, CreacionInformes
+from src.views import Index
 from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActualizar, DesactivarUsuario, ActivarUsuario
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar, DesactivarCliente, ActivarCliente
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
@@ -12,7 +12,9 @@ from src.views import BoletaListado, DesactivarBoleta, ActivarBoleta, BoletaDeta
 from src.views import TipoProductoActualizar, TipoProductoListado, TipoProductoCrear
 from src.views import FamiliaProductoListado, FamiliaProductoActualizar, FamiliaProductoCrear
 from src.views import CategoriaProvActualizar, CategoriaProvCrear, CategoriasProvListar
+from src.views import CreacionInformesProductos, CreacionInformesBoletas, CreacionInformesClientes, CreacionInformesFiados, CreacionInformesProveedores, CreacionInformesPedidos
 
+# from src.views import book_excel
 from django.urls import path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
 from django.conf import settings
@@ -23,9 +25,9 @@ urlpatterns = [
     path('', views.Login, name="login"),
     path('index/', views.Index, name="index"),
     path('venta/', views.Venta, name="venta"),
-    path('informes/', views.CreacionInformes, name="informes"),
     path('recepcion/', views.RecepcionPedido, name="RecepcionPedido"),
     path('recepcion/<int:id>', views.RecepcionPedido, name="RecepcionPedido"),
+    # path('informeProd/<str:file>', views.book_excel, name="informeProd"),
     # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
     # path('ingresar/', views.Ingresar, name="ingresar"),
 
@@ -155,7 +157,16 @@ urlpatterns = [
     path('categoria_proveedor/crear/', views.CategoriaProvCrear, name="crearCategoriaProv"),
     path('categoria_proveedor/editar/<int:id>', views.CategoriaProvActualizar, name="actualizarCategoriaProv"),
     ##*****************************************************************************
-    path('datos/', views.CargaDatos, name="datos"),
+   
+
+    ##*******************************Informes****************************************
+    path('informesProductos/', views.CreacionInformesProductos, name="informesProductos"),
+    path('informesBoletas/', views.CreacionInformesBoletas, name="informesBoletas"),
+    path('informesClientes/', views.CreacionInformesClientes, name="informesClientes"),
+    path('informesFiados/', views.CreacionInformesFiados, name="informesFiados"),
+    path('informesProveedores/', views.CreacionInformesProveedores, name="informesProveedores"),
+    path('informesPedidos/', views.CreacionInformesPedidos, name="informesPedidos"),
     
+    ##******************************************************************************
 ]
 
