@@ -2070,7 +2070,7 @@ def CreacionInformesClientes(request):
 
         clientes = request.POST.get('clientes')
         runC = request.POST.get('runC')
-        telefonoC = request.POST.get('telefonoc')
+        telefonoC = request.POST.get('telefonoC')
         correoC = request.POST.get('correoC')
         direccionC = request.POST.get('direccionC')
         
@@ -2377,12 +2377,685 @@ def CreacionInformesFiados(request):
 @login_required(login_url="login")
 def CreacionInformesProveedores(request):
 
-    return render(request, 'informes/informe_proveedores.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        proveedores = request.POST.get('proveedores')
+        correoP = request.POST.get('correoP')
+        telefonoP = request.POST.get('telefonoP')
+        direccionP = request.POST.get('direccionP')
+        
+        estadoP = request.POST.get('estadoP')
+        estadoProveedorCheck = request.POST.get('estadoProveedorCheck')
+
+        razonSocialP = request.POST.get('razonSocialP')
+        razonSocialPCheck = request.POST.get('razonSocialPCheck')
+        nomProveedor = request.POST.get('proveedor')
+        nomProveedor = PROVEEDOR.objects.filter(id = nomProveedor)
+        for us in nomProveedor:
+            nomProveedor = us.razon_social
+
+        categoriaP = request.POST.get('categoriaP')
+        categoriaProvCheck = request.POST.get('categoriaProveedorCheck')
+        nomCategoria = request.POST.get('categoria_proveedor')
+        nomCategoria = CATEGORIA_PROVEEDOR.objects.filter(id = nomCategoria)
+        for us in nomCategoria:
+            nomCategoria = us.descripcion
+
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if proveedores == "on":
+
+            val = PROVEEDOR.objects.all().values_list("id","razon_social","correo","telefono","direccion","estado","categoria_proveedor__descripcion").order_by("id")
+            lista.append(["id","razon_social","correo","telefono","direccion","estado","categoria"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if correoP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "correo")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if telefonoP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "telefono")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if razonSocialP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "razon_social")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if direccionP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "direccion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if categoriaP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "categoria")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+
+            if razonSocialPCheck == "porRazonSocialP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "razon_social")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomProveedor:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if categoriaProvCheck == "porCategoriaP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "categoria")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomCategoria:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+            
+            if estadoProveedorCheck == "activosP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) < 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoProveedorCheck == "bloqueadosP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) > 0:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Proveedores"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Proveedores'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Proveedores'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_proveedores.html',context)
 
 @login_required(login_url="login")
 def CreacionInformesPedidos(request):
 
-    return render(request, 'informes/informe_pedidos.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        ordenes = request.POST.get('ordenes')
+        fechaOrdenP = request.POST.get('fechaOrdenP')
+        fechaLlegadaOrdenP = request.POST.get('fechaLlegadaOrdenP')
+        fechaRecepOrdenP = request.POST.get('fechaRecepOrdenP')
+        horaRecepOrdenP = request.POST.get('horaRecepOrdenP')
+        cantidadOrdenP = request.POST.get('cantidadOrdenP')
+        productoOrdenP = request.POST.get('productoOrdenP')
+
+        estadoRecepcionO = request.POST.get('estadoRecepcionO')
+        estadoOrdenPCheck = request.POST.get('estadoOrdenPCheck')
+
+        razonSocialOrdenP = request.POST.get('razonSocialOrdenP')
+        razonSocialOrdenPCheck = request.POST.get('razonSocialOrdenPCheck')
+        nomProveedor = request.POST.get('proveedor')
+        nomProveedor = PROVEEDOR.objects.filter(id = nomProveedor)
+        for us in nomProveedor:
+            nomProveedor = us.razon_social
+        
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if ordenes == "on":
+
+            val = DETALLE_ORDEN.objects.all().values_list("id","orden_pedido__proveedor__razon_social","orden_pedido__fecha_pedido","orden_pedido__fecha_llegada","orden_pedido__fecha_recepcion","orden_pedido__hora_recepcion","orden_pedido__estado_recepcion","producto__nombre","cantidad").order_by("id")
+            lista.append(["id","proveedor","fecha_pedido","fecha_llegada","fecha_recepcion","hora_recepcion","estado","producto","cantidad"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if fechaOrdenP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_pedido")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaLlegadaOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_llegada")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaRecepOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_recepcion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if horaRecepOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "hora_recepcion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if cantidadOrdenP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "cantidad")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if productoOrdenP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "producto")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoRecepcionO == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if razonSocialOrdenP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "proveedor")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+        
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+
+            if razonSocialOrdenPCheck == "porRazonSocialOrdenP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "proveedor")
+                val = int(val[1])
+                cont = 0
+                print(val)
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomProveedor:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoOrdenPCheck == "enEsperaOrden":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) > 0:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoOrdenPCheck == "recepcionadoOrden":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) != 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Pedidos"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Pedidos'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Pedidos'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_pedidos.html', context)
 
 
 
