@@ -13,7 +13,7 @@ from src.views import TipoProductoActualizar, TipoProductoListado, TipoProductoC
 from src.views import FamiliaProductoListado, FamiliaProductoActualizar, FamiliaProductoCrear
 from src.views import CategoriaProvActualizar, CategoriaProvCrear, CategoriasProvListar
 from src.views import CreacionInformesProductos, CreacionInformesBoletas, CreacionInformesClientes, CreacionInformesFiados, CreacionInformesProveedores, CreacionInformesPedidos
-
+from src.views import PagosFiadosListado, DesactivarPagoFiado, ActivarPagoFiado
 # from src.views import book_excel
 from django.urls import path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetCompleteView, PasswordResetConfirmView
@@ -27,9 +27,8 @@ urlpatterns = [
     path('venta/', views.Venta, name="venta"),
     path('recepcion/', views.RecepcionPedido, name="RecepcionPedido"),
     path('recepcion/<int:id>', views.RecepcionPedido, name="RecepcionPedido"),
-    # path('informeProd/<str:file>', views.book_excel, name="informeProd"),
-    # path('registroUsuarios/', views.RegistroUsuarios, name="registroUsuarios"),
-    # path('ingresar/', views.Ingresar, name="ingresar"),
+    path('pagar_fiado/', views.PagarFiado, name="PagarFiadoTodos"),
+    path('pagar_fiado/<int:id>', views.PagarFiado, name="PagarFiado"),
 
     #******************************Restaurar contrasena
     path('reset_password/', 
@@ -43,31 +42,25 @@ urlpatterns = [
     #**************************************************
 
     # **************************************Usuario
-    # La ruta 'leer' en donde listamos todos los registros o postres de la Base de Datos
-    path('usuarios/', UsuarioListado.as_view(), name='listarUsuarios'),
+    path('usuarios/', views.UsuarioListado, name='listarUsuarios'),
  
-    # # La ruta 'detalles' en donde mostraremos una página con los detalles de un postre o registro 
-    path('usuarios/detalle/<int:pk>', UsuarioDetalle.as_view(template_name = "usuarios/detalles.html"), name='detalles'),
- 
-    # # La ruta 'crear' en donde mostraremos un formulario para crear un nuevo postre o registro  
-    #  path('usuarioAdmin/crear/', UsuarioCrear.as_view(template_name = "administrar_usuarios/crear.html"), name='crear'),
+    path('usuarios/detalle/<int:id>', views.UsuarioDetalle, name='detalles'),
+    
     path('usuarios/crear/', views.UsuarioCrear, name="crearUsuario"),
-    # # La ruta 'actualizar' en donde mostraremos un formulario para actualizar un postre o registro de la Base de Datos 
+
     path('usuarios/editar/<int:id>', views.UsuarioActualizar, name="actualizarUsuario"),
     
-    # # La ruta 'eliminar' que usaremos para eliminar un postre o registro de la Base de Datos 
-    #  path('usuarioAdmin/eliminar/<int:pk>', UsuarioEliminar.as_view(), name='eliminar'), 
     path('usuarios/desactivarUsuario/<int:id>', views.DesactivarUsuario, name="desactivarUsuario"),
     path('usuarios/activarUsuario/<int:id>', views.ActivarUsuario, name="activarUsuario"), 
     # # **************************************
 
 
     # **************************************Cliente
-    path('clientes/', ClienteListado.as_view(template_name = "clientes/listar.html"), name='listarClientes'),
+    path('clientes/', views.ClienteListado, name='listarClientes'),
  
     path('clientes/crear/', views.ClienteCrear, name="crearCliente"),
  
-    path('clientes/detalle/<int:pk>', ClienteDetalle.as_view(template_name = "clientes/detalles.html"), name='detalles'),
+    path('clientes/detalle/<int:id>', views.ClienteDetalle, name='detalles'),
 
     path('clientes/editar/<int:id>', views.ClienteActualizar, name="editarCliente"),
     
@@ -78,11 +71,11 @@ urlpatterns = [
 
 
     # **************************************Proveedor
-    path('proveedores/', ProveedorListado.as_view(template_name = "proveedores/listar.html"), name='listarProveedores'),
+    path('proveedores/', views.ProveedorListado, name='listarProveedores'),
     
     path('proveedores/crear/', views.ProveedorCrear, name="crearProveedor"),
  
-    path('proveedores/detalle/<int:pk>', ProveedorDetalle.as_view(template_name = "proveedores/detalles.html"), name='detalles'),
+    path('proveedores/detalle/<int:id>', views.ProveedorDetalle, name='detalles'),
     
     path('proveedores/editar/<int:id>', views.ProveedorActualizar, name="actualizarProveedor"),
     # path('proveedores/editar/<int:pk>', ProveedorActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizar'), 
@@ -92,12 +85,12 @@ urlpatterns = [
     # # **************************************
 
     # **************************************Proveedor
-    path('productos/', ProductoListado.as_view(template_name = "productos/listar.html"), name='listarProductos'),
+    path('productos/', views.ProductoListado, name='listarProductos'),
     
     path('productos/crear/', views.ProductoCrear, name="crearProducto"),
     # path('productos/crear/', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearProducto'),
  
-    path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detalles'),
+    path('productos/detalle/<int:id>', views.ProductoDetalle, name='detalles'),
 
     # path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
     path('productos/editar/<int:id>', views.ProductoActualizar, name="actualizarProducto"),
@@ -107,7 +100,7 @@ urlpatterns = [
     # # **************************************
 
     # **********************************************Pedidos*********************************************************************
-    path('pedidos/', PedidosListado.as_view(template_name = "pedidos/listar.html"), name='listarPedidos'),
+    path('pedidos/', views.PedidosListado, name='listarPedidos'),
  
     # path('pedidos/crear/', PedidosCrear.as_view(template_name = "pedidos/crear.html"), name='crearPedido'),
     path('pedidos/crear/', views.PedidosCrear, name="crearPedido"),
@@ -124,7 +117,6 @@ urlpatterns = [
 
     # **********************************************Boletas*********************************************************************
     path('boletas/', BoletaListado.as_view(template_name = "boletas/listar.html"), name='listarBoletas'),
-        # path('boletas/', BoletaListado.as_view(), name='listarBoletas'),
 
     path('boletas/detalle/<int:id>', views.BoletaDetalle, name="detallesBoleta"),
 
@@ -133,7 +125,7 @@ urlpatterns = [
     # # **************************************************************************************************************************
 
     # **********************************************TipoProductos*********************************************************************
-    path('tipos_productos/', TipoProductoListado.as_view(template_name = "tipos_productos/listar.html"), name='listarTiposProductos'),
+    path('tipos_productos/', views.TipoProductoListado, name='listarTiposProductos'),
  
     path('tipos_productos/crear/', TipoProductoCrear.as_view(template_name = "tipos_productos/crear.html"), name='crearTipoProducto'),
  
@@ -143,7 +135,7 @@ urlpatterns = [
     # # **************************************************************************************************************************
 
     # **********************************************TipoProductos*********************************************************************
-    path('familias_productos/', FamiliaProductoListado.as_view(template_name = "familia_producto/listar.html"), name='listarFamiliasProductos'),
+    path('familias_productos/', views.FamiliaProductoListado, name='listarFamiliasProductos'),
  
     path('familias_productos/crear/', FamiliaProductoCrear.as_view(template_name = "familia_producto/crear.html"), name='crearFamiliaProducto'),
  
@@ -168,5 +160,18 @@ urlpatterns = [
     path('informesPedidos/', views.CreacionInformesPedidos, name="informesPedidos"),
     
     ##******************************************************************************
+
+    # **********************************************TipoProductos*********************************************************************
+    path('fiados/', views.PagosFiadosListado, name='pagoFiadosListar'),
+    path('fiados/desactivarPagoFiado/<int:id>', views.DesactivarPagoFiado, name="desactivarPagoFiado"),
+    path('fiados/activarPagoFiado/<int:id>', views.ActivarPagoFiado, name="activarPagoFiado"),
+ 
+    # path('familias_productos/crear/', FamiliaProductoCrear.as_view(template_name = "familia_producto/crear.html"), name='crearFamiliaProducto'),
+ 
+    # path('tipos_productos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+
+    # path('familias_productos/editar/<int:pk>', FamiliaProductoActualizar.as_view(template_name = "familia_producto/actualizar.html"), name='actualizarFamiliaProducto'), 
+    # # **************************************************************************************************************************
+
 ]
 

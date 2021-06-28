@@ -4,7 +4,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/informes.css' %}">
-<h1 class="text-center p-3">Crear Informe</h1>
+<h1 class="text-center p-3">Crear Informe de pedidos</h1>
 <form method="post" action="" class="">
     {% csrf_token %}
     
@@ -34,7 +34,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Estado recepcion:</label>
                 <input type="checkbox" class="estadoRecepcionO" name="estadoRecepcionO" id="estadoRecepcionO" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="estadoOrdenPCheck" value="todosOrdenP" id="estadoOrdenPCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="estadoOrdenPCheck" value="todosOrdenP" id="estadoOrdenPCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="estadoOrdenPCheck" value="enEsperaOrden" id="estadoOrdenPCheck2" onclick="checkeado(this.form)"> En espera</br></br>
                 <input type="radio" name="estadoOrdenPCheck" value="recepcionadoOrden" id="estadoOrdenPCheck3" onclick="checkeado(this.form)"> Recepcionado</br></br>
             </div>
@@ -42,7 +42,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Proveedor orden:</label>
                 <input type="checkbox" class="razonSocialOrdenP" name="razonSocialOrdenP" id="razonSocialOrdenP" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="razonSocialOrdenPCheck" value="todosOrdenP" id="razonSocialOrdenPCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="razonSocialOrdenPCheck" value="todosOrdenP" id="razonSocialOrdenPCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="razonSocialOrdenPCheck" value="porRazonSocialOrdenP" id="razonSocialOrdenPCheck2" onclick="checkeado(this.form)"> Por razon social</br>
                 {{ formProveeOrden.proveedor }} 
             </div>
@@ -70,7 +70,7 @@
             <div class="col border border-primary rounded">
                 <label for="productos" class="p-2">Usuario:</label>
                 <input type="checkbox" class="usuarioPaginaVisitada" name="usuarioPaginaVisitada" id="usuarioPaginaVisitada" onclick="checkeado(this.form)"/></br></br>
-                <input type="radio" name="usuarioVisitasPaginaCheck" value="todosVisitasP" id="usuarioVisitasPaginaCheck1" onclick="checkeado(this.form)"> Todos</br></br>
+                <input type="radio" name="usuarioVisitasPaginaCheck" value="todosVisitasP" id="usuarioVisitasPaginaCheck1" checked onclick="checkeado(this.form)"> Todos</br></br>
                 <input type="radio" name="usuarioVisitasPaginaCheck" value="porNombreVisitasP" id="usuarioVisitasPaginaCheck2" onclick="checkeado(this.form)"> Por nombre</br>
                 {{ FormSeg.usuario }} 
                 </br></br>
@@ -103,9 +103,9 @@
 
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
-                <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento:</label></br></br>
-                <button type="" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
-                <button type="submit" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
+                <label for="">Para descargar el informe debe seleccionar un formato de documento, para obtener una vista previa del informe solo se puede en formato PDF:</label></br></br>
+                <button type="submit" name="vistaPrevia" value="vistaPrevia" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <button type="submit" name="descargarInforme" value="descargarInforme" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
             </div>
 
             <div class="col-md-2">
@@ -252,9 +252,17 @@
 
         //informes
 
-        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+        if (form.informeCheck3.checked == true ){
             form.descargarInforme.disabled = false;
             form.vistaPrevia.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.descargarInforme.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.vistaPrevia.disabled = true;
         }
     }
     

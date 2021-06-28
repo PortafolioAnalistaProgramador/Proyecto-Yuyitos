@@ -1,0 +1,160 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/pago_fiado.css' %}">
+<div class="container pt-3 pb-3 mt-5 border border-primary rounded">
+    <h1 class="text-center titulo">Pago de Fiados</h1>
+    
+        <div class="row">
+            <div class="container">
+                {% if messages %}
+                    <ul class="messages list-group mb-3">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                
+                <div class="container border p-3">
+                    <form>
+                        Buscar fiado <input id="searchTerm" type="text" onkeyup="doSearch()" />
+                    </form>
+
+                    <p>
+                        <table id="datos">
+                            <tr>
+                                <th>Cliente</th><th>Deuda</th><th>Fecha compra</th>
+                            </tr>
+                            {% for pag in pagoF %}
+                                <tr>
+                                    <td>{{pag.1}}</td>
+                                    <td id="{{pag.id}}">${{pag.2}}</td>
+                                    <td>{{pag.3}}</td>
+                                    {% if pag.2 > 0 %}
+                                        <td><a href="{{pag.0}}" style="text-decoration:none;" id="botonSeleccionar" class="btn btn-outline-primary pb-2 mb-2" onclick="mostrar(this.form)">Seleccionar</a></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            
+                            <tr class='noSearch hide'>
+                                <td colspan="5"></td>
+                            </tr>
+                        </table>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="container border p-3">
+                    <table>
+                        <tr>
+                            <h3 class="text-center">Pagos anteriores</h3>
+                        </tr>
+                        <tr>
+                            <th><strong class="p-3">Monto abonado </strong></th><th><strong class="p-3">fecha de abono</strong></th>
+                        </tr>
+                        {% for det in detalleF %}
+                            <tr>
+                                <td class="text-center">${{det.monto_abonado}}</td>
+                                <td>{{det.fecha_abono}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <label for="pago" id="labelPago">¿Cuanto desea pagar?</label>
+            <input id="pago" class="mt-3 mb-3" type="number" name="pago" value="0" min="1" max="1000000" step="1" />
+            <button type="submit" id="boton_aceptar" class="btn btn-primary">Realizar Pago</button>
+            <a href="{% url 'PagarFiadoTodos' %}" id="mostrarTodos" style="text-decoration:none;" class="btn btn-outline-primary" onclick="desaparecer()">Mostrar todos</a>
+        </div>
+    </form>
+    
+</div>
+
+<script language="JavaScript">
+    var sPaginaURL = window.location.href;
+    sPaginaURL = sPaginaURL.substr(34)
+    console.log(sPaginaURL)
+    if(sPaginaURL != ''){
+        document.getElementById("labelPago").style.display = "flex";
+        document.getElementById("mostrarTodos").style.display = "inline-block";
+        document.getElementById("pago").style.display = "flex";
+        document.getElementById("boton_aceptar").style.display = "inline-block";
+        document.getElementById("botonSeleccionar").style.display = "none";
+    }else{
+        document.getElementById("labelPago").style.display = "none";
+        document.getElementById("mostrarTodos").style.display = "none";
+        document.getElementById("pago").style.display = "none";
+        document.getElementById("boton_aceptar").style.display = "none";
+        document.getElementById("botonSeleccionar").style.display = "flex";
+    }
+    
+</script>
+<!-- onclick="agregar2('{{prod.id}}','{{prod.id}}.{{prod.precio}}', '{{prod.id}}.cantidad')" -->
+<script> 
+    function doSearch()
+    {
+        const tableReg = document.getElementById('datos');
+        const searchText = document.getElementById('searchTerm').value.toLowerCase();
+        let total = 0;
+
+        // Recorremos todas las filas con contenido de la tabla
+        for (let i = 1; i < tableReg.rows.length; i++) {
+
+            // Si el td tiene la clase "noSearch" no se busca en su cntenido
+            if (tableReg.rows[i].classList.contains("noSearch")) {
+                continue;
+            }
+
+            let found = false;
+            const cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+
+            // Recorremos todas las celdas
+            for (let j = 0; j < cellsOfRow.length && !found; j++) {
+
+                const compareWith = cellsOfRow[j].innerHTML.toLowerCase();
+
+                // Buscamos el texto en el contenido de la celda
+                if (searchText.length == 0 || compareWith.indexOf(searchText) > -1) {
+                    found = true;
+                    total++;
+                }
+            }
+
+            if (found) {
+                tableReg.rows[i].style.display = '';
+            } 
+            else {
+                // si no ha encontrado ninguna coincidencia, esconde la
+                // fila de la tabla
+                tableReg.rows[i].style.display = 'none';
+            }
+        }
+
+        // mostramos las coincidencias
+        const lastTR=tableReg.rows[tableReg.rows.length-1];
+        const td=lastTR.querySelector("td");
+        lastTR.classList.remove("hide", "red");
+
+        if (searchText == "") {
+            lastTR.classList.add("hide");
+        } 
+        else if (total) {
+            td.innerHTML="Se ha encontrado "+total+" coincidencia"+((total>1)?"s":"");
+        } 
+        else {
+            lastTR.classList.add("red");
+            td.innerHTML="No se han encontrado coincidencias";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -21,6 +21,7 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, NextPageTemplate
 from io import BytesIO
+import re
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -51,7 +52,6 @@ def Login(request):
 
     return render(request, 'registration/login.html')
 
-
 @login_required(login_url="login")
 def Index(request):
     return render(request, 'index.html')
@@ -75,7 +75,6 @@ def Venta(request):
     for juanita in admin:
         admin = juanita
 
-
     total = 0
     cliente = 0
     listaProductos = []
@@ -86,41 +85,39 @@ def Venta(request):
         usuario = request.POST.get('usuario')
         contrasena = request.POST.get('contrasena')
         queryCliente = request.POST.get('cliente')
+        fecha_pago = request.POST.get('fecha_pago')
 
         if queryCliente != '':
 
             if usuario == str(admin):
 
                 user = authenticate(request, username = usuario, password = contrasena)
-                #se agrego el total asi que se corrio todo
+                
                 if user is not None:
                     contador = 0
                     for key,value in request.POST.items():
                         contador = contador + 1
 
-
                     contador2 = 0
                     producto = []
                     for key,value in request.POST.items():
 
-                        contador2 = contador2 +1
+                        contador2 = contador2 + 1
 
                         if contador2 == contador:
 
                             total = value
 
-
-
-                        if contador2 > 1 and contador2 < contador -2:
+                        if contador2 > 1 and contador2 < contador - 2:
 
                             if key == 'cliente':
                                 cliente = value
 
-                            if contador2 > 2:
+                            if contador2 > 3:
                                 cont += 1
 
                                 producto.append(value)
-
+                                
                                 if cont == 3:
                                     listaProductos.append(producto)
                                     producto = []
@@ -140,8 +137,9 @@ def Venta(request):
 
                     bol = BOLETA.objects.all().last()
                     bol = BOLETA.objects.get(id = bol.id)
-
+                    
                     for listaP in listaProductos:
+                        
                         prod = PRODUCTO.objects.get(codigo_barra = listaP[0])
 
                         detalleBoleta = DETALLE_BOLETA.objects.create(
@@ -151,6 +149,15 @@ def Venta(request):
                             producto = prod
                         )
                         detalleBoleta.save()
+                    
+                    fecha_pago = fecha_pago[6:10] + '-' + fecha_pago[3:5] + '-' + fecha_pago[0:2]
+                    pago_fiado = PAGO_FIADO.objects.create(
+                        estado = 1,
+                        monto = total,
+                        fecha_final = fecha_pago,
+                        cliente = CLIENTE.objects.get(id=queryCliente) 
+                    )
+                    
 
                     messages.warning(request, 'Venta realizada con exito')
                     return redirect('venta')
@@ -179,10 +186,10 @@ def Venta(request):
 
                         total = value
 
-
-                    if contador2 > 1 and contador2 < contador -2:
-
-                        if contador2 > 2:
+                    
+                    if contador2 > 1 and contador2 < contador - 2:
+                        
+                        if contador2 > 3:
                             cont += 1
 
                             producto.append(value)
@@ -225,14 +232,16 @@ def RecepcionPedido(request, id = None):
 
     ordenPedido = ORDEN_PEDIDO.objects.all()
     detalleOrden = DETALLE_ORDEN.objects.all()
+    productos = ""
 
     ordenPedido2 = ""
     detalleOrden2 = ""
     if id:
         ordenPedido2 = ORDEN_PEDIDO.objects.filter(id=id)
         detalleOrden2 = DETALLE_ORDEN.objects.filter(orden_pedido=id)
+        productos = PRODUCTO.objects.all()
 
-    productos = PRODUCTO.objects.all()
+    
 
     if request.method == 'POST':
 
@@ -262,27 +271,16 @@ def RecepcionPedido(request, id = None):
 
     return render(request, 'recepcion_pedido.html',context)
 
-
+# control de acceso para vistas basadas en clases
+# @method_decorator(login_required, name='dispatch')
 ##**************************Usuarios***************************************
-@method_decorator(login_required, name='dispatch')
-class UsuarioListado(ListView):
+@login_required(login_url="login")
+def UsuarioListado(request):
 
-    template_name = "usuarios/listar.html"
-    model = User
-    # def get(self,request):
+    usuarios = User.objects.all()
 
-    #     usuarioSeg = request.user
-    #     usuarioSeg = User.objects.get(username=usuarioSeg)
-
-    #     seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
-    #         pagina_visitada = "listar usuarios",
-    #         usuario = usuarioSeg
-    #     )
-    #     seguimientoPag.save()
-    #     return render(request, self.template_name)
-
-
-
+    return render(request, 'usuarios/listar.html', {'usuarios':usuarios})
+    
 @login_required(login_url="login")
 def UsuarioCrear(request):
 
@@ -386,7 +384,6 @@ def UsuarioActualizar(request, id):
 
     return render(request, 'usuarios/actualizar.html', {'form':form})
 
-import re
 def ValidacionCamposUsuario(request, username, first_name, last_name, email, password1, password2):
     estado = False
     username.strip()
@@ -426,9 +423,12 @@ def ValidacionCamposUsuario(request, username, first_name, last_name, email, pas
 
     return estado
 
-@method_decorator(login_required, name='dispatch')
-class UsuarioDetalle(DetailView):
-    model = User
+@login_required(login_url="login")
+def UsuarioDetalle(request, id):
+
+    usuario = User.objects.get(id=id)
+
+    return render(request, 'usuarios/detalles.html', {'usuario':usuario})
 
 def DesactivarUsuario(request, id):
     user = User.objects.get(id = id)
@@ -444,13 +444,15 @@ def ActivarUsuario(request, id):
     messages.warning(request, f'Usuario {user.first_name} activado')
     return redirect('listarUsuarios')
 
-
 ##*************************************************************************
 
 ##**************************Clientes***************************************
-@method_decorator(login_required, name='dispatch')
-class ClienteListado(ListView):
-    model = CLIENTE
+@login_required(login_url="login")
+def ClienteListado(request):
+
+    clientes = CLIENTE.objects.all()
+
+    return render(request, 'clientes/listar.html', {'clientes':clientes})
 
 @login_required(login_url="login")
 def ClienteCrear(request):
@@ -564,9 +566,11 @@ def ValidacionCamposCliente(request, run, nombre, telefono, correo, direccion):
 
     return estado
 
-@method_decorator(login_required, name='dispatch')
-class ClienteDetalle(DetailView):
-    model = CLIENTE
+@login_required(login_url="login")
+def ClienteDetalle(request, id):
+
+    cliente = CLIENTE.objects.get(id=id)
+    return render(request, 'clientes/detalles.html', {'cliente':cliente})
 
 def DesactivarCliente(request, id):
     cliente = CLIENTE.objects.get(id = id)
@@ -585,10 +589,11 @@ def ActivarCliente(request, id):
 ##******************************************************************
 
 ##**************************Proveedor***************************************
-@method_decorator(login_required, name='dispatch')
-class ProveedorListado(ListView):
-    model = PROVEEDOR
+@login_required(login_url="login")
+def ProveedorListado(request):
 
+    proveedores = PROVEEDOR.objects.all()
+    return render(request, 'proveedores/listar.html', {'proveedores':proveedores})
 
 @login_required(login_url="login")
 def ProveedorCrear(request):
@@ -698,9 +703,11 @@ def ValidacionCamposProveedor(request, razon_social, correo, telefono, direccion
 
     return estado
 
-@method_decorator(login_required, name='dispatch')
-class ProveedorDetalle(DetailView):
-    model = PROVEEDOR
+@login_required(login_url="login")
+def ProveedorDetalle(request, id):
+    
+    proveedor = PROVEEDOR.objects.get(id=id)
+    return render(request, 'proveedores/detalles.html', {'proveedor':proveedor})
 
 def DesactivarProveedor(request, id):
     proveedor = PROVEEDOR.objects.get(id = id)
@@ -719,10 +726,11 @@ def ActivarProveedor(request, id):
 ##******************************************************************
 
 ##**************************Producto***************************************
-@method_decorator(login_required, name='dispatch')
-class ProductoListado(ListView):
-    model = PRODUCTO
-
+@login_required(login_url="login")
+def ProductoListado(request):
+    
+    productos = PRODUCTO.objects.all()
+    return render(request, 'productos/listar.html', {'productos':productos})
 
 @login_required(login_url="login")
 def ProductoCrear(request):
@@ -942,10 +950,11 @@ def ValidacionCamposProducto(
 
     return estado
 
-@method_decorator(login_required, name='dispatch')
-class ProductoDetalle(DetailView):
-    model = PRODUCTO
+@login_required(login_url="login")
+def ProductoDetalle(request, id):
 
+    producto = PRODUCTO.objects.get(id=id)
+    return render(request, 'productos/detalles.html', {'producto':producto})
 
 def DesactivarProducto(request, id):
     producto = PRODUCTO.objects.get(id = id)
@@ -964,9 +973,11 @@ def ActivarProducto(request, id):
 ##********************************************************************
 
 ##**************************Tipo de producto********************
-@method_decorator(login_required, name='dispatch')
-class TipoProductoListado(ListView):
-    model = TIPO_PRODUCTO
+@login_required(login_url="login")
+def TipoProductoListado(request):
+
+    tipos = TIPO_PRODUCTO.objects.all()
+    return render(request, 'tipos_productos/listar.html', {'tipos':tipos})
 
 @method_decorator(login_required, name='dispatch')
 class TipoProductoCrear(SuccessMessageMixin, CreateView):
@@ -989,9 +1000,11 @@ class TipoProductoActualizar(SuccessMessageMixin, UpdateView):
 ##******************************************************************
 
 ##**************************Familia de producto********************
-@method_decorator(login_required, name='dispatch')
-class FamiliaProductoListado(ListView):
-    model = FAMILIA_PRODUCTO
+@login_required(login_url="login")
+def FamiliaProductoListado(request):
+
+    familiaP = FAMILIA_PRODUCTO.objects.all()
+    return render(request, 'familia_producto/listar.html', {'familiaP':familiaP})
 
 @method_decorator(login_required, name='dispatch')
 class FamiliaProductoCrear(SuccessMessageMixin, CreateView):
@@ -1014,12 +1027,12 @@ class FamiliaProductoActualizar(SuccessMessageMixin, UpdateView):
 
 ##******************************************************************
 
-
 ##**************************Pedidos********************
-@method_decorator(login_required, name='dispatch')
-class PedidosListado(ListView):
-    model = ORDEN_PEDIDO
-
+@login_required(login_url="login")
+def PedidosListado(request):
+    
+    ordenP = ORDEN_PEDIDO.objects.all()
+    return render(request, 'pedidos/listar.html', {'ordenP':ordenP})
 
 def PedidosCrear(request, id = None):
 
@@ -1229,9 +1242,7 @@ def ActivarBoleta(request, id):
 
 ##********************************************************************
 
-
 ##******************************Informes********************************
-
 @login_required(login_url="login")
 def CreacionInformesProductos(request):
 
@@ -2070,7 +2081,7 @@ def CreacionInformesClientes(request):
 
         clientes = request.POST.get('clientes')
         runC = request.POST.get('runC')
-        telefonoC = request.POST.get('telefonoc')
+        telefonoC = request.POST.get('telefonoC')
         correoC = request.POST.get('correoC')
         direccionC = request.POST.get('direccionC')
         
@@ -2372,19 +2383,985 @@ def CreacionInformesClientes(request):
 @login_required(login_url="login")
 def CreacionInformesFiados(request):
 
-    return render(request, 'informes/informe_fiados.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        fiados = request.POST.get('fiados')
+        montoF = request.POST.get('montoF')
+        fechaF = request.POST.get('fechaF')
+        fechaFinalF = request.POST.get('fechaFinalF')
+        clienteFiado = request.POST.get('clienteFiado')
+
+        estadoF = request.POST.get('estadoF')
+        estadoFiadoCheck = request.POST.get('estadoFiadoCheck')
+
+        detallePagosF = request.POST.get('detallePagosF')
+        montoAbonadoF = request.POST.get('montoAbonadoF')
+        fechaAbonoF = request.POST.get('fechaAbonoF')
+        
+
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if fiados == "on":
+
+            val = DETALLE_FIADO.objects.all().values_list("id","pago_fiado__cliente__nombre","pago_fiado__monto","pago_fiado__fecha_creacion","pago_fiado__fecha_final","pago_fiado__estado","monto_abonado","fecha_abono").order_by("id")
+            lista.append(["id","cliente","monto","fecha_creacion","fecha_final","estado","monto_abonado","fecha_abono"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if montoF == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "monto")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if fechaF == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_creacion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaFinalF == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "razon_social")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if clienteFiado == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "cliente")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoF == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if montoAbonadoF == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "monto_abonado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaAbonoF == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_abono")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+            
+            if estadoFiadoCheck == "alDia":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) != 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoFiadoCheck == "atrasados":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) != 2:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Fiados"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Fiados'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Fiados'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A3,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_fiados.html', context)
 
 @login_required(login_url="login")
 def CreacionInformesProveedores(request):
 
-    return render(request, 'informes/informe_proveedores.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        proveedores = request.POST.get('proveedores')
+        correoP = request.POST.get('correoP')
+        telefonoP = request.POST.get('telefonoP')
+        direccionP = request.POST.get('direccionP')
+        
+        estadoP = request.POST.get('estadoP')
+        estadoProveedorCheck = request.POST.get('estadoProveedorCheck')
+
+        razonSocialP = request.POST.get('razonSocialP')
+        razonSocialPCheck = request.POST.get('razonSocialPCheck')
+        nomProveedor = request.POST.get('proveedor')
+        nomProveedor = PROVEEDOR.objects.filter(id = nomProveedor)
+        for us in nomProveedor:
+            nomProveedor = us.razon_social
+
+        categoriaP = request.POST.get('categoriaP')
+        categoriaProvCheck = request.POST.get('categoriaProveedorCheck')
+        nomCategoria = request.POST.get('categoria_proveedor')
+        nomCategoria = CATEGORIA_PROVEEDOR.objects.filter(id = nomCategoria)
+        for us in nomCategoria:
+            nomCategoria = us.descripcion
+
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if proveedores == "on":
+
+            val = PROVEEDOR.objects.all().values_list("id","razon_social","correo","telefono","direccion","estado","categoria_proveedor__descripcion").order_by("id")
+            lista.append(["id","razon_social","correo","telefono","direccion","estado","categoria"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if correoP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "correo")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if telefonoP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "telefono")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if razonSocialP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "razon_social")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+
+            if direccionP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "direccion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if categoriaP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "categoria")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+
+            if razonSocialPCheck == "porRazonSocialP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "razon_social")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomProveedor:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if categoriaProvCheck == "porCategoriaP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "categoria")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomCategoria:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+            
+            if estadoProveedorCheck == "activosP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) < 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoProveedorCheck == "bloqueadosP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) > 0:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Proveedores"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Proveedores'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Proveedores'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_proveedores.html',context)
 
 @login_required(login_url="login")
 def CreacionInformesPedidos(request):
 
-    return render(request, 'informes/informe_pedidos.html')
+    formP = FormProducto()
+    formT = FormFamiliaProd()
+    formU = FormBoleta()
+    formC = FormClientesParaVenta()
+    formCliente = FormClientesInforme()
+    formProveedor = FormProductoProv()
+    formCatProv = FormProveedor()
+    formProveeOrden = FormInformeOrdenPedido()
+    FormSeg = FormSeguimientoPagina()
+
+    if request.method == 'POST':
+
+        ordenes = request.POST.get('ordenes')
+        fechaOrdenP = request.POST.get('fechaOrdenP')
+        fechaLlegadaOrdenP = request.POST.get('fechaLlegadaOrdenP')
+        fechaRecepOrdenP = request.POST.get('fechaRecepOrdenP')
+        horaRecepOrdenP = request.POST.get('horaRecepOrdenP')
+        cantidadOrdenP = request.POST.get('cantidadOrdenP')
+        productoOrdenP = request.POST.get('productoOrdenP')
+
+        estadoRecepcionO = request.POST.get('estadoRecepcionO')
+        estadoOrdenPCheck = request.POST.get('estadoOrdenPCheck')
+
+        razonSocialOrdenP = request.POST.get('razonSocialOrdenP')
+        razonSocialOrdenPCheck = request.POST.get('razonSocialOrdenPCheck')
+        nomProveedor = request.POST.get('proveedor')
+        nomProveedor = PROVEEDOR.objects.filter(id = nomProveedor)
+        for us in nomProveedor:
+            nomProveedor = us.razon_social
+        
+        tipoInforme = request.POST.get('informeCheck')
+
+        vistaPrevia = request.POST.get('vistaPrevia')
+        descargarInforme = request.POST.get('descargarInforme')
+        visitasPagina = request.POST.get('visitas')
+
+        lista = []
+        visitas = []
+
+        if ordenes == "on":
+
+            val = DETALLE_ORDEN.objects.all().values_list("id","orden_pedido__proveedor__razon_social","orden_pedido__fecha_pedido","orden_pedido__fecha_llegada","orden_pedido__fecha_recepcion","orden_pedido__hora_recepcion","orden_pedido__estado_recepcion","producto__nombre","cantidad").order_by("id")
+            lista.append(["id","proveedor","fecha_pedido","fecha_llegada","fecha_recepcion","hora_recepcion","estado","producto","cantidad"])
+
+            for valores in val:
+
+                lista.append(list(valores))
+
+            if fechaOrdenP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_pedido")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaLlegadaOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_llegada")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if fechaRecepOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "fecha_recepcion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
 
 
+            if horaRecepOrdenP == None:
+
+                np_array = np.array(lista)
+                val = np.where(np_array == "hora_recepcion")
+                val = int(val[1])
+
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if cantidadOrdenP == None:
+                np_array = np.array(lista)
+                val = np.where(np_array == "cantidad")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if productoOrdenP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "producto")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if estadoRecepcionO == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+
+            if razonSocialOrdenP == None:
+                
+                np_array = np.array(lista)
+                val = np.where(np_array == "proveedor")
+                val = int(val[1])
+                
+                for valor in lista:
+
+                    valor.pop(val)
+        
+            np_array = []
+            np_array = np.array(lista)
+            np_arrayProd = np.array(lista)
+
+            if razonSocialOrdenPCheck == "porRazonSocialOrdenP":
+                np_array = np.array(lista)
+                val = np.where(np_array == "proveedor")
+                val = int(val[1])
+                cont = 0
+                print(val)
+                for valores in lista:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomProveedor:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoOrdenPCheck == "enEsperaOrden":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) > 0:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+            if estadoOrdenPCheck == "recepcionadoOrden":
+                np_array = np.array(lista)
+                val = np.where(np_array == "estado")
+                val = int(val[1])
+                cont = 0
+
+                for valores in lista:
+                    
+                    numero = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if int(numero) != 1:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+                            
+            lista = []
+            np_array = []
+            lista = np_arrayProd.tolist()
+            np_arrayProd = np.array(lista)
+
+        if visitasPagina == "on":
+            
+            paginaVisitada = request.POST.get('paginaVisitada')
+            fechaVisitasP = request.POST.get('fechaVisitasP')
+
+            usuarioVisitasPagina = request.POST.get('usuarioPaginaVisitada')
+            usuarioVisitas = request.POST.get('usuarioVisitasPaginasCheck')
+            nomUsuario = request.POST.get('usuario')
+            nomUsuario = User.objects.filter(id = nomUsuario)
+            for us in nomUsuario:
+                nomUsuario = us.username
+
+            val = SEGUIMIENTO_PAGINA.objects.all().values_list("id","pagina_visitada","fecha_ingreso","usuario__username").order_by("id")
+            visitas.append(["id","pagina_visitada","fecha_ingreso","usuario"])
+            
+            for valores in val:
+
+                visitas.append(list(valores))
+
+            if paginaVisitada == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "pagina_visitada")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if fechaVisitasP == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "fecha_ingreso")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            if usuarioVisitasPagina == None:
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+
+                for valor in visitas:
+
+                    valor.pop(val)
+
+            np_array = []
+            np_array = np.array(visitas)
+            np_arrayProd = np.array(visitas)
+            
+            if usuarioVisitas == "porNombreVisitasP":
+                np_array = np.array(visitas)
+                val = np.where(np_array == "usuario")
+                val = int(val[1])
+                cont = 0
+
+                for valores in visitas:
+                    
+                    nombre = np_arrayProd[cont][val]
+                    
+                    if cont > 0:
+
+                        if nombre != nomUsuario:
+                            
+                            np_arrayProd = np.delete(np_arrayProd, cont, axis=0)
+                            cont = cont - 1 
+                            
+                    cont += 1
+
+            visitas = []
+            np_array = []
+            visitas = np_arrayProd.tolist()
+            np_arrayProd = np.array(visitas)
+            
+        if tipoInforme == "informeExcel":
+
+            nombre_archivo = "Pedidos"
+            if visitas == []:
+                return  creacion_excel(nombre_archivo, lista)
+            else:
+                return  creacion_excel(nombre_archivo, lista, visitas)
+
+        if tipoInforme == "informePdf":
+            
+            tipo_doc = 'pdf'
+            extension = 'pdf'
+            
+            nombre = 'Pedidos'
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+        if tipoInforme == "informeWord": 
+
+            tipo_doc = 'ms-word'
+            extension = 'docx'
+            
+            nombre = 'Pedidos'
+
+            if vistaPrevia:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=False, visitas=visitas)
+            else:
+                if visitas == []:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True)
+                else:
+                    return creacion_doc(lista,tipo_doc,A2,nombre,extension, valor=True, visitas=visitas)
+
+    context = {
+        'formP':formP,
+        'formT':formT,
+        'formU':formU,
+        'formC':formC,
+        'formCliente':formCliente,
+        'formProveedor':formProveedor,
+        'formCatProv':formCatProv,
+        'formProveeOrden':formProveeOrden,
+        'FormSeg':FormSeg,
+
+    }
+    return render(request, 'informes/informe_pedidos.html', context)
 
 def creacion_excel(nombre_archivo, lista, visitas = None):
     book = openpyxl.Workbook()  # Se crea un libro
@@ -2485,4 +3462,89 @@ def creacion_doc(lista,tipo_doc,tamaño_pagina, nombre, extension, visitas = Non
     buff.seek(0)
     return FileResponse(buff, as_attachment=valor, filename=f'{nombre}.{extension}')
 
+#*********************************************************************************
 
+#********************************Pago fiados***************************************
+@login_required(login_url="login")
+def PagosFiadosListado(request):
+
+    pagosF = PAGO_FIADO.objects.all()
+
+    return render(request, 'pago_fiado/listar.html', {'pagosF':pagosF})
+
+def DesactivarPagoFiado(request, id):
+    pago_fiado = PAGO_FIADO.objects.get(id = id)
+    pago_fiado.estado = 0
+    pago_fiado.save()
+    messages.warning(request, f'Pago fiado {pago_fiado.id} desactivado')
+    return redirect('pagoFiadosListar')
+
+def ActivarPagoFiado(request, id):
+    pago_fiado = PAGO_FIADO.objects.get(id = id)
+    pago_fiado.estado = 1
+    pago_fiado.save()
+    messages.warning(request, f'Pago fiado {pago_fiado.id} activado')
+    return redirect('pagoFiadosListar')
+
+@login_required(login_url="login")
+def PagarFiado(request, id = None):
+    
+    mostrar = ''
+    if id != None:
+        mostrar = 'si'
+    else:
+        mostrar = 'no'
+
+    print(mostrar)
+
+    pagos_fiados = []
+    pagos_fiados2 = []
+    for pag in PAGO_FIADO.objects.all():
+        pagos_fiados.append(pag.id)
+        pagos_fiados.append(pag.cliente.nombre)
+        pagos_fiados.append(pag.monto)
+        pagos_fiados.append(pag.fecha_creacion)
+        pagos_fiados2.append(pagos_fiados)
+        pagos_fiados = []
+
+    for i in DETALLE_FIADO.objects.all():
+        for j in pagos_fiados2:
+            if i.pago_fiado.id == j[0]:
+                monto = j[2] - i.monto_abonado
+                j[2] = monto
+
+    pagos_fiados = []
+    for obj in pagos_fiados2:
+        if obj[0] == id:
+            pagos_fiados.append(obj)
+
+    detalleF = None
+    if id == None:
+        pagoF = pagos_fiados2
+
+    else: 
+        pagoF = pagos_fiados
+        detalleF = DETALLE_FIADO.objects.filter(pago_fiado=id)
+
+    if request.method == 'POST':
+
+        pagoRealizado = request.POST.get('pago')
+
+        pagoFiado = PAGO_FIADO.objects.get(id=id)
+
+        pago_detalle = DETALLE_FIADO.objects.create(
+            monto_abonado = pagoRealizado,
+            pago_fiado = pagoFiado
+        )
+        pago_detalle.save()
+
+        messages.warning(request, 'Pago realizado con exito')
+        return redirect('PagarFiadoTodos')
+
+    context = {
+        'pagoF':pagoF,
+        'detalleF':detalleF,
+        'mostrar':mostrar
+    }
+
+    return render(request, 'pago_fiado/pagar_fiado.html', context)

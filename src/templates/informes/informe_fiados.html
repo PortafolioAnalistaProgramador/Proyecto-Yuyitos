@@ -24,6 +24,9 @@
 
                 <label for="productos" class="p-2">Fecha pago completado:</label>
                 <input type="checkbox" class="fechaFinalF" name="fechaFinalF" id="fechaFinalF"/></br>
+                
+                <label for="productos" class="p-2">Cliente:</label>
+                <input type="checkbox" class="clienteFiado" name="clienteFiado" id="clienteFiado"/></br></br>
             </div>
             
             <div class="col border border-primary rounded">
@@ -41,16 +44,9 @@
                 <label for="productos" class="p-2">Monto abonado:</label>
                 <input type="checkbox" class="montoAbonadoF" name="montoAbonadoF" id="montoAbonadoF"/></br>
 
-                <label for="productos" class="p-2">Monto Faltante:</label>
-                <input type="checkbox" class="montoFaltanteF" name="montoFaltanteF" id="montoFaltanteF"/></br>
-
                 <label for="productos" class="p-2">Fecha abono:</label>
                 <input type="checkbox" class="fechaAbonoF" name="fechaAbonoF" id="fechaAbonoF"/></br>
-
-                <label for="productos" class="p-2">Cliente:</label>
-                <input type="checkbox" class="clienteFiado" name="clienteFiado" id="clienteFiado"/></br></br>
             </div>
-            
             
         </div>
     
@@ -99,9 +95,9 @@
 
             <div class="col-md-4 text-center border border-dark rounded">
                 <br>
-                <label for="">Para obtener una vista previa o descargar el informe, debe seleccionar un formato para el documento:</label></br></br>
-                <button type="" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
-                <button type="submit" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
+                <label for="">Para descargar el informe debe seleccionar un formato de documento, para obtener una vista previa del informe solo se puede en formato PDF:</label></br></br>
+                <button type="submit" name="vistaPrevia" value="vistaPrevia" id="vistaPrevia" class="btn btn-primary">Vista previa</button><br><br>
+                <button type="submit" name="descargarInforme" value="descargarInforme" id="descargarInforme" class="btn btn-primary">Descargar</button><br><br>
             </div>
 
             <div class="col-md-2">
@@ -122,7 +118,6 @@
     document.getElementById("estadoFiadoCheck3").disabled=true;
     document.getElementById("detallePagosF").disabled=true;
 
-    document.getElementById("montoFaltanteF").disabled=true;
     document.getElementById("montoAbonadoF").disabled=true;
     document.getElementById("fechaAbonoF").disabled=true;
     document.getElementById("clienteFiado").disabled=true;
@@ -147,8 +142,8 @@
             form.montoF.disabled = false;
             form.fechaF.disabled = false;
             form.estadoF.disabled = false;
-            form.nombreC.disabled = false;
             form.detallePagosF.disabled = false;
+            form.clienteFiado.disabled = false;
             
         }
 
@@ -157,8 +152,8 @@
             form.montoF.disabled = true;
             form.fechaF.disabled = true;
             form.estadoF.disabled = true;
-            form.nombreC.disabled = true;
             form.detallePagosF.disabled = true;
+            form.clienteFiado.disabled = true;
         }
 
         if (form.estadoF.checked == true){
@@ -176,17 +171,16 @@
 
         if (form.detallePagosF.checked == true){
             
-            form.montoFaltanteF.disabled = false;
             form.montoAbonadoF.disabled = false;
             form.fechaAbonoF.disabled = false;
-            form.clienteFiado.disabled = false;
+            
         }
 
         if (form.detallePagosF.checked == false || form.detallePagosF.disabled == true){
-            form.montoFaltanteF.disabled = true;
+
             form.montoAbonadoF.disabled = true;
             form.fechaAbonoF.disabled = true;
-            form.clienteFiado.disabled = true;
+            
         }
 
         //visitas
@@ -227,9 +221,17 @@
 
         //informes
 
-        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true || form.informeCheck3.checked == true ){
+        if (form.informeCheck3.checked == true ){
             form.descargarInforme.disabled = false;
             form.vistaPrevia.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.descargarInforme.disabled = false;
+        }
+
+        if (form.informeCheck1.checked == true || form.informeCheck2.checked == true){
+            form.vistaPrevia.disabled = true;
         }
     }
     

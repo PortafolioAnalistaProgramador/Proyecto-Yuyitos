@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
+
+    <div class="row pt-3">
+        <div class="col-md-3"></div>
+
+        <div class="col-md-6">
+            <h1 class="text-center titulo-prov">Administracion de Fiados</h1>
+        </div>
+
+    </div>
+    <div class="container p-3">
+      
+      <div class="container mb-4">
+        {% if messages %}
+          <ul class="messages list-group mb-3">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+      <table class="table table-striped table-hover">
+        <h3 class="titulo-proveedor text-center p-2 mb-0">Fiados</h3>
+        
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Deuda</th>
+            <th>Fecha Creacion</th>
+            <th>Fecha limite</th>
+            <th>Estado del pago</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+        
+        {% for pag in pagosF %}
+          <tr>
+            <td>{{ pag.cliente }}</td>
+            <td>{{ pag.monto }}</td>
+            <td>{{ pag.fecha_creacion }}</td>
+            <td>{{ pag.fecha_final }}</td>
+            {% if pag.estado == 1 %}
+                <td class="">Activo</td>
+            {% elif pag.estado == 2 %}
+                <td class="">Atrasado</td>
+            {% else %}
+                <td class="">Anulado</td>
+            {% endif %}
+
+            <td>
+              
+              <form method="POST" action="">
+                {% csrf_token %}
+                <div class="btn-group">
+      
+                    <!-- Creamos 3 botones que son ver, Editar y Eliminar, nos sirven para gestionar nuestros registros o postres -->
+                    <!-- <a href="detalle/{{pag.id}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                    <a href="editar/{{pag.id}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                    -->
+                    {% if pag.estado == 1 or pag.estado == 2%}
+                        <a href="desactivarPagoFiado/{{pag.id}}" title="DesactivarPagoFiado" type="button" class="btn btn-danger">Anular Fiado</a>
+                    {% else %}
+                        <a href="activarPagoFiado/{{pag.id}}" title="ActivarPagoFiado" type="button" class="btn btn-danger">Activar Fiado</a>
+                    {% endif %}
+                
+                </div>
+              </form>
+            </td>
+
+          </tr>
+        {% endfor %}
+      
+        </tbody>
+      </table>
+
+      <!-- <div align="left" class="btn_crear mb-3">
+        <a href="{% url 'crearProveedor' %}" type="button" class="btn btn-primary">Crear</a>
+      </div> -->
+
+    </div>
+{% endblock %}

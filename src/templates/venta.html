@@ -24,6 +24,11 @@
                 <p>
                     <label for="buscar">Seleccionar cliente para fiado:</label>
                     {{ form.cliente|add_class:"form-control" }}
+
+                    <div class="form-group pb-3">
+                        <label for="fecha_vencimiento" class="txt_negrita">Seleccione Fecha para el plazo de pago:</label>
+                        <input class="form-control dateinput" type="text" name="fecha_pago" readonly placeholder="Click aqui" style="width:110px"/>
+                    </div>
                 </p>
 
                 <!-- Productos -->
@@ -114,9 +119,6 @@
     function Habilitar(){
         location.reload();
     }
-    // $(document).on('click', '.close', function(){
-    //     document.getElementById("boton_aceptar").disabled = false;
-    // });
 
     function ValidarFiado(){
         let combo = document.getElementById("id_cliente");
@@ -191,8 +193,6 @@
         document.formulario.submit();
     }
 
-    
-    
 </script>
 
 <script language="JavaScript">
@@ -203,11 +203,23 @@
     {
         let suma = 0;
         let precios = document.querySelectorAll('input.precio');
-        
+        let cantidad = document.querySelectorAll('input.cantidad');
+        let cont1 = 0;
+        let cont2 = 0;
+        let multi = 0;
         precios.forEach( function(valor) {
+            cont1 = cont1 + 1;
             valores = parseInt(valor.value);
-            
-            suma = suma + valores;
+
+            cantidad.forEach( function(cantidad) {
+                cont2 = cont2 + 1;
+                cantidades = parseInt(cantidad.value);
+                if (cont1 == cont2){
+                    multi = cantidades * valores;
+                }
+            });
+            cont2 = 0;
+            suma = suma + multi;
         });
         document.getElementById("total_precios").innerHTML = suma;
     }
@@ -233,7 +245,7 @@
         bloque.appendChild(elemento);
 
         elemento2 = document.createElement('input');
-        elemento2.setAttribute("class", "form-control col-md-3 mb-2" );
+        elemento2.setAttribute("class", "form-control col-md-3 mb-2 cantidad" );
         elemento2.setAttribute("style", "width:100px" );
         elemento2.setAttribute("name", `${coincidencia}.cantidad` );
         elemento2.id = 'input2.'+incremento;
