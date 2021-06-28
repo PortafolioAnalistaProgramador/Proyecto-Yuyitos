@@ -1,36 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-estado_cliente = [
-    (1,'Si'),
-    (0,'No')
-]
-
-estado_proveedor = [
-    (1,'Activo'),
-    (0,'No activo')
-]
-
-estado_boleta = [
-    (1,'Activa'),
-    (0,'Anular')
-]
-
-estado_producto = [
-    (1,'Disponible'),
-    (0,'No disponible')
-]
-
-
-
 class CLIENTE(models.Model):
     run = models.CharField(max_length=10, default=None)
     nombre = models.CharField(max_length=100, default=None)
     telefono = models.CharField(max_length=12, default=None)
     correo = models.CharField(max_length=128, default=None)
     direccion = models.CharField(max_length=150, default=None)
-    estado = models.IntegerField(default=None,choices=estado_cliente)
+    estado = models.IntegerField(default=None)
 
     def __str__(self):
         return self.nombre
@@ -38,27 +15,21 @@ class CLIENTE(models.Model):
 class PAGO_FIADO(models.Model):
     estado = models.IntegerField(default=None)
     monto = models.IntegerField(default=None)
-    fecha = models.DateTimeField(auto_now_add=False, auto_now=True)#agregar que el llenado de fecha se automatico en esta
+    fecha_creacion = models.DateTimeField(auto_now_add=False, auto_now=True)#agregar que el llenado de fecha se automatico en esta
     fecha_final = models.DateTimeField()
+    cliente = models.ForeignKey(CLIENTE, on_delete=models.CASCADE, default=None, blank=True)
 
 class DETALLE_FIADO(models.Model):
     monto_abonado = models.IntegerField(default=None)
-    pago_fiado = models.ForeignKey(PAGO_FIADO, on_delete=models.CASCADE, default=None)
     fecha_abono = models.DateTimeField(auto_now_add=False, auto_now=True)
-    cliente = models.ForeignKey(CLIENTE, on_delete=models.CASCADE, default=None, blank=True)
+    pago_fiado = models.ForeignKey(PAGO_FIADO, on_delete=models.CASCADE, default=None, blank=True)
     
-# class TIPO_USUARIO(models.Model):
-#     rol = models.CharField(max_length=50, default=None)
-
-#     def __str__(self):
-#         return self.rol
-
 class BOLETA(models.Model):
     fecha_boleta = models.DateTimeField(auto_now_add=False, auto_now=True)
     total_a_pagar = models.IntegerField(default=None)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True)
     cliente = models.ForeignKey(CLIENTE, on_delete=models.CASCADE, default=None, blank=True, null=True)
-    estado = estado = models.IntegerField(default=None,choices=estado_boleta)
+    estado = estado = models.IntegerField(default=None)
     
     class Meta:
         ordering = ['id']
@@ -75,7 +46,7 @@ class PROVEEDOR(models.Model):
     telefono = models.CharField(max_length=12, default=None)
     direccion = models.CharField(max_length=150, default=None)
     categoria_proveedor = models.ForeignKey(CATEGORIA_PROVEEDOR, on_delete=models.CASCADE, default=None)
-    estado = models.IntegerField(default=None, choices=estado_proveedor)
+    estado = models.IntegerField(default=None)
 
     def __str__(self):
         return self.razon_social
@@ -101,7 +72,7 @@ class PRODUCTO(models.Model):
     precio_compra = models.IntegerField(default=None)
     stock = models.IntegerField(default=None)
     stock_critico = models.IntegerField(default=None)
-    estado = models.IntegerField(default=None, choices=estado_producto)
+    estado = models.IntegerField(default=None)
     fecha_vencimiento = models.DateTimeField(blank=True)
     codigo_barra = models.CharField(max_length=18,default=None)
     familia_producto = models.ForeignKey(FAMILIA_PRODUCTO, on_delete=models.CASCADE, default=None, blank=True)

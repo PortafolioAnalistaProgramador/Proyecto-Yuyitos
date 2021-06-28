@@ -54,35 +54,44 @@
                         <li class="nav-item dropdown btn btn-outline-secondary m-1">
                             <a class="nav-link text-dark" aria-current="page" href="/venta">Venta</a>
                         </li>
-                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Informes
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/informesProductos">Informe de productos</a></li>
-                                <li><a class="dropdown-item" href="/informesBoletas">Informe de boletas</a></li>
-                                <li><a class="dropdown-item" href="/informesClientes">Informe de clientes</a></li>
-                                <li><a class="dropdown-item" href="/informesFiados">Informe de fiados</a></li>
-                                <li><a class="dropdown-item" href="/informesProveedores">Informe de proveedores</a></li>
-                                <li><a class="dropdown-item" href="/informesPedidos">Informe de pedidos</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Gestion de modulos
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/boletas">Modulo de Boletas</a></li>
-                                <li><a class="dropdown-item" href="/usuarios">Modulo de Usuario</a></li>
-                                <li><a class="dropdown-item" href="/clientes">Modulo de Cliente</a></li>
-                                <li><a class="dropdown-item" href="/proveedores">Modulo de Proveedor</a></li>
-                                <li><a class="dropdown-item" href="/productos">Modulo de Productos</a></li>
-                                <li><a class="dropdown-item" href="/pedidos">Modulo de Pedidos</a></li>
-                            </ul>
-                        </li>
+                        {% if user.is_superuser %}
+                            <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Informes
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/informesProductos">Informe de productos</a></li>
+                                    <li><a class="dropdown-item" href="/informesBoletas">Informe de boletas</a></li>
+                                    <li><a class="dropdown-item" href="/informesClientes">Informe de clientes</a></li>
+                                    <li><a class="dropdown-item" href="/informesFiados">Informe de fiados</a></li>
+                                    <li><a class="dropdown-item" href="/informesProveedores">Informe de proveedores</a></li>
+                                    <li><a class="dropdown-item" href="/informesPedidos">Informe de pedidos</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Gestion de modulos
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/boletas">Modulo de Boletas</a></li>
+                                    <li><a class="dropdown-item" href="/usuarios">Modulo de Usuario</a></li>
+                                    <li><a class="dropdown-item" href="/clientes">Modulo de Cliente</a></li>
+                                    <li><a class="dropdown-item" href="/proveedores">Modulo de Proveedor</a></li>
+                                    <li><a class="dropdown-item" href="/productos">Modulo de Productos</a></li>
+                                    <li><a class="dropdown-item" href="/pedidos">Modulo de Pedidos</a></li>
+                                    <li><a class="dropdown-item" href="/fiados">Modulo de Fiados</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
                     
                         <li class="nav-item dropdown btn btn-outline-secondary m-1">
                             <a class="nav-link text-dark" aria-current="page" href="/recepcion">Recepcion de pedidos</a>
+                        </li>
+
+                        <li class="nav-item dropdown btn btn-outline-secondary m-1">
+                            <a class="nav-link text-dark" aria-current="page" href="/pagar_fiado">Pagar Fiado</a>
                         </li>
                     </ul>
                 </div>
