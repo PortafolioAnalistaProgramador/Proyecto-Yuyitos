@@ -18,13 +18,40 @@
             <form method="post" action="">
                 {% csrf_token %}
                 <div class="container contenedorCrearCliente">
-                    {{ form.as_p }}
                     
+                    <div class="form-group pb-3">
+                        <label for="descripcion" class="txt_negrita">Nombre:</label>
+                        <input class="form-control" type="text" name="descripcion" onkeypress="return descripcionCaracteres(event)"/>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label for="proveedor" class="txt_negrita">Proveedor:</label>
+                        {% render_field form.proveedor class="form-control" %}
+                    </div>
                     <button type="submit" id="boton_aceptar" class="btn btn-primary">Aceptar</button>
                     <a href="{% url 'listarTiposProductos' %}" type="submit" class="btn btn-primary">Cancelar</a>
                 </div> 
             </form>
         </div>
     </div>
-  
+    <script>
+        function descripcionCaracteres(e){
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key)
+            letras = " ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890,";
+            especiales = "8-37-39-46";
+    
+            tecla_especial = false
+            for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+    </script>
 {% endblock %}

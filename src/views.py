@@ -2,7 +2,14 @@ from django.shortcuts import render, redirect
 from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA, PAGO_FIADO, DETALLE_FIADO, DETALLE_ORDEN
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormRegistroEdit2, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina, FormCategProv
+from src.forms import (
+    FormCliente, FormProveedor, FormProducto, 
+    FormPedido, FormRegistroEdit, FormRegistroEdit2, 
+    FormProveedorAct, FormFamiliaProd, FormProductoProv, 
+    FormProductoEdit, FormClientesParaVenta, FormBoleta, 
+    FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina, 
+    FormCategProv, FormTipoProducto
+)
 import openpyxl
 from tempfile import NamedTemporaryFile
 from datetime import datetime
@@ -240,8 +247,6 @@ def RecepcionPedido(request, id = None):
         ordenPedido2 = ORDEN_PEDIDO.objects.filter(id=id)
         detalleOrden2 = DETALLE_ORDEN.objects.filter(orden_pedido=id)
         productos = PRODUCTO.objects.all()
-
-    
 
     if request.method == 'POST':
 
@@ -815,8 +820,8 @@ def ProductoActualizar(request, id):
     fecha = fecha[0:10]
     hora = hora[11:16]
 
-    formFam = FormFamiliaProd(request.POST or None)
-    formProv = FormProductoProv(request.POST or None)
+    formFam = FormFamiliaProd(request.POST or None, instance=tipo_producto)
+    formProv = FormProductoProv(request.POST or None, instance=proveedor)
 
     context = {
         'formProd':formProd,
@@ -979,23 +984,66 @@ def TipoProductoListado(request):
     tipos = TIPO_PRODUCTO.objects.all()
     return render(request, 'tipos_productos/listar.html', {'tipos':tipos})
 
-@method_decorator(login_required, name='dispatch')
-class TipoProductoCrear(SuccessMessageMixin, CreateView):
-    model = TIPO_PRODUCTO
-    form = TIPO_PRODUCTO
-    fields = "__all__"
-    success_message = 'Tipo producto creado correctamente'
-    def get_success_url(self):
-        return reverse('listarTiposProductos')
+@login_required(login_url="login")
+def TipoProductoCrear(request):
+    
+    form = FormTipoProducto()
 
-@method_decorator(login_required, name='dispatch')
-class TipoProductoActualizar(SuccessMessageMixin, UpdateView):
-    model = TIPO_PRODUCTO
-    form = TIPO_PRODUCTO
-    fields = "__all__"
-    success_message = 'Familia producto correctamente'
-    def get_success_url(self):
-        return reverse('listarTiposProductos')
+    if request.method == 'POST':
+
+        descripcion = request.POST.get('descripcion')
+        proveedor = request.POST.get('proveedor')
+        
+        if len(descripcion) <= 3:
+            messages.warning(request, 'La descripcion no puede tener una cantidad de caracteres menor a 3')
+        elif proveedor == "":
+            messages.warning(request, 'En proveedor debe seleccionar alguno de la lista')
+        else:
+            proveedor = PROVEEDOR.objects.get(id = proveedor)
+
+            tipo_producto = TIPO_PRODUCTO.objects.create(
+                descripcion = descripcion,
+                proveedor = proveedor,
+            )
+
+            if tipo_producto is not None:
+                tipo_producto.save()
+                messages.warning(request, 'Tipo producto creado correctamente')
+                return redirect('listarTiposProductos')
+            else:
+                messages.warning(request, 'No se pudo crear el tipo producto')
+
+    return render(request, 'tipos_productos/crear.html',{'form':form})
+
+@login_required(login_url="login")
+def TipoProductoActualizar(request, id):
+    
+    tipo_producto = TIPO_PRODUCTO.objects.get(id=id)
+    form = FormTipoProducto(request.POST or None, instance=tipo_producto)
+    
+    
+    if request.method == 'POST':
+
+        descripcion = request.POST.get('descripcion')
+        proveedor = request.POST.get('proveedor')
+
+        if len(descripcion) <= 3:
+            messages.warning(request, 'La descripcion no puede tener una cantidad de caracteres menor a 3')
+        elif proveedor == "":
+            messages.warning(request, 'En proveedor debe seleccionar alguno de la lista')
+        elif tipo_producto is not None:
+            proveedor = PROVEEDOR.objects.get(id = proveedor)
+            tipo_producto.descripcion = descripcion
+            tipo_producto.save()
+            tipo_producto.proveedor = proveedor
+            tipo_producto.save()
+
+            messages.warning(request, 'Tipo producto actualizado correctamente')
+            return redirect('listarTiposProductos')
+        else:
+            messages.warning(request, 'No se pudo actualizar el tipo producto')
+        
+    return render(request, 'tipos_productos/actualizar.html',{'form':form})
 
 ##******************************************************************
 
@@ -1006,24 +1054,66 @@ def FamiliaProductoListado(request):
     familiaP = FAMILIA_PRODUCTO.objects.all()
     return render(request, 'familia_producto/listar.html', {'familiaP':familiaP})
 
-@method_decorator(login_required, name='dispatch')
-class FamiliaProductoCrear(SuccessMessageMixin, CreateView):
-    model = FAMILIA_PRODUCTO
-    form = FAMILIA_PRODUCTO
-    fields = "__all__"
-    success_message = 'Familia producto creado correctamente'
+@login_required(login_url="login")
+def FamiliaProductoCrear(request):
+    
+    form = FormFamiliaProd()
 
-    def get_success_url(self):
-        return reverse('listarFamiliasProductos') # Redireccionamos a la vista principal 'leer'
+    if request.method == 'POST':
 
-@method_decorator(login_required, name='dispatch')
-class FamiliaProductoActualizar(SuccessMessageMixin, UpdateView):
-    model = FAMILIA_PRODUCTO
-    form = FAMILIA_PRODUCTO
-    fields = "__all__"
-    success_message = 'Familia producto correctamente'
-    def get_success_url(self):
-        return reverse('listarFamiliasProductos')
+        descripcion = request.POST.get('descripcion')
+        tipo_producto = request.POST.get('tipo_producto')
+        
+        if len(descripcion) <= 3:
+            messages.warning(request, 'La descripcion no puede tener una cantidad de caracteres menor a 3')
+        elif tipo_producto == "":
+            messages.warning(request, 'En tipo producto debe seleccionar alguno de la lista')
+        else:
+            tipo_producto = TIPO_PRODUCTO.objects.get(id = tipo_producto)
+            
+            familia_producto = FAMILIA_PRODUCTO.objects.create(
+                descripcion = descripcion,
+                tipo_producto = tipo_producto,
+            )
+
+            if familia_producto is not None:
+                familia_producto.save()
+                messages.warning(request, 'Familia producto creado correctamente')
+                return redirect('listarFamiliasProductos')
+            else:
+                messages.warning(request, 'No se pudo crear el familia producto')
+
+    return render(request, 'familia_producto/crear.html',{'form':form})
+   
+@login_required(login_url="login")
+def FamiliaProductoActualizar(request, id):
+    
+    familia_producto = FAMILIA_PRODUCTO.objects.get(id=id)
+    form = FormFamiliaProd(request.POST or None, instance=familia_producto)
+    
+    if request.method == 'POST':
+
+        descripcion = request.POST.get('descripcion')
+        tipo_producto = request.POST.get('tipo_producto')
+
+        if len(descripcion) <= 3:
+            messages.warning(request, 'La descripcion no puede tener una cantidad de caracteres menor a 3')
+        elif tipo_producto == "":
+            messages.warning(request, 'En proveedor debe seleccionar alguno de la lista')
+        elif familia_producto is not None:
+            tipo_producto = TIPO_PRODUCTO.objects.get(id = tipo_producto)
+
+            familia_producto.descripcion = descripcion
+            familia_producto.save()
+            familia_producto.tipo_producto = tipo_producto
+            familia_producto.save()
+
+            messages.warning(request, 'Familia producto actualizado correctamente')
+            return redirect('listarFamiliasProductos')
+        else:
+            messages.warning(request, 'No se pudo actualizar la familia producto')
+        
+    return render(request, 'familia_producto/actualizar.html',{'form':form})
 
 ##******************************************************************
 
@@ -1072,9 +1162,8 @@ def PedidosCrear(request, id = None):
         fecha = ""
         cont = 0
         for key,value in request.POST.items():
-
+            
             contador += 1
-
             if contador == 2:
                 proveedorOrden = int(value)
 
@@ -1098,10 +1187,7 @@ def PedidosCrear(request, id = None):
                         producto = []
                         cont = 0
 
-
-
         proveedorOrden = PROVEEDOR.objects.get(id=proveedorOrden)
-        print(proveedorOrden)
 
         ordenPedido = ORDEN_PEDIDO.objects.create(
             estado_recepcion = 0,
@@ -1114,6 +1200,7 @@ def PedidosCrear(request, id = None):
         ordenPedido = ORDEN_PEDIDO.objects.get(id = ordenPedido.id)
 
         for listaP in listaProductos:
+            
             prod = PRODUCTO.objects.get(nombre=listaP[0])
 
             detallePedido = DETALLE_ORDEN.objects.create(
@@ -1143,15 +1230,6 @@ def PedidosDetalle(request, id):
         'id':id
     }
     return render(request, 'pedidos/detalles.html', context)
-
-@method_decorator(login_required, name='dispatch')
-class PedidosActualizar(SuccessMessageMixin, UpdateView):
-    model = ORDEN_PEDIDO
-    form = FormPedido()
-    fields = "__all__"
-    success_message = 'Pedido actualizado correctamente'
-    def get_success_url(self):
-        return reverse('listarPedidos')
 
 def DesactivarPedido(request, id):
     pedido = ORDEN_PEDIDO.objects.get(id = id)
@@ -1211,9 +1289,11 @@ def CategoriaProvActualizar(request, id):
 ##******************************************************************
 
 ##**************************Boleta***************************************
-@method_decorator(login_required, name='dispatch')
-class BoletaListado(ListView):
-    model = BOLETA
+@login_required(login_url="login")
+def BoletaListado(request):
+    boletas = BOLETA.objects.all()
+
+    return render(request, "boletas/listar.html", {'boletas':boletas})
 
 @login_required(login_url="login")
 def BoletaDetalle(request, id):

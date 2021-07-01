@@ -21,15 +21,15 @@
                     <h1 class="text-center p-3">Crear Producto</h1>
                     <div class="form-group pb-3">
                         <label for="nombre" class="txt_negrita">Nombre:</label>
-                        <input class="form-control" type="text" name="nombre"/>
+                        <input class="form-control" type="text" name="nombre" onkeypress="return letrasNumeros(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="precio" class="txt_negrita">Precio:</label>
-                        <input class="form-control" type="text" name="precio"/>
+                        <input class="form-control" type="text" name="precio" onkeypress="return numerosCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="precio_compra" class="txt_negrita">Precio compra:</label>
-                        <input class="form-control" type="text" name="precio_compra"/>
+                        <input class="form-control" type="text" name="precio_compra" onkeypress="return numerosCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="descripcion" class="txt_negrita">Descripcion:</label>
@@ -37,11 +37,11 @@
                     </div>
                     <div class="form-group pb-3">
                         <label for="stock" class="txt_negrita">Stock:</label>
-                        <input class="form-control" type="text" name="stock"/>
+                        <input class="form-control" type="text" name="stock" onkeypress="return numerosCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="stock_critico" class="txt_negrita">Stock critico:</label>
-                        <input class="form-control" type="text" name="stock_critico"/>
+                        <input class="form-control" type="text" name="stock_critico" onkeypress="return numerosCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="fecha_vencimiento" class="txt_negrita">Seleccione Fecha de vencimiento:(opcional)</label>
@@ -72,5 +72,44 @@
             </form>
         </div>
     </div>
+    <script>
+
+        function numerosCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function letrasNumeros(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = " ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890";
+           especiales = "8-37-39-46";
     
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+    </script>
 {% endblock %}
