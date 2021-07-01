@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, SEGUIMIENTO_PAGINA, TIPO_PRODUCTO, BOLETA, DETALLE_BOLETA, PAGO_FIADO, DETALLE_FIADO, DETALLE_ORDEN
 from django.contrib import messages
 from django import forms
-from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina, FormCategProv
+from src.forms import FormCliente, FormProveedor, FormProducto, FormPedido, FormRegistroEdit, FormRegistroEdit2, FormProveedorAct, FormFamiliaProd, FormProductoProv, FormProductoEdit, FormClientesParaVenta, FormBoleta, FormClientesInforme, FormInformeOrdenPedido, FormSeguimientoPagina, FormCategProv
 import openpyxl
 from tempfile import NamedTemporaryFile
 from datetime import datetime
@@ -341,7 +341,7 @@ def UsuarioActualizar(request, id):
 
     user = User.objects.get(id=id)
     form = FormRegistroEdit(request.POST or None, instance=user)
-
+    form2 = FormRegistroEdit2(request.POST or None, instance=user)
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
@@ -382,7 +382,7 @@ def UsuarioActualizar(request, id):
         else:
             messages.warning(request, 'No se pudo actualizar el usuario')
 
-    return render(request, 'usuarios/actualizar.html', {'form':form})
+    return render(request, 'usuarios/actualizar.html', {'form':form, 'form2':form2})
 
 def ValidacionCamposUsuario(request, username, first_name, last_name, email, password1, password2):
     estado = False

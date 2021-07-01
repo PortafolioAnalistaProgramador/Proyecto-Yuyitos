@@ -20,19 +20,19 @@
                     <h1 class="text-center pb-2"> Editar Cliente</h1>
                     <div class="form-group pb-3">
                         <label for="run" class="txt_negrita">Run:</label>
-                        {{ form.run|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                        {% render_field form.run class="form-control" onkeypress="return runCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                     </div>
                     <div class="form-group pb-3">
                         <label for="nombre" class="txt_negrita">Nombre:</label>
-                        {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                        {% render_field form.nombre class="form-control" onkeypress="return soloLetras(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                     </div>
                     <div class="form-group pb-3">
                         <label for="telefono" class="txt_negrita">Telefono:</label>
-                        {{ form.telefono|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                        {% render_field form.telefono class="form-control" onkeypress="return telefonoCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                     </div>
                     <div class="form-group pb-3">
                         <label for="correo" class="txt_negrita">Correo:</label>
-                        {{ form.correo|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                        {% render_field form.correo class="form-control" onkeypress="return sinEspacios(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                     </div>
                     <div class="form-group pb-3">
                         <label for="direccion" class="txt_negrita">Direccion:</label>
@@ -45,6 +45,81 @@
             </form>
         </div>
     </div>
+    <script>
+        function soloLetras(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+           especiales = "8-37-39-46";
     
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+        function runCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890k-";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function telefonoCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890+";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function sinEspacios(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890*-+{}[]!#$%&/()=¡<>,.@";
+           especiales = "8-37-39-46";
+    
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+    </script>
     
 {% endblock %}

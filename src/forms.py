@@ -13,10 +13,26 @@ from .models import BOLETA, CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROV
 #         fields = ("username","first_name","last_name","email","password1","password2","is_superuser")
         
 class FormRegistroEdit(UserCreationForm):
-    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'onkeypress':'return sinEspacios(event)'
+            }) 
     class Meta:
         model = User
-        fields = ("username","first_name","last_name","email","password1","password2","is_superuser")
+        fields = ("email","password1","password2","is_superuser")
+
+class FormRegistroEdit2(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'onkeypress':'return soloLetras(event)'
+            }) 
+    class Meta:
+        model = User
+        fields = ("username","first_name","last_name")
 
 class FormCliente(forms.ModelForm):
     
