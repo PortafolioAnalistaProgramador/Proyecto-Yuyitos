@@ -19,6 +19,7 @@
         <thead>
           <tr>
             <th>Nombre</th>
+            <th>Proveedor</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -28,8 +29,7 @@
         {% for tipoProd in tipos %}
           <tr>
             <td>{{ tipoProd.descripcion }}</td>
-           
-
+            <td>{{ tipoProd.proveedor }}</td>
             <td>
               <!-- Usaremos un formulario que realizará la tarea de eliminar un registro o postre desde la misma tabla HTML -->                        
               <form method="POST" action="">

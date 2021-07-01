@@ -22,19 +22,19 @@
                     <h1 class="text-center pb-2"> Crear Cliente</h1>
                     <div class="form-group pb-3">
                         <label for="run" class="txt_negrita">Run:</label>
-                        <input class="form-control" type="text" name="run"/>
+                        <input class="form-control" type="text" name="run" onkeypress="return runCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="nombre" class="txt_negrita">Nombre:</label>
-                        <input class="form-control" type="text" name="nombre"/>
+                        <input class="form-control" type="text" name="nombre" onkeypress="return soloLetras(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="telefono" class="txt_negrita">Telefono:</label>
-                        <input class="form-control" type="text" name="telefono"/>
+                        <input class="form-control" type="text" name="telefono" onkeypress="return telefonoCaracteres(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="correo" class="txt_negrita">Correo:</label>
-                        <input class="form-control" type="text" name="correo"/>
+                        <input class="form-control" type="text" name="correo" onkeypress="return sinEspacios(event)"/>
                     </div>
                     <div class="form-group pb-3">
                         <label for="direccion" class="txt_negrita">Direccion:</label>
@@ -47,5 +47,90 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function soloLetras(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+           especiales = "8-37-39-46";
+    
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+        function runCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890k-";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function telefonoCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890+";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function sinEspacios(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890*-+{}[]!#$%&/()=¡<>,.@";
+           especiales = "8-37-39-46";
+    
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+        // function limpia() {
+        //     var val = document.getElementById("miInput").value;
+        //     var tam = val.length;
+        //     for(i = 0; i < tam; i++) {
+        //         if(!isNaN(val[i]))
+        //             document.getElementById("miInput").value = '';
+        //     }
+        // }
+    </script>
   
 {% endblock %}

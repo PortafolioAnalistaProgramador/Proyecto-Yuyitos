@@ -3,20 +3,28 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import BOLETA, CATEGORIA_PROVEEDOR, CLIENTE, FAMILIA_PRODUCTO, PROVEEDOR, PRODUCTO, ORDEN_PEDIDO, TIPO_PRODUCTO, SEGUIMIENTO_PAGINA
 # from django.utils import timezone
-
-        
-
-# class FormRegistroEdit(UserCreationForm):
-
-#     class Meta:
-#         model = User
-#         fields = ("username","first_name","last_name","email","password1","password2","is_superuser")
-        
+   
 class FormRegistroEdit(UserCreationForm):
-    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'onkeypress':'return sinEspacios(event)'
+            }) 
     class Meta:
         model = User
-        fields = ("username","first_name","last_name","email","password1","password2","is_superuser")
+        fields = ("email","password1","password2","is_superuser")
+
+class FormRegistroEdit2(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        for field in iter(self.fields):  
+            self.fields[field].widget.attrs.update({  
+                'onkeypress':'return soloLetras(event)'
+            }) 
+    class Meta:
+        model = User
+        fields = ("username","first_name","last_name")
 
 class FormCliente(forms.ModelForm):
     
@@ -36,8 +44,6 @@ class FormSeguimientoPagina(forms.ModelForm):
     class Meta:
         model = SEGUIMIENTO_PAGINA
         fields = ("usuario",)
-
-
 
 class FormProductoEdit(forms.ModelForm):
     
@@ -65,7 +71,7 @@ class FormFamiliaProd(forms.ModelForm):
     
     class Meta:
         model = FAMILIA_PRODUCTO
-        fields = ("tipo_producto",)
+        fields = ("tipo_producto","descripcion")
 
 class FormProductoProv(forms.ModelForm):
     
@@ -104,6 +110,12 @@ class FormBoleta(forms.ModelForm):
         model = BOLETA
         fields = ("usuario",)
 
+class FormTipoProducto(forms.ModelForm):
+
+    class Meta:
+        model = TIPO_PRODUCTO
+        fields = ("descripcion","proveedor")
+
 class FormClientesInforme(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs) 
@@ -116,6 +128,7 @@ class FormClientesInforme(forms.ModelForm):
     class Meta:
         model = BOLETA
         fields = ("cliente",)
+
 # class FormFechaProd(forms.ModelForm):
 
 #     fecha_vencimiento = forms.TimeField(input_formats=['%I:%M %p'])
@@ -145,48 +158,12 @@ class FormProveedorAct(forms.ModelForm):
         fields = ("razon_social","correo","telefono","direccion","categoria_proveedor")
 
 class FormPedido(forms.ModelForm):
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs) 
-    #     for field in iter(self.fields):  
-    #         self.fields[field].widget.attrs.update({  
-    #             'class': 'cliente-informe',
-    #             'heigh':'150px',
-    #         }) 
     
     class Meta:
         model = ORDEN_PEDIDO
         fields = ("proveedor",) 
 
 
-# class FormCliente(forms.Form):
-#     run = forms.CharField(
-#         label = "Run"
-#     )
 
-#     Nombre = forms.CharField(
-#         label = "Nombre"
-#     )
-
-#     telefono = forms.IntegerField(
-#         label = "Telefono"
-#     )
-
-#     correo = forms.CharField(
-#         label = "Correo"
-#     )
-    
-#     direccion = forms.CharField(
-#         label = "Direccion"
-#     )
-
-#     options = [
-#         (1,'Si'),
-#         (0,'No')
-#     ]
-    
-#     estado = forms.TypedChoiceField(
-#         label = "Se le puede dar fiado?",
-#         choices = options
-#     )
 
     

@@ -7,7 +7,7 @@ from src.views import UsuarioListado, UsuarioDetalle, UsuarioCrear, UsuarioActua
 from src.views import ClienteListado, ClienteCrear, ClienteDetalle, ClienteActualizar, DesactivarCliente, ActivarCliente
 from src.views import ProveedorListado, ProveedorCrear, ProveedorDetalle, ProveedorActualizar, DesactivarProveedor, ActivarProveedor
 from src.views import ProductoListado, ProductoCrear, ProductoDetalle, ProductoActualizar
-from src.views import PedidosListado, PedidosCrear, PedidosDetalle, PedidosActualizar, DesactivarPedido, ActivarPedido
+from src.views import PedidosListado, PedidosCrear, PedidosDetalle, DesactivarPedido, ActivarPedido
 from src.views import BoletaListado, DesactivarBoleta, ActivarBoleta, BoletaDetalle
 from src.views import TipoProductoActualizar, TipoProductoListado, TipoProductoCrear
 from src.views import FamiliaProductoListado, FamiliaProductoActualizar, FamiliaProductoCrear
@@ -108,15 +108,14 @@ urlpatterns = [
     
     path('pedidos/detalle/<int:id>', views.PedidosDetalle, name="detallePedido"),
 
-    path('pedidos/editar/<int:id>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
+    # path('pedidos/editar/<int:id>', PedidosActualizar.as_view(template_name = "pedidos/actualizar.html"), name='actualizar'), 
     
     path('pedidos/desactivarPedido/<int:id>', views.DesactivarPedido, name="desactivarPedido"),
     path('pedidos/activarPedido/<int:id>', views.ActivarPedido, name="activarPedido"),
     # # **************************************************************************************************************************
 
-
     # **********************************************Boletas*********************************************************************
-    path('boletas/', BoletaListado.as_view(template_name = "boletas/listar.html"), name='listarBoletas'),
+    path('boletas/', views.BoletaListado, name="listarBoletas"),
 
     path('boletas/detalle/<int:id>', views.BoletaDetalle, name="detallesBoleta"),
 
@@ -127,21 +126,17 @@ urlpatterns = [
     # **********************************************TipoProductos*********************************************************************
     path('tipos_productos/', views.TipoProductoListado, name='listarTiposProductos'),
  
-    path('tipos_productos/crear/', TipoProductoCrear.as_view(template_name = "tipos_productos/crear.html"), name='crearTipoProducto'),
- 
-    # path('tipos_productos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+    path('tipos_productos/crear/', views.TipoProductoCrear, name="crearTipoProducto"),
 
-    path('tipos_productos/editar/<int:pk>', TipoProductoActualizar.as_view(template_name = "tipos_productos/actualizar.html"), name='actualizarTipoProducto'), 
+    path('tipos_productos/editar/<int:id>', views.TipoProductoActualizar, name="actualizarTipoProducto"),
     # # **************************************************************************************************************************
 
     # **********************************************TipoProductos*********************************************************************
     path('familias_productos/', views.FamiliaProductoListado, name='listarFamiliasProductos'),
  
-    path('familias_productos/crear/', FamiliaProductoCrear.as_view(template_name = "familia_producto/crear.html"), name='crearFamiliaProducto'),
- 
-    # path('tipos_productos/detalle/<int:pk>', PedidosDetalle.as_view(template_name = "pedidos/detalles.html"), name='detalles'),
+    path('familias_productos/crear/', views.FamiliaProductoCrear, name="crearFamiliaProducto"),
 
-    path('familias_productos/editar/<int:pk>', FamiliaProductoActualizar.as_view(template_name = "familia_producto/actualizar.html"), name='actualizarFamiliaProducto'), 
+    path('familias_productos/editar/<int:id>', views.FamiliaProductoActualizar, name="actualizarFamiliaProducto"),
     # # **************************************************************************************************************************
 
     ##*********************************categoria proveedor**************************

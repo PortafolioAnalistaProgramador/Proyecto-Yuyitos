@@ -22,32 +22,32 @@
                     <h1 class="text-center p-3">Crear Usuario</h1>
                     <p>
                         <label for="username">Usuario:</label>
-                        <input class="form-control" type="text" name="username"/>
+                        <input class="form-control" type="text" name="username" onkeypress="return soloLetras(event)"/>
                     </p>
                 
                     <p>
                         <label for="first_name">Nombre:</label>
-                        <input class="form-control" type="text" name="first_name"/>
+                        <input class="form-control" type="text" name="first_name" onkeypress="return soloLetras(event)"/>
                     </p>
             
                     <p>
                         <label for="last_name">Apellido:</label>
-                        <input class="form-control" type="text" name="last_name"/>
+                        <input class="form-control" type="text" name="last_name" onkeypress="return soloLetras(event)"/>
                     </p>
                 
                     <p>
                         <label for="email">Correo:</label>
-                        <input class="form-control" type="text" name="email"/>
+                        <input class="form-control" type="text" name="email" onkeypress="return sinEspacios(event)"/>
                     </p>
                 
                     <p>
                         <label for="password1">Contraseña:</label>
-                        <input class="form-control" type="password" name="password1"/>
+                        <input class="form-control" type="password" name="password1" onkeypress="return sinEspacios(event)"/>
                     </p>
                 
                     <p>
                         <label for="password2">Confirme Contraseña:</label>
-                        <input class="form-control" type="password" name="password2"/>
+                        <input class="form-control" type="password" name="password2" onkeypress="return sinEspacios(event)"/>
                     </p>
                 
                     <p>
@@ -63,5 +63,46 @@
             </form>
         </div>
     </div>
+    <script>
+        function soloLetras(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+           especiales = "8-37-39-46";
+    
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+        function sinEspacios(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890*-+{}[]!#$%&/()=¡<>,.@";
+           especiales = "8-37-39-46";
+    
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+
+    </script>
   
 {% endblock %}

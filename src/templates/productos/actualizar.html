@@ -20,11 +20,11 @@
                     <h1 class="text-center pb-2">Editar Producto </h1>
                     <div class="form-group pb-3">
                         <label for="last_name" class="txt_negrita">Nombre:</label>
-                        {{ form.nombre|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                        {% render_field form.nombre class="form-control" onkeypress="return letrasNumeros(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                     </div>
                     <div class="form-group pb-3">
                         <label for="first_name" class="txt_negrita">Precio:</label>
-                        {{ form.precio|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
+                        {% render_field form.precio class="form-control" onkeypress="return numerosCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto -->
                     </div>
                     <div class="form-group pb-3">
                         <label for="email" class="txt_negrita">Descripcion:</label>
@@ -32,15 +32,15 @@
                     </div>
                     <div class="form-group pb-3">
                         <label for="password1" class="txt_negrita">Precio de compra:</label>
-                        {{ form.precio_compra|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                        {% render_field form.precio_compra class="form-control" onkeypress="return numerosCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                     </div>
                     <div class="form-group pb-3">
                         <label for="password2" class="txt_negrita">Stock:</label>
-                        {{ form.stock|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                        {% render_field form.stock class="form-control" onkeypress="return numerosCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                     </div>
                     <div class="form-group pb-3">
                         <label for="password2" class="txt_negrita">Stock critico:</label>
-                        {{ form.stock_critico|add_class:"form-control" }} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
+                        {% render_field form.stock_critico class="form-control" onkeypress="return numerosCaracteres(event)" %} <!-- Usamos la librería 'widget_tweaks' para crear esta caja de texto --> 
                     </div>
                     
                     <h3 class="pb-3">Si desea mantener la fecha y hora de vencimiento actual, dejelo como está</h3>
@@ -79,5 +79,44 @@
         </div>
     </div>
     
+    <script>
+
+        function numerosCaracteres(e) {
+            key = e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "1234567890";
+            especiales = [8, 37, 39, 46];
+
+            tecla_especial = false
+            for(var i in especiales) {
+                if(key == especiales[i]) {
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla) == -1 && !tecla_especial)
+                return false;
+        }
+
+        function letrasNumeros(e){
+           key = e.keyCode || e.which;
+           tecla = String.fromCharCode(key)
+           letras = " ABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúabcdefghijklmnñopqrstuvwxyz1234567890";
+           especiales = "8-37-39-46";
     
+           tecla_especial = false
+           for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+    
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+    </script>
 {% endblock %}
