@@ -45,6 +45,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 def Login(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ingreso de usuarios",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     username = request.POST.get('username')
     password = request.POST.get('password')
 
@@ -61,6 +70,16 @@ def Login(request):
 
 @login_required(login_url="login")
 def Index(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Inicio",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     return render(request, 'index.html')
 
 @login_required(login_url="login")
@@ -70,7 +89,7 @@ def Venta(request):
     usuarioBoleta = User.objects.get(username=usuarioBoleta)
 
     seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
-        pagina_visitada = "ventas",
+        pagina_visitada = "Ventas",
         usuario = usuarioBoleta
     )
     seguimientoPag.save()
@@ -233,6 +252,15 @@ def Venta(request):
 @login_required(login_url="login")
 def RecepcionPedido(request, id = None):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Recepcion de pedidos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     ordenPedido = ORDEN_PEDIDO.objects.all()
     detalleOrden = DETALLE_ORDEN.objects.all()
     productos = ""
@@ -278,12 +306,30 @@ def RecepcionPedido(request, id = None):
 @login_required(login_url="login")
 def UsuarioListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de usuarios",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     usuarios = User.objects.all()
 
     return render(request, 'usuarios/listar.html', {'usuarios':usuarios})
     
 @login_required(login_url="login")
 def UsuarioCrear(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear usuario",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
@@ -339,6 +385,15 @@ def UsuarioCrear(request):
 
 @login_required(login_url="login")
 def UsuarioActualizar(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar usuario",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     user = User.objects.get(id=id)
     form = FormRegistroEdit(request.POST or None, instance=user)
@@ -427,6 +482,15 @@ def ValidacionCamposUsuario(request, username, first_name, last_name, email, pas
 @login_required(login_url="login")
 def UsuarioDetalle(request, id):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalles usuario",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     usuario = User.objects.get(id=id)
 
     return render(request, 'usuarios/detalles.html', {'usuario':usuario})
@@ -451,12 +515,30 @@ def ActivarUsuario(request, id):
 @login_required(login_url="login")
 def ClienteListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de clientes",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     clientes = CLIENTE.objects.all()
 
     return render(request, 'clientes/listar.html', {'clientes':clientes})
 
 @login_required(login_url="login")
 def ClienteCrear(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear cliente",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     run = request.POST.get('run')
     nombre = request.POST.get('nombre')
@@ -494,6 +576,15 @@ def ClienteCrear(request):
 
 @login_required(login_url="login")
 def ClienteActualizar(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar cliente",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     cliente = CLIENTE.objects.get(id=id)
     form = FormCliente(request.POST or None, instance=cliente)
@@ -570,6 +661,15 @@ def ValidacionCamposCliente(request, run, nombre, telefono, correo, direccion):
 @login_required(login_url="login")
 def ClienteDetalle(request, id):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalle cliente",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     cliente = CLIENTE.objects.get(id=id)
     return render(request, 'clientes/detalles.html', {'cliente':cliente})
 
@@ -593,11 +693,29 @@ def ActivarCliente(request, id):
 @login_required(login_url="login")
 def ProveedorListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de proveedores",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     proveedores = PROVEEDOR.objects.all()
     return render(request, 'proveedores/listar.html', {'proveedores':proveedores})
 
 @login_required(login_url="login")
 def ProveedorCrear(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear proveedor",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     form = FormProveedor(request.POST)
     razon_social = request.POST.get('razon_social')
@@ -634,6 +752,15 @@ def ProveedorCrear(request):
 
 @login_required(login_url="login")
 def ProveedorActualizar(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar proveedor",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     proveedor = PROVEEDOR.objects.get(id=id)
     form = FormProveedorAct(request.POST or None, instance=proveedor)
@@ -707,6 +834,15 @@ def ValidacionCamposProveedor(request, razon_social, correo, telefono, direccion
 @login_required(login_url="login")
 def ProveedorDetalle(request, id):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalles proveedor",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     proveedor = PROVEEDOR.objects.get(id=id)
     return render(request, 'proveedores/detalles.html', {'proveedor':proveedor})
 
@@ -730,11 +866,29 @@ def ActivarProveedor(request, id):
 @login_required(login_url="login")
 def ProductoListado(request):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de productos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     productos = PRODUCTO.objects.all()
     return render(request, 'productos/listar.html', {'productos':productos})
 
 @login_required(login_url="login")
 def ProductoCrear(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     formProd = FormProducto(request.POST)
     formFam = FormFamiliaProd(request.POST)
@@ -798,6 +952,15 @@ def ProductoCrear(request):
 
 @login_required(login_url="login")
 def ProductoActualizar(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     producto = PRODUCTO.objects.get(id=id)
 
@@ -954,6 +1117,15 @@ def ValidacionCamposProducto(
 @login_required(login_url="login")
 def ProductoDetalle(request, id):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalles producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     producto = PRODUCTO.objects.get(id=id)
     return render(request, 'productos/detalles.html', {'producto':producto})
 
@@ -977,12 +1149,30 @@ def ActivarProducto(request, id):
 @login_required(login_url="login")
 def TipoProductoListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Listar tipos de productos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     tipos = TIPO_PRODUCTO.objects.all()
     return render(request, 'tipos_productos/listar.html', {'tipos':tipos})
 
 @login_required(login_url="login")
 def TipoProductoCrear(request):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear tipo de producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     form = FormTipoProducto()
 
     if request.method == 'POST':
@@ -1014,9 +1204,17 @@ def TipoProductoCrear(request):
 @login_required(login_url="login")
 def TipoProductoActualizar(request, id):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar tipo de producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     tipo_producto = TIPO_PRODUCTO.objects.get(id=id)
     form = FormTipoProducto(request.POST or None, instance=tipo_producto)
-    
     
     if request.method == 'POST':
 
@@ -1047,12 +1245,30 @@ def TipoProductoActualizar(request, id):
 @login_required(login_url="login")
 def FamiliaProductoListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Listar familias de productos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     familiaP = FAMILIA_PRODUCTO.objects.all()
     return render(request, 'familia_producto/listar.html', {'familiaP':familiaP})
 
 @login_required(login_url="login")
 def FamiliaProductoCrear(request):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear familia de producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     form = FormFamiliaProd()
 
     if request.method == 'POST':
@@ -1084,6 +1300,15 @@ def FamiliaProductoCrear(request):
 @login_required(login_url="login")
 def FamiliaProductoActualizar(request, id):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar familia de producto",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     familia_producto = FAMILIA_PRODUCTO.objects.get(id=id)
     form = FormFamiliaProd(request.POST or None, instance=familia_producto)
     
@@ -1117,10 +1342,28 @@ def FamiliaProductoActualizar(request, id):
 @login_required(login_url="login")
 def PedidosListado(request):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de pedidos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     ordenP = ORDEN_PEDIDO.objects.all()
     return render(request, 'pedidos/listar.html', {'ordenP':ordenP})
 
 def PedidosCrear(request, id = None):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear pedido",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     proveedores = PROVEEDOR.objects.all()
 
@@ -1218,6 +1461,16 @@ def PedidosCrear(request, id = None):
 
 @login_required(login_url="login")
 def PedidosDetalle(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalles de pedido",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     pedido = ORDEN_PEDIDO.objects.filter(id=id)
     detallesP = DETALLE_ORDEN.objects.filter(orden_pedido=id)
     context = {
@@ -1247,12 +1500,30 @@ def ActivarPedido(request, id):
 @login_required(login_url="login")
 def CategoriasProvListar(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Listar categorias de proveedores",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     categorias = CATEGORIA_PROVEEDOR.objects.all()
 
     return render(request, 'categoria_proveedor/listar.html', {'categorias':categorias})
 
 @login_required(login_url="login")
 def CategoriaProvCrear(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear categoria de proveedor",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     if request.method == 'POST':
 
@@ -1269,6 +1540,15 @@ def CategoriaProvCrear(request):
 
 @login_required(login_url="login")
 def CategoriaProvActualizar(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Editar categoria de proveedor",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     categoriaProv = CATEGORIA_PROVEEDOR.objects.get(id=id)
     form = FormCategProv(request.POST or None, instance=categoriaProv)
@@ -1287,12 +1567,32 @@ def CategoriaProvActualizar(request, id):
 ##**************************Boleta***************************************
 @login_required(login_url="login")
 def BoletaListado(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de boletas",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     boletas = BOLETA.objects.all()
 
     return render(request, "boletas/listar.html", {'boletas':boletas})
 
 @login_required(login_url="login")
 def BoletaDetalle(request, id):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Ver detalles de boleta",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     boleta = BOLETA.objects.filter(id=id)
     detalles = DETALLE_BOLETA.objects.filter(boleta=id)
     context = {
@@ -1321,6 +1621,15 @@ def ActivarBoleta(request, id):
 ##******************************Informes********************************
 @login_required(login_url="login")
 def CreacionInformesProductos(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de productos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     formP = FormProducto()
     formT = FormFamiliaProd()
@@ -1773,6 +2082,14 @@ def CreacionInformesProductos(request):
 @login_required(login_url="login")
 def CreacionInformesBoletas(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de boletas",
+        usuario = usuario
+    )
+    seguimientoPag.save()
     formP = FormProducto()
     formT = FormFamiliaProd()
     formU = FormBoleta()
@@ -2143,6 +2460,15 @@ def CreacionInformesBoletas(request):
 @login_required(login_url="login")
 def CreacionInformesClientes(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de clientes",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     formP = FormProducto()
     formT = FormFamiliaProd()
     formU = FormBoleta()
@@ -2459,6 +2785,15 @@ def CreacionInformesClientes(request):
 @login_required(login_url="login")
 def CreacionInformesFiados(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de fiados",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     formP = FormProducto()
     formT = FormFamiliaProd()
     formU = FormBoleta()
@@ -2758,6 +3093,15 @@ def CreacionInformesFiados(request):
 
 @login_required(login_url="login")
 def CreacionInformesProveedores(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de proveedores",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     formP = FormProducto()
     formT = FormFamiliaProd()
@@ -3104,6 +3448,15 @@ def CreacionInformesProveedores(request):
 
 @login_required(login_url="login")
 def CreacionInformesPedidos(request):
+
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Crear informe de pedidos",
+        usuario = usuario
+    )
+    seguimientoPag.save()
 
     formP = FormProducto()
     formT = FormFamiliaProd()
@@ -3544,6 +3897,15 @@ def creacion_doc(lista,tipo_doc,tamaño_pagina, nombre, extension, visitas = Non
 @login_required(login_url="login")
 def PagosFiadosListado(request):
 
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Administracion de fiados",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     pagosF = PAGO_FIADO.objects.all()
 
     return render(request, 'pago_fiado/listar.html', {'pagosF':pagosF})
@@ -3565,6 +3927,15 @@ def ActivarPagoFiado(request, id):
 @login_required(login_url="login")
 def PagarFiado(request, id = None):
     
+    usuario = request.user
+    usuario = User.objects.get(username=usuario)
+
+    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
+        pagina_visitada = "Pagar fiado",
+        usuario = usuario
+    )
+    seguimientoPag.save()
+
     mostrar = ''
     if id != None:
         mostrar = 'si'
