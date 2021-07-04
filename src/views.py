@@ -45,15 +45,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 def Login(request):
 
-    usuario = request.user
-    usuario = User.objects.get(username=usuario)
-
-    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
-        pagina_visitada = "Ingreso de usuarios",
-        usuario = usuario
-    )
-    seguimientoPag.save()
-
     username = request.POST.get('username')
     password = request.POST.get('password')
 
