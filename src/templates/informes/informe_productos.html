@@ -168,6 +168,11 @@
     document.getElementById("descargarInforme").disabled=true;
     document.getElementById("vistaPrevia").disabled=true;
 
+    document.getElementById("informeCheck1").disabled=true;
+    document.getElementById("informeCheck2").disabled=true;
+    document.getElementById("informeCheck3").disabled=true;
+
+
     
     function checkeado(form)
     {
@@ -184,7 +189,9 @@
             form.familiaProducto.disabled = false;
             form.tipoProducto.disabled = false;
             form.nombre.disabled = false;
-            
+            form.informeCheck1.disabled = false;
+            form.informeCheck2.disabled = false;
+            form.informeCheck3.disabled = false;
         }
 
         if (form.productos.checked == false)
@@ -199,6 +206,9 @@
             form.estado.disabled = true;
             form.familiaProducto.disabled = true;
             form.nombre.disabled = true;
+            form.informeCheck1.disabled = true;
+            form.informeCheck2.disabled = true;
+            form.informeCheck3.disabled = true;
             
         }
 
@@ -268,8 +278,8 @@
             form.id_tipo_producto.disabled = true;
         }
 
-                //visitas
-                if (form.visitas.checked == true){
+        //visitas
+        if (form.visitas.checked == true){
             
             form.usuarioPaginaVisitada.disabled = false;
             form.fechaVisitasP.disabled = false;
@@ -280,6 +290,7 @@
             form.usuarioPaginaVisitada.disabled = true;
             form.fechaVisitasP.disabled = true;
             form.paginaVisitada.disabled = true;
+            
         }
         //
         if (form.usuarioPaginaVisitada.checked == true){

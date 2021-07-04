@@ -4,7 +4,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/informes.css' %}">
-<h1 class="text-center p-3">Crear Informe</h1>
+<h1 class="text-center p-3">Crear Informe de fiados</h1>
 <form method="post" action="" class="">
     {% csrf_token %}
 
@@ -131,6 +131,10 @@
     
     document.getElementById("descargarInforme").disabled=true;
     document.getElementById("vistaPrevia").disabled=true;
+
+    document.getElementById("informeCheck1").disabled=true;
+    document.getElementById("informeCheck2").disabled=true;
+    document.getElementById("informeCheck3").disabled=true;
     
     function checkeado(form)
     {
@@ -144,6 +148,9 @@
             form.estadoF.disabled = false;
             form.detallePagosF.disabled = false;
             form.clienteFiado.disabled = false;
+            form.informeCheck1.disabled = false;
+            form.informeCheck2.disabled = false;
+            form.informeCheck3.disabled = false;
             
         }
 
@@ -154,6 +161,9 @@
             form.estadoF.disabled = true;
             form.detallePagosF.disabled = true;
             form.clienteFiado.disabled = true;
+            form.informeCheck1.disabled = true;
+            form.informeCheck2.disabled = true;
+            form.informeCheck3.disabled = true;
         }
 
         if (form.estadoF.checked == true){

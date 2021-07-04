@@ -74,7 +74,7 @@
                     <tr>
                         <td>{{prod.nombre}}</td><td id="{{prod.id}}">{{prod.codigo_barra}}</td><td id="{{prod.id}}.{{prod.precio}}">{{prod.precio}}</td>
                         <td><input id="{{prod.id}}.cantidad" type="number" name="numero" value="1" min="1" max="50" step="1" /></td>
-                        <td><input class="btn btn-secondary btn-sm" type="button" title="Agregar Producto" Value="Agregar" onclick="agregar2('{{prod.id}}','{{prod.id}}.{{prod.precio}}', '{{prod.id}}.cantidad')"></td>
+                        <td><input class="btn btn-secondary btn-sm agregar" type="button" title="Agregar Producto" id="agregar{{prod.id}}" Value="Agregar" onclick="agregar2('{{prod.id}}','{{prod.id}}.{{prod.precio}}', '{{prod.id}}.cantidad', this)"></td>
                         
                     </tr>
                 {% endfor %}
@@ -114,40 +114,91 @@
     </div>
 </div>
 
-
 <script>
     function Habilitar(){
         location.reload();
     }
 
     function ValidarFiado(){
-        let combo = document.getElementById("id_cliente");
-        let selected = combo.options[combo.selectedIndex].text;
         
-        if (selected == '---------'){
-            let total = document.getElementById('total_precios').innerText;
-            
-            bloque = document.getElementById('formulario');
-            elemento2 = document.createElement('input');
-            elemento2.setAttribute("class", "form-control col-sm-3 mb-2 bg-dark" );
-            elemento2.setAttribute("style", "width:200px" );
-            elemento2.setAttribute("name", `total` );
-            elemento2.id = 'total';
-            elemento2.setAttribute("readonly", "" );
-            bloque.appendChild(elemento2);
-            document.getElementById(elemento2.id).value = total;
+        bloque = document.getElementById('plazos').innerHTML;
+        localStorage.setItem("producto", JSON.stringify(bloque));
+        local = localStorage.getItem("producto");
+        local = local.length;
+        if (local <= 36){
+            Swal.fire({
+                icon: 'error',
+                title: 'No hay productos seleccionados',
+                showConfirmButton: true,
+            })
+        }else{
+            productos = document.querySelectorAll('.detallePedidoP');
+            productosSeleccionados = document.querySelectorAll('.productoSeleccionado');
+            console.log(productosSeleccionados)
+            contador = 0
+            contador2 = 0
+            productos.forEach( function(valor) {
+                valor1 = valor.innerHTML;
+                contador2 = contador2 + 1
+                productosSeleccionados.forEach( function(valor) {
+                    valor2 = valor.value;
+                    if(valor1 == valor2){
+                        contador = contador + 1
+                    }
+                });
+                
+            });
+            if(contador == contador2 ){
+                
+                let combo = document.getElementById("id_cliente");
+                let selected = combo.options[combo.selectedIndex].text;
 
-            document.formulario.submit();
-        }
-        else{
-            elemento = document.getElementById('boton_aceptar');
-            elemento.setAttribute("data-bs-toggle", "modal" );
-            elemento.setAttribute("data-bs-target", "#exampleModal" );
-            elemento.setAttribute("class", "modal" );
-            if (document.getElementsByClassName("modal")){
-                elemento.click();
+                if (selected == '---------'){
+
+                    let total = document.getElementById('total_precios').innerText;
+        
+                    bloque = document.getElementById('formulario');
+                    elemento2 = document.createElement('input');
+                    elemento2.setAttribute("class", "form-control col-sm-3 mb-2 bg-dark" );
+                    elemento2.setAttribute("style", "width:200px" );
+                    elemento2.setAttribute("name", `total` );
+                    elemento2.id = 'total';
+                    elemento2.setAttribute("readonly", "" );
+                    bloque.appendChild(elemento2);
+                    document.getElementById(elemento2.id).value = total;
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Venta creada con exito',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                    setTimeout(function(){
+                        
+                        document.formulario.submit();
+
+                    }, 3000);
+
+                }else{
+                    elemento = document.getElementById('boton_aceptar');
+                    elemento.setAttribute("data-bs-toggle", "modal" );
+                    elemento.setAttribute("data-bs-target", "#exampleModal" );
+                    elemento.setAttribute("class", "modal" );
+                    if (document.getElementsByClassName("modal")){
+                        elemento.click();
+                    }
+                }
+
+            }   
+            else{
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hay productos que no se pueden recepcionar ya que no coinciden con los productos del pedido seleccionado',
+                    showConfirmButton: true,
+                
+                })
             }
-            
         }
     }
 
@@ -190,13 +241,22 @@
         bloque.appendChild(elemento2);
         document.getElementById(elemento2.id).value = total;
 
-        document.formulario.submit();
-    }
+        Swal.fire({
+            icon: 'success',
+            title: 'Venta creada con exito',
+            showConfirmButton: false,
+            timer: 3000
+        })
+        setTimeout(function(){
+            
+            document.formulario.submit();
 
+        }, 3000);
+    }
 </script>
 
 <script language="JavaScript">
-    //Creacion de Variable incremental
+
     var incremento = 0;
 
     function TotalPrecios()
@@ -223,24 +283,24 @@
         });
         document.getElementById("total_precios").innerHTML = suma;
     }
-    
-
-    function agregar2(idProd, precioProd, cantidadProd)
+    valor = "";
+    function agregar2(idProd, precioProd, cantidadProd, boton)
     {
-        
+        boton.setAttribute("disabled",true);
         let coincidencia = document.getElementById(idProd).textContent;
         let precio = document.getElementById(precioProd).textContent;
         let cantidad = document.getElementById(cantidadProd).value;
+        
         incremento++;
         //Obteniendo el Div "plazos"
         bloque = document.getElementById('plazos');
         
         //Creando el input que irá dentro del Div "plazos"
         elemento = document.createElement('input');
-        elemento.setAttribute("class", "form-control col-sm-3 mb-2" );
+        elemento.setAttribute("class", "form-control col-sm-3 mb-2 productoSeleccionado" );
         elemento.setAttribute("style", "width:200px" );
         elemento.setAttribute("name", `${coincidencia}` );
-        elemento.id = 'input1.'+incremento;
+        elemento.id = 'input1.'+coincidencia;
         elemento.setAttribute("readonly", "" );
         bloque.appendChild(elemento);
 
@@ -248,7 +308,7 @@
         elemento2.setAttribute("class", "form-control col-md-3 mb-2 cantidad" );
         elemento2.setAttribute("style", "width:100px" );
         elemento2.setAttribute("name", `${coincidencia}.cantidad` );
-        elemento2.id = 'input2.'+incremento;
+        elemento2.id = 'input2.'+coincidencia;
         elemento2.setAttribute("readonly", "" );
         bloque.appendChild(elemento2);
 
@@ -256,16 +316,16 @@
         elemento3.setAttribute("class", "form-control col-md-3 mb-2 precio" );
         elemento3.setAttribute("style", "width:100px" );
         elemento3.setAttribute("name", `${coincidencia}.precio` );
-        elemento3.id = 'input3.'+incremento;
+        elemento3.id = 'input3.'+coincidencia;
         elemento3.setAttribute("readonly", "" );
         bloque.appendChild(elemento3);
         
         eliminar = document.createElement('input');
         eliminar.setAttribute("class", "btn btn-secondary btn-sm mb-2");
-        eliminar.setAttribute("onclick", `borrar(${incremento})`);
+        eliminar.setAttribute("onclick", `borrar("${coincidencia}", "${idProd}")`);
         eliminar.setAttribute("value", "-");
         eliminar.setAttribute("style", "width:30px");
-        eliminar.id = ''+incremento;
+        eliminar.id = ''+coincidencia;
         bloque.appendChild(eliminar);
 
         document.getElementById(elemento.id).value = coincidencia;
@@ -273,19 +333,28 @@
         document.getElementById(elemento3.id).value = precio;
 
         br = document.createElement('br');
-        
+        br.id = 'br'+coincidencia;
         bloque.appendChild(br);
-        TotalPrecios()
+        TotalPrecios();
+        valor = idProd;
     }
-
+   
     //Lo que se hará cuando se presione el boton de Borrar
-    function borrar(obj) {
-        
+    function borrar(obj, valor) {
+
+        boton = document.getElementById(`agregar${valor}`);
+        boton.removeAttribute('disabled')
+
         document.getElementById(`input1.${obj}`).remove();
         document.getElementById(`input2.${obj}`).remove();
         document.getElementById(`input3.${obj}`).remove();
         document.getElementById(`${obj}`).remove();
+        document.getElementById(`br${obj}`).remove();
         TotalPrecios()
+        
+        // document.getElementById(`agregar${valor}`).diabled = true;
+        // console.log(boton)
+        // boton.setAttribute("disabled",false);
     }
 </script>
 
