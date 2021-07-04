@@ -148,7 +148,7 @@ def Venta(request):
                     for listaP in listaProductos:
                         
                         prod = PRODUCTO.objects.get(codigo_barra = listaP[0])
-
+                        
                         detalleBoleta = DETALLE_BOLETA.objects.create(
                             boleta = bol,
                             cantidad = listaP[1],
@@ -165,7 +165,6 @@ def Venta(request):
                         cliente = CLIENTE.objects.get(id=queryCliente) 
                     )
                     
-
                     messages.warning(request, 'Venta realizada con exito')
                     return redirect('venta')
 
@@ -186,27 +185,24 @@ def Venta(request):
                 contador2 = 0
                 producto = []
                 for key,value in request.POST.items():
-
-                    contador2 = contador2 +1
+                    
+                    contador2 = contador2 + 1
 
                     if contador2 == contador:
 
                         total = value
 
-                    
-                    if contador2 > 1 and contador2 < contador - 2:
+                    if contador2 > 1 and contador2 < contador:
                         
                         if contador2 > 3:
                             cont += 1
-
+                            
                             producto.append(value)
 
                             if cont == 3:
                                 listaProductos.append(producto)
                                 producto = []
                                 cont = 0
-
-
 
                 boleta = BOLETA.objects.create(
                     total_a_pagar = total,
@@ -220,7 +216,7 @@ def Venta(request):
 
                 for listaP in listaProductos:
                     prod = PRODUCTO.objects.get(codigo_barra = listaP[0])
-
+                    
                     detalleBoleta = DETALLE_BOLETA.objects.create(
                         boleta = bol,
                         cantidad = listaP[1],

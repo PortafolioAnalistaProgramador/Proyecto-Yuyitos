@@ -142,6 +142,10 @@
     
     document.getElementById("descargarInforme").disabled=true;
     document.getElementById("vistaPrevia").disabled=true;
+
+    document.getElementById("informeCheck1").disabled=true;
+    document.getElementById("informeCheck2").disabled=true;
+    document.getElementById("informeCheck3").disabled=true;
     
     function checkeado(form)
     {
@@ -156,6 +160,9 @@
             form.estadoRecepcionO.disabled = false;
             form.razonSocialOrdenP.disabled = false;
             form.detalleOrdenP.disabled = false;
+            form.informeCheck1.disabled = false;
+            form.informeCheck2.disabled = false;
+            form.informeCheck3.disabled = false;
             
         }
 
@@ -167,6 +174,9 @@
             form.estadoRecepcionO.disabled = true;
             form.razonSocialOrdenP.disabled = true;
             form.detalleOrdenP.disabled = true;
+            form.informeCheck1.disabled = true;
+            form.informeCheck2.disabled = true;
+            form.informeCheck3.disabled = true;
         }
         
         if (form.estadoRecepcionO.checked == true){
