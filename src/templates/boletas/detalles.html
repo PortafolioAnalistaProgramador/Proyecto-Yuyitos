@@ -60,5 +60,20 @@
     </table>
     <a href="../" type="submit" class="btn btn-primary">Volver</a>
 </div>
-
+<script>
+    function manual(){
+        Swal.fire({
+            title: 'Manual',
+            html: `En esta pagina podemos ver todo el detalle la boleta, junto 
+            al detalle de los productos que contiene esta boleta.
+            <br><br>
+            Si se desea volver a la interfaz principal de administración 
+            de boletas, bastará con seleccionar la acción “Volver” que encontraremos 
+            disponible en la parte inferior izquierda de la interfaz. 
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar',
+        })
+    }
+</script>
 {% endblock %}

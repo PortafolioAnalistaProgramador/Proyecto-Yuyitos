@@ -104,7 +104,81 @@
             </form>
         </div>
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos crear una orden de pedido, veremos 
+                tres cuadros en la parte blanca de la página; El primer cuadro, 
+                que se encuentra en la parte superior izquierda, es para seleccionar 
+                el proveedor para el pedido; el segundo cuadro, que está en la parte 
+                superior derecha, es para seleccionar los productos para el pedido; 
+                el tercer cuadro que está en la parte inferior es donde se van a ir 
+                agregando los productos seleccionados para el pedido, además de poder 
+                seleccionar la fecha de cuando se estima que llegará el pedido, que 
+                es opcional.
+                <br><br>
+                Para poder seleccionar el proveedor debemos acercar la flecha del 
+                mouse hacia los botones azules que contienen el nombre del proveedor 
+                y hacer clic en el proveedor al que necesitemos hacer el pedido; en 
+                el segundo recuadro se nos mostrara una lista de productos con 
+                parámetros como su nombre, cantidad y un botón de “Agregar”
+                <br><br>
+                En este punto seleccionaremos el o los productos que necesitemos 
+                para el pedido.<br>
+                Podemos buscar el producto, dentro del apartado de “Buscar producto” 
+                dentro del cual escribiremos alguna palabra que coincida con el 
+                nombre del producto que buscamos, esto nos mostrara el o los 
+                productos que coincidan con los criterios de búsqueda.<br>
+                De igual manera se puede simplemente observar de manera manual la 
+                lista para buscar el producto que necesitamos.<br>
+                Una vez encontremos el producto haremos clic en el botón “Agregar” 
+                que esta junto al producto que necesitamos. 
+                <br><br>
+                Al hacer clic en el botón “Agregar”, el producto seleccionado se 
+                nos agrega al recuadro en donde se encuentra el resumen del pedido, 
+                junto con su cantidad y un botón con el signo “-”, el cual, al 
+                accionarlo, hará que el producto se quite del pedido. 
+                <br><br>
+                Luego podemos seleccionar la fecha estimada de llegada del pedido 
+                en caso de que poseamos la información.<br>
+                Para esto tenemos una opción, con el siguiente texto:
+                “Seleccione fecha de llegada(opcional)” 
+                Para poder seleccionar la fecha, debemos situarnos sobre la barra 
+                que se encuentra debajo de este texto, esto desplegará un pequeño 
+                calendario que nos permitirá armar la fecha.
+                <br><br>
+                Comenzaremos con la selección de mes, para esto debemos seleccionar 
+                la pequeña barra en la parte superior del calendario que contiene el 
+                mes actual.<br>
+                Esto desplegara una lista completa con todos los meses del año, aquí 
+                seleccionaremos el mes que corresponda.
+                <br><br>
+                Tras la selección de mes, realizamos el mismo proceso con el año, 
+                del lado derecho podremos encontrar el menú desplegable con el año 
+                actual, esto nos desplegará una lista que contendrá un periodo de 
+                años que comprende 10 años antes del año actual, y 10 años posteriores 
+                a este.<br>
+                Procederemos a seleccionar el año que corresponda.
+                <br><br>
+                Para concluir la construcción de la fecha, deberemos seleccionar 
+                el día de seleccionando sobre éste dentro del calendario, tras esto, 
+                automáticamente se nos llenará el campo con la fecha en formato día/mes/año.
+                <br><br>
+                Una vez seleccionados los productos y la fecha de llegada podemos 
+                hacer clic en el botón “Aceptar”, esto nos llevara a la administración 
+                de ordenes de pedidos mostrándonos un mensaje de confirmación con 
+                el siguiente texto:
+                “Orden de pedido realizada con éxito”
+                En caso de que se desee interrumpir la acción, siempre estará 
+                disponible el botón “Cancelar” que nos permitirá volver a la interfaz 
+                de administración de ordenes de pedidos sin efectuar ningún cambio. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 <script>
 
     function GetProveedor(id){

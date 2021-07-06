@@ -77,4 +77,51 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `En esta página podremos visualizar en una lista todos los usuarios creados.
+          Junto a cada usuario se encuentran las siguientes acciones:
+          <br><br>
+            • Ver<br>
+            • Editar<br>
+            • Activar usuario<br>
+            • Desactivar usuario<br><br>
+          Además, en la parte inferior izquierda, podremos ubicar el botón de “Crear”
+          <br><br>
+          Al seleccionar la opción “Crear” se nos redirigirá a la creación de usuarios, 
+          en donde 
+          veremos distintos campos que deberemos llenar con la información que se nos 
+          solicita
+          <br><br>
+          Al seleccionar la acción de “Ver” de algún usuario, se nos redirigirá hacia 
+          un apartado que contendrá detalles del usuario seleccionado.
+          <br><br>
+          Si seleccionamos la acción de “Editar”, se nos llevará a un apartado que 
+          nos permitirá editar los datos del usuario seleccionado. 
+          <br><br>
+          Dentro de la administración de usuarios, nosotros podremos activar o 
+          desactivar un usuario.<br>
+          En caso de requerir la desactivación de un usuario ya activo, deberemos 
+          situarnos sobre el botón “Desactivar usuario” y presionar sobre él, esto 
+          hará que el estado del usuario cambie a inactivo, esto lo podremos 
+          corroborar visualizando el apartado de “Está activo” perteneciente al usuario.<br>
+          Además, al cambiar su estado, la acción que realiza el botón cambiará de 
+          forma automática, ahora permitiéndonos activar dicho usuario en caso de 
+          presionar sobre él. <br>
+          Esto lo podremos saber gracias al nombre del botón, que cambió a “Activar 
+          Usuario”. 
+          <br><br>
+          Si queremos realizar la activación de un usuario, seleccionamos la acción 
+          de “Activar usuario” perteneciente al usuario a activar, podremos ver que 
+          su estado dentro del apartado “Está activo?” cambia a “Si” a la par que se 
+          nos muestra un mensaje informativo en pantalla sobre que el cambio de 
+          estado fue realizado de manera exitosa. 
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

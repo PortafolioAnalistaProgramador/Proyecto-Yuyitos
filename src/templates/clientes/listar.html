@@ -70,4 +70,48 @@
       </div>
 
     </div>
+  <script>
+    function manual(){
+      Swal.fire({
+        title: 'Manual',
+        html: `Dentro de este módulo podremos visualizar todos los clientes ya 
+        creados, junto a cada cliente se encuentran siguientes acciones:
+        <br><br>
+          • Ver<br>
+          • Editar<br>
+          • Activar cliente<br>
+          • Desactivar cliente <br>
+          • Crear<br><br>
+        Este último lo podremos encontrar en la parte inferior izquierda de la interfaz. 
+        <br><br>
+        Al seleccionar la acción de “Crear” se nos redireccionará a la interfaz 
+        de creación de clientes.
+        <br><br>
+        Si seleccionamos la acción “Ver”, nos llevará a un apartado que nos permitirá 
+        visualizar todos los detalles del cliente seleccionado
+        <br><br>
+        Al seleccionar el botón “Editar” de algún cliente, nos llevará a un apartado 
+        que nos permitirá actualizar cualquier dato ingresado del cliente seleccionado
+        <br><br>
+        Dentro de la administración de clientes, podremos de igual forma activar o 
+        desactivar a cualquier cliente dentro del sistema, esto lo podremos corroborar 
+        en el apartado de “Se le puede fiar?”, el cual cambiará de estado según 
+        activemos o desactivemos cada cliente.
+        <br><br>
+        Si deseamos desactivar un cliente, solo deberemos irnos al botón de “Desactivar 
+        cliente”, esto causará que el cliente cambie de estado, a la par de que el 
+        botón de acción cambiará a “Activar cliente”, tras esto, se nos mostrará un 
+        mensaje en sistema informándonos que el cliente fue desactivado con éxito.
+        <br><br>
+        En caso contrario, si deseamos activar un cliente, solo debemos presionar 
+        el botón de “Activar cliente” esto hará que su estado cambie a “Si”, a la 
+        par que el botón de acción cambiará a “Desactivar cliente”.<br>
+        Podremos corroborar el cambio efectuado gracias a un mensaje en pantalla, 
+        que nos indicará que el cliente fue activado con éxito. 
+        `,
+        showConfirmButton: true,
+        confirmButtonText: 'Continuar',
+      })
+    }
+  </script>
 {% endblock %}

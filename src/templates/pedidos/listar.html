@@ -75,4 +75,46 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `En esta página podemos ver todas las ordenes de pedido creadas.
+          Junto a cada una se encuentran las siguientes acciones:
+          <br><br>
+          • Ver<br>
+          • Activar Pedido<br>
+          • Desactivar Pedido<br>
+          • Crear
+          <br><br>
+          Este último lo podremos encontrar en la parte inferior izquierda de la interfaz.
+          <br><br>
+          Si hacemos clic sobre el botón “Crear” se nos llevará a la interfaz de 
+          creación de ordenes de pedido.
+          <br><br>
+          Si accedemos a la opción “Ver”, se nos llevará a un apartado donde podremos 
+          visualizar todos los detalles de la orden seleccionada.
+          <br><br>
+          Dentro de la administración de ordenes de pedidos, nosotros podremos 
+          activar o desactivar un pedido.<br>
+          En caso de requerir la desactivación de un pedido, deberemos situarnos 
+          sobre el botón “Desactivar pedido” y presionar sobre él, esto hará que 
+          el estado del pedido cambie a Anulado, esto lo podremos corroborar 
+          visualizando el apartado de “Estado del pedido”.<br>
+          Además, al cambiar su estado, la acción que realiza el botón cambiará de 
+          forma automática, ahora permitiéndonos activar dicho pedido en caso de 
+          presionar sobre él. <br>
+          Esto lo podremos saber gracias al nombre del botón, que cambió a 
+          “Activar Pedido”.
+          <br><br>
+          Si queremos realizar la activación de un pedido, seleccionamos la acción 
+          de “Activar pedido”, podremos ver que su estado dentro del apartado “Estado 
+          del pedido” cambia a “En espera” a la par que se nos muestra un mensaje 
+          informativo en pantalla sobre que el pedido fue activado exitosamente. 
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

@@ -66,5 +66,30 @@
     </table>
     <a href="../" type="submit" class="btn btn-primary">Volver</a>
 </div>
-
+<script>
+    function manual(){
+        Swal.fire({
+            title: 'Manual',
+            html: `En esta pagina podemos ver los detalles de la orden pedido 
+            seleccionada, Dentro de esta interfaz se nos mostrarán dos tablas, 
+            la primera contendrá la siguiente información:
+            <br><br>
+            • Numero de pedido<br>
+            • Proveedor<br>
+            • Fecha de pedido<br>
+            • Fecha de llegada<br>
+            • Fecha de recepción (en caso de que ya este recepcionado)<br>
+            • Hora de recepción<br>
+            • Estado del pedido
+            <br><br>
+            Luego, en la tabla de abajo, tenemos el disponible el detalle de los 
+            productos asignados al pedido, con datos cómo su nombre y cantidad; 
+            debajo de estas tablas tenemos un botón de “Volver”, que al hacer clic 
+            nos redireccionará a la interfaz de administración de ordenes de pedidos.
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar',
+        })
+    }
+</script>
 {% endblock %}

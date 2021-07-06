@@ -54,4 +54,27 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `En esta página podemos ver todos los tipos de productos creados.<br>
+          Junto a cada tipo de producto se encuentra el botón “Editar” y en la 
+          parte inferior izquierda de la tabla se encuentran los botones “Crear” 
+          y “Volver a productos”.
+          <br><br>
+          Si hacemos clic sobre el botón “Crear” se nos llevará a la interfaz de 
+          creación de tipos de producto.
+          <br><br>
+          Si seleccionamos la opción de “Editar”, se nos redirigirá hacia una 
+          página que nos permitirá actualizar los datos de este tipo de producto
+          <br><br>
+          Si desea volver a la interfaz de administración de  
+          productos puede hacer clic en el botón “Volver a productos”
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

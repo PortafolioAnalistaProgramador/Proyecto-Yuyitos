@@ -125,7 +125,95 @@
     </div>
 
 </form>
-
+<script>
+    function manual(){
+        Swal.fire({
+            title: 'Manual',
+            html: `En esta página podremos crear informes de los datos pertenecientes 
+            a productos, familias de productos y tipos de productos.<br>
+            También se podrán generar informes sobre las visitas que se realizaron a 
+            la página.<br>
+            Estos informes se podrán exportar en tres tipos de formato, los cuales son: 
+            <br><br>
+            • Microsoft Excel
+            • Microsoft Word 
+            • PDF
+            <br><br>
+            Para poder crear un informe deberemos seleccionar los datos que queremos 
+            que lo integren.<br>
+            Primero debemos hacer clic en un pequeño recuadro que encontraremos justo 
+            de lado del texto de lo que queramos incluir, en este caso incluiremos 
+            “Productos”.<br>
+            En caso de querer agregar las visitas, de igual forma deberemos seleccionar 
+            el pequeño recuadro que esta junto al texto “Visitas a paginas”.<br>
+            Al hacer clic sobre esos recuadros se nos marcarán.
+            Al marcar cualquiera de los apartados que deseemos, se nos habilitaran más 
+            casillas las cuales podremos marcar, pudiendo personalizar los datos que 
+            queremos extraer del documento a nuestro gusto según lo que se requiera 
+            analizar. 
+            <br><br>
+            De igual forma se nos habilitaran los selectores, que se encuentran en 
+            cuadros independientes, dentro de estos selectores siempre estará marcada 
+            por defecto la opción “Todos”
+            Estos selectores tienen la funcionalidad de hacer un filtrado de datos.<br>
+            Por ejemplo, si se hace clic en el selector de stock, con el parámetro 
+            “Sin stock” 
+            Dentro del informe se nos incluirán los datos sólo de los productos que 
+            se encuentren sin stock.
+            <br><br>
+            Por otra parte, tenemos los selectores con filtros por nombre, si hacemos 
+            clic en el selector que dice “Por nombre” este nos habilitara una lista 
+            desplegable que contiene “------”.
+            <br><br>
+            Esto también nos servirá para hacer un filtrado de datos.<br>
+            Por ejemplo, si hacemos clic en el selector “Por nombre” de la familia de 
+            productos, la lista desplegable se habilitará y podremos hacer clic sobre 
+            ella, esto nos mostrara un listado con los nombres de las familias de 
+            producto que fueron creadas. <br>
+            Luego haremos clic en el nombre que necesitemos y quedara escrito dentro 
+            del campo. Esto también aplica para las visitas a páginas.
+            <br><br>
+            Una vez seleccionados todos los datos que necesitemos, podemos seleccionar 
+            el formato de documento que necesitemos, uno de ellos es el tipo Excel, 
+            solo deberemos marcar la casilla conjunta al nombre del tipo de documento 
+            que necesitemos, esto ocasionará que se nos habilite de forma automática 
+            el botón “Descargar” (Para el tipo de formato Excel, no se encuentra 
+            disponible la vista previa del documento, es por esto que no se encuentra 
+            habilitada)<br>
+            Luego procederemos a hacer clic al botón “Descargar”, esto nos descargara 
+            el documento en formato Excel dentro de la ruta especificada al momento 
+            de la descarga, esto nos permitirá conservar la copia y poder abrirla con 
+            la herramienta que estimemos conveniente, en este caso, Microsoft Excel.
+            <br><br>
+            El otro formato de documento disponible es del tipo Word, Para esto, al 
+            igual que con Excel, solo deberemos marcar la casilla conjunta, esto 
+            ocasionará que se nos habilite de forma automática el botón “Descargar” 
+            (Para este tipo de formato, tampoco se encuentra habilitada la vista previa)
+            Luego procederemos a hacer clic al botón “Descargar”, esto nos descargara 
+            el documento en formato Word dentro de la ruta especificada al momento de 
+            la descarga, esto nos permitirá conservar la copia y poder abrirla con la 
+            herramienta que estimemos conveniente, en este caso, Microsoft Word.
+            <br><br>
+            El ultimo formato de documento que tenemos es del tipo PDF, para esto, al 
+            igual que con los otros dos tipos de archivos, deberemos marcar nuevamente 
+            la casilla conjunta con el nombre correspondiente a dicho formato, esto 
+            ocasionará que se nos habilite de forma automática el botón “Descargar” 
+            y “Vista previa”<br>
+            Cuando hacemos clic en el botón de vista previa, la página en la que 
+            estamos situados se cambiara, mostrándonos desde la misma página una vista 
+            previa del documento para acceder a el sin la necesidad de descargarlo. 
+            <br><br>
+            Si deseamos descargar una copia de este documento, solo debemos presionar 
+            el botón de “Descargar”.<br>
+            Esto nos descargara el documento en formato PDF, pudiendo acceder a él 
+            esta vez de forma local, permitiendo abrirlo con la herramienta que estime 
+            conveniente para la lectura de este tipo de archivos. 
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar',
+        })
+    }
+</script>
 <script language="JavaScript">
    
     document.getElementById("precio").disabled=true;

@@ -18,5 +18,23 @@
             </div>
         </div>
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos ver el detalle del cliente seleccionado,
+                estos detalles son:
+                <br><br>
+                Su run, su nombre, su número de teléfono, dirección de correo electrónico 
+                y su dirección. 
+                <br><br>
+                También encontraremos, debajo de la información del cliente, 
+                un botón que nos permitirá volver a la interfaz principal de 
+                administración de clientes.
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 {% endblock %}

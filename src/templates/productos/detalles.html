@@ -24,5 +24,29 @@
             </div>
         </div>
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podremos visualizar todos los detalles del 
+                producto seleccionado.
+                Podremos visualizar la siguiente información:
+                <br><br>
+                • Stock<br>
+                • Precio<br>
+                • Descripcion<br>
+                • Precio compra<br>
+                • Stock<br>
+                • Stock critico<br>
+                • Fecha de vencimiento<br>
+                • Código de barras<br>
+                • Familia de producto <br><br>
+                Además de la opción de “Volver” que, tras seleccionarla, nos 
+                redireccionará a la interfaz de administración de productos.
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 {% endblock %}

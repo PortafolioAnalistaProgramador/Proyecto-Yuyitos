@@ -81,4 +81,47 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `Dentro de esta pagina podremos visualizar todos los proveedores 
+          añadidos en sistema.
+          Junto a cada proveedor se encuentran las siguientes acciones:
+          <br><br>
+          • Ver<br>
+          • Editar<br>
+          • Activar proveedor<br>
+          • Desactivar proveedor
+          <br><br>
+          En la parte inferior izquierda podemos encontrar el botón “Crear” 
+          y al lado derecho del título “Administrador de proveedores” se encuentra 
+          el botón “Ir a categorías de proveedor”. 
+          <br><br>
+          Si presionamos sobre el botón “Crear” se nos redireccionará a la interfaz 
+          de creación de proveedores
+          <br><br>
+          Si seleccionamos la acción de “Editar” perteneciente a algún proveedor en 
+          específico, nos llevará a poder actualizar cualquier información referente 
+          al proveedor en sistema.
+          <br><br>
+          Dentro de la interfaz de administración de proveedores podremos realizar 
+          la activación o desactivación de cualquier proveedor.<br>
+          En caso de querer desactivar un proveedor, se deberá presionar sobre el 
+          botón “Desactivar proveedor”, esto hará que cambie su estado a “No activo”, 
+          podremos confirmar el cambio de estado a través de un mensaje que se nos 
+          presentará en pantalla informándonos que el proveedor fue desactivado.<br>
+          Esto, además, causará que el botón de acción cambie a “Activar proveedor”. 
+          <br><br>
+          Por el contrario, si deseamos activar un proveedor, deberemos presionar 
+          sobre el botón de “Activar proveedor”, esto hará que su estado cambie a 
+          “Activo”, podremos igualmente confirmarlo a través de un mensaje en 
+          pantalla que nos informará que se realizó el cambio de estado correctamente.<br>
+          Esto hará que el botón de acción cambie a “Desactivar proveedor”.
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}
