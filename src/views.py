@@ -1043,10 +1043,10 @@ def ProductoActualizar(request, id):
                     producto.familia_producto = familia_producto
                     producto.save()
 
-                    messages.warning(request, 'Producto creado correctamente')
+                    messages.warning(request, 'Producto actualizado correctamente')
                     return redirect('listarProductos')
                 else:
-                    messages.warning(request, 'No se pudo crear el Producto')
+                    messages.warning(request, 'No se pudo actualizar el Producto')
 
     return render(request, 'productos/actualizar.html',context)
 
