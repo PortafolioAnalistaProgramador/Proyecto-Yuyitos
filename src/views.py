@@ -45,15 +45,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 def Login(request):
 
-    usuario = request.user
-    usuario = User.objects.get(username=usuario)
-
-    seguimientoPag = SEGUIMIENTO_PAGINA.objects.create(
-        pagina_visitada = "Ingreso de usuarios",
-        usuario = usuario
-    )
-    seguimientoPag.save()
-
     username = request.POST.get('username')
     password = request.POST.get('password')
 
@@ -1052,10 +1043,10 @@ def ProductoActualizar(request, id):
                     producto.familia_producto = familia_producto
                     producto.save()
 
-                    messages.warning(request, 'Producto creado correctamente')
+                    messages.warning(request, 'Producto actualizado correctamente')
                     return redirect('listarProductos')
                 else:
-                    messages.warning(request, 'No se pudo crear el Producto')
+                    messages.warning(request, 'No se pudo actualizar el Producto')
 
     return render(request, 'productos/actualizar.html',context)
 
