@@ -35,4 +35,35 @@
             <a href="{% url 'reset_password' %}" class="btn btn-info">olvide mi contraseña</a>
         </form>
     </div>
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: "Es importante tener en cuenta que solo podrán ingresar al "+
+                "sistema y a sus funcionalidades aquellos usuarios que ya se encuentren "+
+                "previamente registrados, en caso contrario, el usuario deberá contactar "+
+                "directamente con un administrador para la creación y asignación de su "+
+                "usuario correspondiente.<br><br>"+
+
+                "Dentro de esta pagina, podemos observar como elemento principal dos "+
+                "campos que podremos llenar con nuestro nombre de usuario y nuestra "+
+                "contraseña, en respectivo orden.<br><br>"+
+                
+                "Tras realizar el ingreso de datos, se deberá seleccionar la opción "+
+                "“Ingresar” que encontraremos en la parte inferior izquierda del "+
+                "formulario en pantalla. <br><br>"+
+
+                "En caso de que el usuario se le "+
+                "redireccionará hacia la pagina principal del sistema.<br><br> "+
+
+                "En caso de que usted haya olvidado su contraseña, podrá recuperarla "+
+                "ingresando a la opción “Olvidé mi contraseña”."+
+                "En este apartado deberá proveer su correo electrónico asociado al "+
+                "registro para proceder al restablecimiento de su contraseña"
+                ,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 {% endblock %}

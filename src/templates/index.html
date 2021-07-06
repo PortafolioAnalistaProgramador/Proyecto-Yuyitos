@@ -2,17 +2,41 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
-<div class="row">
-  <div class="texto p-5 text-center text-white">
-    <h1>Bienvenido al sistema de </h1>
-    <h1>gestion del almacen</h1>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <div class="row">
+    <div class="texto p-5 text-center text-white">
+      <h1>Bienvenido al sistema de </h1>
+      <h1>gestion del almacen</h1>
+    </div>
+    
+
+    <img src="{% static 'images/almacen.jpeg' %}" alt="" class="imagen-index" width="100%" height="100%">
+    
   </div>
-  
-
-  <img src="{% static 'images/almacen.jpeg' %}" alt="" class="imagen-index" width="100%" height="100%">
-  
-</div>
-
+  <script>
+    function manual(){
+      Swal.fire({
+        title: 'Manual',
+        html: `Usted se encuentra en la pagina principal del sistema, 
+        la cual contiene un breve mensaje de bienvenida.
+        <br><br>
+        Dentro de esta interfaz podremos navegar por la totalidad del sistema, 
+        e incluso podemos observar, en la parte superior derecha, un pequeño 
+        espacio indicándonos nuestro propio nombre de usuario, junto a un boton 
+        indicándonos el cierre de sesión.
+        <br><br>
+        Al seleccionar esta opción, nuestra sesión como usuario finalizará y se 
+        nos redireccionará automáticamente hacia el formulario para el ingreso a 
+        sistema 
+        <br><br>
+        En la parte superior podremos observar que el sistema nos ofrece una 
+        barra de navegación, la cual contiene distintas opciones que nos redirigirán 
+        a su correspondiente módulo dentro de sistema.
+        `,
+        showConfirmButton: true,
+        confirmButtonText: 'Continuar',
+      })
+    }
+  </script>
 
 {% endblock %}

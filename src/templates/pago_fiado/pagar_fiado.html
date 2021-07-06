@@ -78,7 +78,65 @@
     </form>
     
 </div>
-
+<script>
+    function manual(){
+        Swal.fire({
+            title: 'Manual',
+            html: `La finalidad de este módulo es la de poder realizar pagos, 
+            ya sean parciales o completos, de los fiados creados por medio del 
+            módulo de ventas. 
+            <br><br>
+            Dentro de este módulo, en la parte izquierda, podremos observar que 
+            el sistema nos muestra los fiados que se han realizado en el almacén, 
+            junto a información importante cómo el cliente que lo solicitó, 
+            la deuda que este tiene y la fecha que se efectuó; Por otra parte, 
+            al lado derecho, podremos observar un apartado en el cual se mostrarán 
+            los pagos que ha realizado el cliente que nosotros seleccionemos, 
+            en este apartado se nos listará información como el monto abonado, y 
+            la fecha del mismo. 
+            <br><br>
+            Para poder efectuar un pago, podemos seleccionar un fiado de los 
+            presentes en el listado con la opción “Seleccionar”.
+            En caso de que queramos realizar la búsqueda de un fiado específico, 
+            contamos con la opción de un cuadro de búsqueda que nos permitirá 
+            buscar un registro especifico según lo que nosotros ingresemos, solo 
+            bastará con ingresar los datos, y si encuentra coincidencias, el 
+            sistema automáticamente mostrará los registros coincidentes, en caso 
+            contrario, nos mostrará un mensaje indicándonos que no se encontraron 
+            coincidencias en base al criterio de búsqueda ingresado. 
+            <br><br>
+            Tras realizar la selección, se nos mostrarán todos los pagos anteriores 
+            que dicho cliente haya realizado, esto solo en caso de que se hayan 
+            realizado pagos anteriores, claro está. 
+            <br><br>
+            De igual forma, la propia interfaz nos mostrará otras opciones, 
+            dentro de las cuales podremos seleccionar el monto que se desea pagar, 
+            esta opción la podremos encontrar en la parte izquierda de la interfaz 
+            principal del módulo.
+            <br><br>
+            Encontraremos un recuadro que deberemos llenar según el valor del pago 
+            que se quiera efectuar.
+            <br><br>
+            Tras realizar el ingreso del monto a pagar, procederemos a seleccionar 
+            la opción de “Realizar pago”, en caso contrario, si queremos volver a 
+            visualizar todos los registros, solo deberemos seleccionar la opción 
+            “Mostrar todos”. 
+            <br><br>
+            Tras presionar la opción de “Realizar pago”, se nos redirigirá nuevamente 
+            a la interfaz principal del módulo de fiados, junto a un mensaje 
+            indicándonos que el pago fue realizado con éxito.
+            <br><br>
+            En caso de que el usuario haya realizado el pago total de su deuda, 
+            al momento de realizar una búsqueda a su usuario, podremos observar 
+            que su deuda aparece con monto “0”, además de tener en este caso la 
+            casilla de seleccionar inhabilitada, lógicamente esto se debe a que 
+            dicho usuario ya no posee ninguna deuda ingresada en sistema. 
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar',
+        })
+    }
+</script>
 <script language="JavaScript">
     var sPaginaURL = window.location.href;
     sPaginaURL = sPaginaURL.substr(34)

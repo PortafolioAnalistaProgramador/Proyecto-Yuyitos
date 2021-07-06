@@ -20,5 +20,22 @@
         </div>
         
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos ver el detalle del usuario seleccionado,
+                estos detalles son:
+                <br><br>
+                Su nombre, apellido, dirección de correo electrónico y su 
+                nombre de usuario en sistema. <br>
+                Para poder regresar a la interfaz principal de administración de 
+                usuarios, deberemos presionar el botón “Volver” que veremos en la 
+                parte inferior. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 {% endblock %}

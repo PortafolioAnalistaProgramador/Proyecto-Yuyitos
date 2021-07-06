@@ -34,6 +34,45 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos crear tipos de producto, 
+                en donde veremos un formulario con distintos campos que 
+                deberemos llenar, los campos dentro del formulario son:
+                <br><br>
+                • Nombre: Corresponde al nombre del tipo de producto 
+                que se creara.<br>
+                • Proveedor: Corresponde al proveedor que se encarga de 
+                producir dicho tipo de producto.
+                <br><br>
+                Dentro del campo que nos indica que debemos introducir el 
+                nombre debemos escribir el texto correspondiente al nombre 
+                del tipo de producto que queremos agregar.<br>
+                Para el campo correspondiente al proveedor, deberemos posicionarnos 
+                sobre la lista desplegable y seleccionarla, esto nos mostrará 
+                un listado que contiene todos los proveedores disponibles en sistema.<br>
+                Para seleccionar el tipo que deseemos solo deberemos hacer clic 
+                sobre el proveedor que necesitemos, esto hará que el campo se 
+                llene automáticamente. 
+                <br><br>
+                Una vez introducidos todos los datos del tipo de producto, 
+                procederemos a seleccionar la opción de “Aceptar”.<br>
+                Si todos los datos introducidos se encuentran correctos, el 
+                sistema nos redireccionará a la administración de tipos de 
+                productos, mostrándonos un mensaje de confirmación con el 
+                siguiente enunciado “Tipo de producto creado correctamente”
+                Si, por el contrario, se desea cancelar el proceso de agregar 
+                un tipo de producto, deberemos hacer clic en el botón “Cancelar”, 
+                esto nos llevará hacia la interfaz de tipos de productos sin 
+                efectuar ningún cambio. <br>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function descripcionCaracteres(e){
             key = e.keyCode || e.which;
             tecla = String.fromCharCode(key)

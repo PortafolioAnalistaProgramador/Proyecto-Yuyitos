@@ -64,6 +64,55 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `dentro de estos campos podemos encontrar:<br><br>
+                • Usuario: Corresponde al nombre de usuario que desee la persona.<br><br>
+                • Nombre: Corresponde al primer nombre de la persona a quien se le 
+                creara el usuario.<br><br>
+                • Apellido: Corresponde al primer apellido de la persona a quien se 
+                le creara el usuario.<br><br>
+                • Correo: Corresponde a la dirección de correo electrónico de la 
+                persona a quien se le creara el usuario.<br><br>
+                • Contraseña: Será la contraseña de acceso que desee la persona a 
+                quien se le creará el usuario.<br><br>
+                • Confirme contraseña: Corresponde a la contraseña de acceso que se 
+                ingresó previamente en el campo “Contraseña”, ambas deben ser 
+                completamente iguales, con la finalidad de confirmar la asignación 
+                de la contraseña ingresada. <br><br>
+
+                Luego podremos observar una opción para validar si el usuario a 
+                crear pertenece o no a un usuario con rol de administrador dentro 
+                del sistema.<br>
+                Para confirmar que el usuario que se está creando corresponde a un 
+                usuario administrador, se deberá marcar el pequeño recuadro adjunto 
+                presionando sobre él.<br>
+                En caso contrario, es decir, si se desea crear un usuario sin 
+                privilegios de administrador, deberemos corroborar que la opción 
+                “¿Es administrador?” se encuentre desmarcada.
+                <br><br>
+                Luego de completar el formulario con la información solicitada, 
+                se deberá presionar en el botón “Aceptar”.<br>
+                En caso de querer interrumpir la acción de crear un usuario, en 
+                cualquier momento podremos acceder al botón “Cancelar”, esto nos 
+                redireccionará a la interfaz principal de administración de usuarios. 
+                <br><br>
+                Tras seleccionar el botón Aceptar, y si los campos fueron introducidos 
+                con información válida, se creará el usuario en el sistema.
+                Esto lo podemos saber gracias a un mensaje de confirmación que se 
+                nos mostrará en pantalla luego de ser redirigidos a la interfaz 
+                principal de administración de usuarios, que nos informará que el 
+                usuario fue creado correctamente. <br>
+                Podremos corroborar que la creación del usuario fue exitosa al poder 
+                visualizar al usuario recientemente creado dentro de la interfaz principal.
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function soloLetras(e){
            key = e.keyCode || e.which;
            tecla = String.fromCharCode(key)

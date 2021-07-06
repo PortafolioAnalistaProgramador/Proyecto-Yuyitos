@@ -4,7 +4,7 @@
 {% block content %}
   <link rel="stylesheet" href="{% static 'css/proveedores.css' %}">
     <div class="container p-3">
-      <h1 class="text-center">Administracion de tipos de productos</h1>
+      <h1 class="text-center">Administracion de categorias de proveedor</h1>
       <div class="container mb-4">
         {% if messages %}
           <ul class="messages list-group mb-3">
@@ -54,4 +54,27 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `En esta página podemos ver todas las categorias de proveedor creados.<br>
+          Junto a cada categoria se encuentra el botón “Editar” y en la 
+          parte inferior izquierda de la tabla se encuentran los botones “Crear” 
+          y “Volver a proveedores”.
+          <br><br>
+          Si hacemos clic sobre el botón “Crear” se nos llevará a la interfaz de 
+          creación de categorias de proveedor.
+          <br><br>
+          Si seleccionamos la opción de “Editar”, se nos redirigirá hacia una 
+          página que nos permitirá actualizar los datos de la categoria seleccionada.
+          <br><br>
+          Si desea volver a la interfaz de administración de proveedores puede hacer 
+          clic en el botón “Volver a proveedores”
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

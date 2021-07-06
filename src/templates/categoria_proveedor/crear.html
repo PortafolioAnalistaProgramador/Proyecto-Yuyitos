@@ -28,7 +28,37 @@
             </form>
         </div>
     </div>
-
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos crear categorias de proveedor, 
+                en donde veremos un formulario con distintos campos que 
+                deberemos llenar, los campos dentro del formulario son:
+                <br><br>
+                • Descripcion: Corresponde al nombre de la categoria del proveedor
+                que se creara.
+                <br><br>
+                Dentro del campo que nos indica que debemos introducir el 
+                nombre debemos escribir el texto correspondiente al nombre 
+                de la categoria del proveedor que queremos agregar.<br>
+                <br><br>
+                Una vez introducida la descripcion de la categoria, 
+                procederemos a seleccionar la opción de “Aceptar”.<br>
+                Si el dato introducido se encuentra correcto, el 
+                sistema nos redireccionará a la administración de categorias de 
+                proveedor, mostrándonos un mensaje de confirmación con el 
+                siguiente enunciado “Categoria creado correctamente”
+                Si, por el contrario, se desea cancelar el proceso de agregar 
+                un tipo de producto, deberemos hacer clic en el botón “Cancelar”, 
+                esto nos llevará hacia la interfaz de categoria de proveedor sin 
+                efectuar ningún cambio. <br>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
     <script>
         function descripcionCaracteres(e){
             key = e.keyCode || e.which;

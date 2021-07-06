@@ -29,6 +29,32 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos actualizar la categoria de proveedor 
+                seleccionado.
+                <br><br>
+                Podremos visualizar principalmente un formulario con los datos 
+                de la categoria seleccionada.<br>
+                Mediante este formulario podremos realizar los cambios que 
+                estimemos convenientes.
+                <br><br>
+                Tras efectuar los cambios necesarios, procederemos a seleccionar 
+                el botón “Aceptar”, el cual nos redirigirá a la interfaz principal 
+                de administración de categorias de proveedor, junto a un mensaje que nos 
+                confirmará que los datos de la categoria seleccionada fueron 
+                actualizados correctamente.<br>
+                En caso de que se desee interrumpir la acción, siempre estará 
+                disponible el botón “Cancelar” que nos permitirá volver a la interfaz 
+                de administración de categoria de proveedor sin efectuar ningún cambio. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function descripcionCaracteres(e){
             key = e.keyCode || e.which;
             tecla = String.fromCharCode(key)

@@ -85,4 +85,47 @@
       </div>
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `Dentro de esta página podremos visualizar todos los productos 
+          creados dentro de una lista.<br>
+          Junto a cada producto se encuentran las siguientes acciones:
+          <br><br>
+          • Ver<br>
+          • Editar<br>
+          • Activar producto<br>	
+          • Desactivar producto
+          <br><br>
+          En la parte inferior izquierda de la tabla visualizaremos el botón de 
+          “Crear”, y al lado derecho del título “Administrador de proveedores” 
+          encontraremos las opciones “Ir a tipos de productos” e “Ir a familia 
+          de productos”. 
+          <br><br>
+          Al seleccionar la opción de “Crear” se nos llevará a la interfaz de 
+          creación de producto.
+          <br><br>
+          Si accedemos a la opción “Ver”, se nos llevará a un apartado donde 
+          podremos visualizar todos los detalles del producto seleccionado.
+          <br><br>
+          Al hacer clic en el botón “Editar” de algún producto, nos redireccionará 
+          a un apartado que nos permitirá actualizar los datos del producto seleccionado.
+          <br><br>
+          Dentro de administración de productos podemos activar o desactivar un 
+          producto, si hacemos clic en “Desactivar producto” su estado de 
+          “Disponible” cambiará de “Si” a “No”, el botón cambiará su estado a 
+          “Activar producto” y nos mostrará un mensaje en pantalla que nos 
+          confirmará que la desactivación del producto fue exitosa. 
+          <br><br>
+          Si, por el contrario, hacemos clic en “Activar producto”, su estado de 
+          “Disponible” cambiará a “Si”, el botón cambiará a “Desactivar producto” 
+          y nos mostrará un mensaje que, esta vez, nos confirmará la activación 
+          del producto seleccionado. 
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

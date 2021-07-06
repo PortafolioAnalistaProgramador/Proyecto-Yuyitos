@@ -64,4 +64,39 @@
         </tbody>
       </table>
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `Dentro de este módulo podremos observar todas las boletas que 
+          fueron generadas por medio de las ventas realizadas.
+          Junto a cada una de las boletas, se nos presentan acciones que nos 
+          permitirán ver, activar o desactivar dicha boleta. 
+          <br><br>
+          Si decidimos visualizar alguna boleta, se nos redirigirá hacia un apartado 
+          que nos dejará ver su detalle.
+          <br><br>
+          En la administración de boletas, también podemos optar por activar o 
+          desactivar alguna boleta.
+          En caso de requerir la desactivación de una boleta en específico, solo 
+          bastará con seleccionar la opción de “Desactivar boleta”, esto hará que 
+          el estado de la boleta seleccionada cambie automáticamente de estado a 
+          “Anulada” a la par que el propio sistema nos dará aviso sobre la 
+          desactivación de esta.
+          Además, al realizarse el cambio de estado, el botón de acción cambiará 
+          automáticamente a “Activar boleta”.  
+          <br><br>
+          Si, por el contrario, queremos realizar la activación de una boleta, 
+          solo bastará posicionarnos sobre una boleta ya desactivada, luego nos 
+          dirigiremos a la opción de “Activar boleta”, esto realizará el cambio 
+          de estado a “Activo” automáticamente, dándonos aviso por medio de mensaje 
+          del cambio realizado.
+          Esta acción hará que el botón de acción correspondiente a dicha boleta 
+          cambie a “Desactivar Boleta”.
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

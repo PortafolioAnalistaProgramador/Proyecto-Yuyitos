@@ -21,5 +21,25 @@
         </div>
         
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `Esta pagina nos permitirá visualizar todos los detalles 
+                del proveedor, dentro de estos datos podremos encontrar:
+                <br><br>
+                • Razón social<br>
+                • Correo<br>
+                • Teléfono<br>
+                • Dirección<br>
+                • Categoría
+                <br><br>
+                Junto a un botón “Volver” que, al seleccionarlo, nos permitirá 
+                volver atrás hacia la interfaz de administración de proveedores. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
 {% endblock %}

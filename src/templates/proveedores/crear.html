@@ -48,6 +48,46 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podremos crear proveedores, en donde se nos 
+                presentará un formulario que deberemos llenar con la información 
+                perteneciente al proveedor que deseemos añadir al sistema, dentro 
+                del formulario encontraremos los siguientes campos:
+                <br><br>
+                • Razón social: Corresponde al nombre del proveedor que traerá 
+                los productos. <br>
+                • Correo: Corresponde a la dirección de correo electrónico del proveedor<br>
+                • Teléfono: corresponde al número del teléfono del proveedor<br>
+                • Dirección: corresponde a la dirección del proveedor<br>
+                • Categoría: corresponde al rubro al cual pertenece el proveedor. 
+                <br><br>
+                Si presionamos sobre el campo de categoría, podremos observar que 
+                se nos desplegará un listado de categorías agregadas con anterioridad 
+                dentro del sistema, aquí deberemos seleccionar la categoría a la cual 
+                pertenece el proveedor que deseemos agregar. 
+                <br><br>
+                Tras haber completado la totalidad del formulario, procederemos a 
+                seleccionar el botón de “aceptar” para completar con la creación 
+                de un proveedor.
+                Si se desea cancelar la operación, podremos presionar el botón 
+                cancelar, lo cual nos redirigirá nuevamente a la interfaz de 
+                administración de proveedores sin efectuar ningún cambio. 
+                <br><br>
+                Tras seleccionar el botón “Aceptar”, se redirigirá hacia la página 
+                de administración de proveedores, junto con un mensaje en sistema 
+                que nos indicará que la creación del proveedor fue realizada correctamente.<br>
+                Para corroborarlo, solo deberemos confirmar que el proveedor 
+                recientemente creado se encuentre dentro del listado de proveedores 
+                en sistema. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function soloLetras(e){
            key = e.keyCode || e.which;
            tecla = String.fromCharCode(key)

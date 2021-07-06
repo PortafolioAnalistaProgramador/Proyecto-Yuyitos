@@ -47,7 +47,41 @@
             </form>
         </div>
     </div>
-
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podremos crear clientes para realizar 
+                ventas con fiado. en donde veremos un formulario que deberemos 
+                llenar con la información del cliente que deseemos crear, dentro 
+                de este formulario podremos encontrar los siguientes campos:
+                <br><br>
+                • Run: corresponde al run del cliente.<br>
+                • Nombre: corresponde al nombre y apellido del cliente<br>
+                • Teléfono: corresponde al número de teléfono del cliente<br>
+                • Correo: corresponde a la dirección de correo electrónico del cliente<br>
+                • Dirección: corresponde a la dirección del cliente.
+                <br><br>
+                Luego de haber llenado todos los campos con la información 
+                solicitada, podremos seleccionar el botón de aceptar.<br>
+                En caso de que se desee interrumpir el proceso de creación de 
+                cliente, siempre se puede acceder al botón “Cancelar”, lo cual 
+                nos devolverá a la interfaz de administración de clientes sin 
+                efectuar cambio alguno. 
+                <br><br>
+                Tras seleccionar el botón de aceptar, si los campos poseen 
+                información válida para el sistema, se procederá con la creación 
+                del usuario, luego será redirigido nuevamente a la interfaz de 
+                administración de clientes, junto a un mensaje informativo que 
+                nos mostrará que el cliente fue creado con éxito, esto lo podremos 
+                corroborar al visualizar al cliente recién creado dentro de la 
+                lista de clientes. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
     <script>
         function soloLetras(e){
            key = e.keyCode || e.which;

@@ -83,4 +83,34 @@
       </div> -->
 
     </div>
+    <script>
+      function manual(){
+        Swal.fire({
+          title: 'Manual',
+          html: `En esta página podremos ver todos los fiados creados.
+          Junto a cada fiado se encuentra el botón de “Activar Fiado” y “Anular Fiado”.<br>
+          A diferencia de los demás, acá no poseemos la acción de crear, ya que 
+          los fiados se crean al realizar una venta con cliente.
+          <br><br>
+          En caso de requerir la anulación de un fiado, deberemos situarnos sobre 
+          el botón “Anular fiado” y presionar sobre él, esto hará que su estado 
+          cambie a Anulado, esto lo podremos corroborar visualizando el apartado 
+          de “Estado del pago” 
+          Además, al cambiar su estado, la acción que realiza el botón cambiará de 
+          forma automática, ahora permitiéndonos activar el fiado en caso de 
+          presionar sobre él. <br>
+          Esto lo podremos saber gracias al nombre del botón, que cambió a 
+          “Activar Fiado”. 
+          <br><br>
+          Si queremos realizar la activación de un fiado, seleccionamos la acción 
+          de “Activar Fiado”, podremos ver que su estado dentro del apartado 
+          “Estado del pago” cambia a “Activo” a la par que se nos muestra un 
+          mensaje informativo en pantalla sobre que el cambio de estado fue 
+          realizado de manera exitosa. 
+          `,
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+        })
+      }
+    </script>
 {% endblock %}

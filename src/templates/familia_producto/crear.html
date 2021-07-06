@@ -35,6 +35,45 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podemos crear una familia de producto, 
+                en donde veremos un formulario con distintos campos que deberemos 
+                llenar, los campos dentro del formulario son:
+                <br><br>
+                • Nombre: Corresponde al nombre de la familia que se creara.<br>
+                • Tipo producto: Corresponde al tipo que pertenece esa familia.
+                <br><br>
+                Dentro del campo que nos indica que debemos introducir el nombre 
+                debemos escribir el texto correspondiente para el nombre de la familia.<br>
+                Para el campo correspondiente al tipo de producto, deberemos 
+                posicionarnos sobre la lista desplegable y seleccionarla, esto 
+                nos mostrará un listado que contiene todos los tipos de producto 
+                creados con anterioridad.<br>
+                Para seleccionar el tipo que deseemos solo deberemos hacer clic 
+                sobre el tipo de producto que necesitemos, esto hará que el campo 
+                se llene automáticamente. 
+                <br><br>
+                Una vez introducidos todos los datos de la familia de producto, 
+                procederemos a seleccionar la opción de “Aceptar”.<br>
+                Si todos los datos introducidos se encuentran correctos, el sistema 
+                nos redireccionará a la administración de familias de productos, 
+                mostrándonos un mensaje de confirmación con el siguiente enunciado 
+                “Familia producto creado correctamente”
+                Si, por el contrario, se desea cancelar el proceso de agregar una 
+                familia, deberemos hacer clic en el botón “Cancelar”, esto nos 
+                llevará hacia la interfaz de familia de productos sin efectuar 
+                ningún cambio. <br>
+                Si desea volver a la interfaz de administración de productos puede 
+                hacer clic en el botón “Volver a productos”
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function descripcionCaracteres(e){
             key = e.keyCode || e.which;
             tecla = String.fromCharCode(key)

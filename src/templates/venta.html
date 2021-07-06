@@ -113,7 +113,110 @@
         </div>
     </div>
 </div>
+<script>
+    function manual(){
+        Swal.fire({
+            title: 'Manual',
+            html: `Dentro del módulo de ventas, nosotros podremos efectuar 
+            una venta normal, así como el ingreso de productos fiados.
+            <br><br>
+            En la parte superior izquierda, usted podrá ver una barra desplegable, 
+            con el siguiente enunciado “Seleccionar cliente para fiado”.
+            Tal y como su nombre indica, si nosotros desplegamos la opción, 
+            nos mostrará una lista con todos los clientes que estén registrados 
+            y se encuentren disponibles para fiar. 
+            <br><br>
+            Nosotros procederemos a seleccionar alguno de estos clientes, 
+            simplemente presionando sobre su nombre (Solo en caso de que lo 
+            estimemos conveniente)
+            <br><br>
+            Debajo de esta opción, podremos encontrarnos con una barra un poco 
+            más pequeña que la anterior, que nos indica que debemos seleccionar 
+            una fecha para el plazo de pago, si seleccionamos sobre la opción 
+            “Click aquí” podemos ver que se nos despliega un pequeño calendario.
+            <br><br>             
+            Gracias a este calendario, nosotros podremos seleccionar una fecha 
+            sin la necesidad de escribirla manualmente.
+            En este punto deberemos seleccionar una fecha en específico, dentro 
+            del calendario podremos indicar cualquier día y mes dentro de un año 
+            determinado.
+            Si seleccionamos la opción desplegable que indica los meses, se nos 
+            mostrará un listado de todos los meses, dentro del cual deberemos 
+            seleccionar el que estimemos conveniente.
+            <br><br>
+            Tras efectuar la selección de mes, deberemos indicar el año, lo cual 
+            lo podremos lograr replicando el mismo procedimiento anterior, pero 
+            esta vez enfocado hacia el listado que nos indica los años, es aquí 
+            donde nosotros procederemos a seleccionar el año que deseemos.
+            <br><br>
+            Tras realizar la selección de mes y año, solo nos queda realizar la 
+            selección del día para completar la fecha deseada, esto lo podremos 
+            lograr simplemente seleccionando uno de los días que se nos presenta 
+            en el calendario. Tras finalizar la introducción de fecha, el calendario 
+            automáticamente se cerrará, mostrando que la fecha ingresada fue agregada 
+            dentro del campo requerido. 
+            <br><br>
+            Dentro de la interfaz de ventas, nosotros podremos visualizar en la 
+            parte derecha, un listado que contiene todos los productos ingresados 
+            al sistema a la fecha.
+            <br><br>
+            Nosotros podremos agregar un producto al carrito simplemente con la 
+            opción “Agregar”. 
+            El sistema de igual forma nos da la posibilidad de buscar un producto 
+            dentro de este listado.
+            Para esto, en la parte superior podremos encontrar una barra que nos 
+            indica que debemos introducir el producto a buscar.
+            Dentro de este campo nosotros escribiremos el nombre del producto que 
+            deseemos agregar al carrito.
+            A medida que nosotros llenemos el campo con datos, este nos mostrará 
+            de forma automática las coincidencias que encuentre, y en caso de que 
+            el dato ingresado no coincida con ninguno de los registros disponibles 
+            en sistema, nos mostrará el siguiente mensaje: “No se han encontrado 
+            coincidencias”
+            <br><br>
+            Tras encontrar el producto que deseemos agregar al carrito, tal y como 
+            se indicaba anteriormente, solo deberemos seleccionar el botón “Agregar” 
+            que encontraremos al lado derecho de cada producto.
 
+            A medida que seleccionemos productos, estos se irán agregando 
+            automáticamente dentro del recuadro con nombre “Carrito”, esto incluirá 
+            su código de barra, cantidad de productos seleccionados, y precio 
+            correspondiente.
+
+            Con estos datos, el propio sistema hará el calculo del total a pagar, 
+            será finalmente este valor el cual deberemos cobrar al cliente que 
+            corresponde la compra.
+            <br><br>
+            Tras haber realizado el cobro del total al cliente, procederemos a la 
+            creación de la venta, para esto, nos dirigiremos hacia la opción 
+            “Crear venta” que encontraremos en la parte inferior izquierda 
+            de la página. 
+            <br><br>
+            En caso de que usted no haya seleccionado un cliente fiado, la venta 
+            automáticamente se creará, mostrando un mensaje informativo en pantalla 
+            indicando que la venta fue realizada con éxito.
+            Tras esto, todo dato presente en el formulario volverá a sus valores 
+            por defecto.
+            <br><br>
+            En caso contrario de que usted si haya seleccionado un cliente para 
+            fiado, el sistema le mostrará una ventana de autorización, esta 
+            autorización la deberá efectuar exclusivamente la Sra. Juanita.
+            <br><br>
+            Tras haber introducidos los datos de administración, podremos 
+            seleccionar la opción “Aceptar”. 
+            <br><br>
+            La confirmación de la autorización nos permitirá finalmente crear 
+            la venta.
+            En caso de que no se desee continuar con la operación, usted 
+            simplemente deberá seleccionar la opción “Cancelar” la cual nos 
+            la borrará y volverá todos sus campos a sus valores por defecto. 
+            Facilitando así el ingreso de otra venta distinta más adelante. 
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar',
+        })
+    }
+</script>
 <script>
     function Habilitar(){
         location.reload();

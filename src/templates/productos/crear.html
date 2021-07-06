@@ -73,6 +73,100 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podremos crear productos, aca veremos 
+                un formulario que deberemos completar con datos referentes al 
+                producto que queramos agregar.<br>
+                El formulario cuenta con los siguientes campos:
+                <br><br>
+                • Nombre: Corresponde al nombre del producto a añadir.<br>
+                • Precio: Corresponde al precio que tendrá el producto en sistema.<br>
+                • Precio compra: Corresponde al precio al que se adquirió el producto.<br>
+                • Descripción: Corresponde a una pequeña descripción del producto.<br>
+                • Stock: Corresponde a la cantidad que se tiene de ese producto.<br>
+                • Stock crítico: Corresponde a la cantidad mínima que se debe tener 
+                disponible del producto<br>
+                • Fecha de vencimiento: Corresponde a cuando vencerá el producto, 
+                solo si esta información es legible (Opcional).<br>
+                • Hora de vencimiento: Corresponde a la hora en que vencerá, solo 
+                si esta información es legible (Opcional).<br>
+                • Familia de producto: Corresponde a la familia a la que pertenece 
+                dicho producto<br>
+                • Tipo de producto: Corresponde al tipo al cual pertenece el producto<br>
+                • Proveedor: Corresponde al proveedor del producto.
+                <br><br>
+                En el campo de selección de fecha de vencimiento, si seleccionamos 
+                sobre la barra que dice “Click aquí” se nos desplegará un pequeño 
+                calendario, es aquí donde podremos seleccionar la fecha de vencimiento 
+                correspondiente al producto que se desee ingresar.
+                <br><br>
+                Comenzaremos con la selección de mes, para esto debemos seleccionar 
+                la pequeña barra en la parte superior del calendario que contiene el 
+                mes actual.<br>
+                Esto desplegara una lista completa con todos los meses del año, aquí 
+                seleccionaremos el mes que corresponda.
+                <br><br>
+                Tras la selección de mes, realizamos el mismo proceso con el año de 
+                vencimiento, del lado derecho podremos encontrar el menú desplegable 
+                con el año actual, esto nos desplegará una lista que contendrá un 
+                periodo de años que comprende 10 años antes del año actual, y 10 años 
+                posteriores a este.<br>
+                Procederemos a seleccionar el año que corresponda al año de vencimiento 
+                del producto
+                <br><br>
+                Para concluir la construcción de la fecha de vencimiento, deberemos 
+                seleccionar el día de vencimiento seleccionando sobre este dentro del 
+                calendario, tras esto, automáticamente se nos llenará el campo con la 
+                fecha de vencimiento en formato día/mes/año.
+                <br><br>
+                Para seleccionar la hora de vencimiento, deberemos dirigirnos hacia 
+                el menú desplegable con el texto “Click aquí” esto desplegara una 
+                lista completa de horas en formato 24 horas, estas en intervalos de 
+                30 minutos cada una.<br>
+                Para la visualización de la lista completa, posicione el mouse por 
+                sobre la lista, y con la rueda, podrá navegar hacia arriba o hacia 
+                abajo entre el listado completo. 
+                <br><br>
+                Una vez encontrada la hora que necesite, presione sobre ella, esto 
+                causará que el campo se llene automáticamente con la hora seleccionada.
+                <br><br>
+                Para seleccionar la familia del producto, deberemos posicionarnos 
+                sobre el menú desplegable y presionarlo, esto desplegará una lista 
+                completa con las familias de productos disponibles en sistema.<br>
+                Para seleccionar la familia de producto que necesitemos, solo hacer 
+                clic sobre ella, esto ocasionará que el campo se llene automáticamente 
+                con lo seleccionado. 
+                <br><br>
+                Luego debemos seleccionar el tipo del producto, para ello iremos al 
+                menú desplegable correspondiente y lo presionaremos, esto nos 
+                desplegara una lista con los tipos de producto en sistema, 
+                seleccionaremos el que estimemos conveniente presionando sobre él, 
+                esto hará que el campo se llene de forma automática con lo seleccionado. 
+                <br><br>
+                Tras esto, deberemos proceder con la selección de proveedor, para 
+                ello nos iremos hacia la lista desplegable correspondiente y la 
+                presionaremos, esto nos mostrará la lista con los proveedores creados 
+                anteriormente.<br>
+                Procederemos a seleccionar uno de los proveedores de la lista, tras 
+                esto, automáticamente el campo se llenará con el proveedor seleccionado.
+                <br><br>
+                Una vez completados todos los datos del formulario, procederemos a 
+                confirmar presionando el botón de “Aceptar”, si todos los datos 
+                introducidos son válidos, se nos redirigirá hacia la interfaz de 
+                administración de productos, junto a un mensaje en pantalla que nos 
+                validará que el producto fue agregado correctamente.<br>
+                Si desea cancelar el proceso de agregar un producto, puede seleccionar 
+                la opción de “Cancelar”, esto lo redirigirá a la interfaz de 
+                administración de productos sin efectuar ningún cambio. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
 
         function numerosCaracteres(e) {
             key = e.keyCode || e.which;

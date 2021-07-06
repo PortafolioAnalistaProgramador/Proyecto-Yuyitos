@@ -46,6 +46,29 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `Esta pagina nos permitirá actualizar cualquier dato ingresado 
+                del cliente seleccionado, podremos ver un formulario que nos 
+                permitirá visualizar toda su información actual dentro del sistema. <br>
+                Para modificar los datos del cliente, solo deberemos reemplazar los 
+                valores que queramos cambiar dentro del formulario. 
+                <br><br>
+                Tras efectuar los cambios necesarios, procederemos a seleccionar 
+                el botón “Aceptar”, el cual nos redirigirá a la interfaz principal 
+                de administración de clientes, junto a un mensaje que nos confirmará 
+                que los datos del cliente fueron actualizados correctamente.<br>
+                En caso de que se desee interrumpir la acción, siempre estará 
+                disponible el botón “Cancelar” que nos permitirá volver a la 
+                interfaz de administración de clientes sin efectuar ningún cambio. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function soloLetras(e){
            key = e.keyCode || e.which;
            tecla = String.fromCharCode(key)

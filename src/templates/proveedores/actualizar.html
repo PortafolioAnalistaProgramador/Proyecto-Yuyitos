@@ -46,6 +46,31 @@
         </div>
     </div>
     <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina podremos actualizar cualquier información 
+                referente al proveedor en sistema.<br>
+                Se nos presentará un formulario que será llenado automáticamente 
+                con la información actual en sistema, que nosotros deberemos 
+                actualizar según estimemos conveniente. 
+                <br><br>
+                Tras la realización de los cambios, podremos presionar el botón de 
+                “Aceptar”, lo cual realizará el cambio de los datos del proveedor, 
+                esto lo podremos saber tras ser redirigidos automáticamente a la 
+                interfaz de administración de proveedores, junto a un mensaje que 
+                nos confirmará la actualización de los datos del proveedor. 
+                <br><br>
+                En caso de querer interrumpir la acción, se podrá presionar el botón 
+                de “Cancelar” lo cual nos redirigirá a la interfaz de administración 
+                de proveedores sin efectuar cambio alguno dentro del sistema. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
+    <script>
         function soloLetras(e){
            key = e.keyCode || e.which;
            tecla = String.fromCharCode(key)

@@ -54,7 +54,40 @@
             
         </div>
     </div>
-    
+    <script>
+        function manual(){
+            Swal.fire({
+                title: 'Manual',
+                html: `En esta pagina nos permitira editar los datos del usuario 
+                seleccionado
+                <br><br>
+                Podremos observar que existen dos campos en los cuales no se 
+                tendrán datos, estos datos corresponden a la introducción de 
+                la antigua contraseña (o una nueva si se desea) y su correspondiente 
+                confirmación.<br>
+                Cada campo deberá ser llenado con la información que se desee 
+                modificar.<br>
+                Además de esto, podremos editar los privilegios o el “rol” que 
+                tiene dicho usuario dentro del sistema, pudiendo revocar o asignar 
+                permisos de administrador al mismo.
+                <br><br>
+                Tras la realización de los cambios que se consideren necesarios, 
+                deberemos accionar el botón de “Aceptar”, si todos los campos 
+                modificados se encuentran dentro de los parámetros admisibles 
+                por el sistema, se realizará la actualización de la información 
+                del usuario, tras esto, se nos redireccionará hacia la interfaz 
+                de administración de usuarios junto a un mensaje que nos confirmará 
+                que la actualización del usuario fue realizada correctamente. 
+                <br><br>
+                En caso de que se desee interrumpir la modificación de datos, 
+                siempre se puede acceder al botón “Cancelar”, lo cual nos devolverá 
+                a la interfaz de administración de usuarios sin efectuar cambio alguno. 
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Continuar',
+            })
+        }
+    </script>
     <script>
         function soloLetras(e){
             key = e.keyCode || e.which;
